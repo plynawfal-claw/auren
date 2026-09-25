@@ -1,26 +1,384 @@
 @import "tailwindcss";
 
+/* ============================================================
+   AUREN — monochrome + one accent
+
+   The studio interface is deliberately colourless. Every hue on
+   this site comes from the client work itself: TagPet's gold,
+   Kutia's warm neutrals, PromoStore's architectural light,
+   Docteur Plante's green. The wrapper stays out of their way.
+
+   This replaces an earlier system that encoded the four
+   practices as coloured spectral emission lines. It read as a
+   concept rather than as navigation, and it fought every
+   screenshot it sat next to.
+
+   ONE accent — `--lume`, a cool pale light. It appears on focus
+   rings, the active state in the orbit, and the light in the
+   hero surface. Nowhere else.
+   ============================================================ */
+
+@theme {
+  /* --- surfaces ------------------------------------------- */
+  --color-ink: #0a0b0d;
+  --color-graphite: #141619;
+  --color-graphite-hi: #1c1f24;
+  --color-line: #24282e;
+  --color-line-strong: #333840;
+
+  /* --- type ----------------------------------------------
+     Contrast on --color-ink, measured:
+       mineral    17.6:1  — any size
+       silver     11.3:1  — any size
+       grey        5.9:1  — body text, passes AA
+       grey-deep   3.2:1  — LARGE TEXT AND RULES ONLY
+     ------------------------------------------------------- */
+  --color-mineral: #f2f3f5;
+  --color-silver: #c3c8cf;
+  --color-grey: #888f98;
+  --color-grey-deep: #575d65;
+
+  /* --- the one accent ------------------------------------- */
+  --color-lume: #dce6f5;
+
+  /* --- type ----------------------------------------------- */
+  --font-display: var(--font-bodoni), "Times New Roman", serif;
+  --font-sans: var(--font-inter-tight), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", monospace;
+
+  /* --- editorial scale ------------------------------------
+     Hierarchy is dramatic on purpose: the display sizes are far
+     from the UI sizes, so the page architecture is built by
+     type rather than by boxes.
+
+     Tracking is size-specific — large display text is tightened,
+     body copy sits near zero. A single letter-spacing value is
+     always wrong somewhere.
+     ------------------------------------------------------- */
+  --text-statement: clamp(2.5rem, 7.5vw, 8rem);
+  --text-display: clamp(2.125rem, 5.5vw, 5rem);
+  --text-title: clamp(1.625rem, 3.4vw, 3rem);
+  --text-lead: clamp(1.0625rem, 1.5vw, 1.375rem);
+}
+
+/* ============================================================
+   Layout, motion and z tokens
+   Plain custom properties — these do not need to generate
+   Tailwind utilities.
+   ============================================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --page-max: 1440px;
+  --page-gutter: clamp(20px, 4vw, 72px);
+  --grid-cols: 12;
+
+  /* motion — one easing family across the entire site */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --dur-fast: 200ms;
+  --dur: 420ms;
+  --dur-editorial: 900ms;
+
+  --z-scanline: 5;
+  --z-header: 40;
+  --z-menu: 60;
+  --z-cursor: 90;
+
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-ink);
+    color: var(--color-mineral);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Lining figures everywhere: this is an instrument, and
+       old-style numerals in a data readout look like a mistake. */
+    font-variant-numeric: lining-nums tabular-nums;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 0.94;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  /* One focus treatment, monochrome, never removed. */
+  :focus-visible {
+    outline: 2px solid var(--color-mineral);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-mineral);
+    color: var(--color-ink);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   Layout primitives
+   ============================================================ */
+@layer components {
+  .shell {
+    width: 100%;
+    max-width: var(--page-max);
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+  }
+
+  /* The plate grid. Registration rules are VISIBLE — this is a
+     measuring surface, so the measurement marks stay on it. */
+  .plate-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+    column-gap: clamp(12px, 1.6vw, 24px);
+  }
+
+  .rule-v {
+    position: absolute;
+    inset-block: 0;
+    width: 1px;
+    background: var(--color-line);
+    pointer-events: none;
+  }
+
+  .hairline {
+    height: 1px;
+    border: 0;
+    margin: 0;
+    background: linear-gradient(
+      90deg,
+      var(--color-line-strong),
+      var(--color-line) 55%,
+      transparent
+    );
+  }
+
+  /* Mono margin label — the spectrograph's own annotation voice. */
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-grey);
+  }
+
+  .lead {
+    font-size: var(--text-lead);
+    line-height: 1.45;
+    color: var(--color-silver);
+  }
+
+  /* ---------- reveal ----------------------------------------
+     Hidden state is gated behind `.js` on <html>, so crawlers,
+     no-JS readers and the reduced-motion path all receive fully
+     visible content. This matters more than usual here: the
+     whole SEO/GEO case rests on the copy being present.
+     -------------------------------------------------------- */
+  .js .reveal {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+    transition:
+      opacity var(--dur-editorial) var(--ease) var(--reveal-delay, 0ms),
+      transform var(--dur-editorial) var(--ease) var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    /* Released once the element has arrived. Leaving `will-change` on keeps
+       every revealed block promoted to its own compositor layer for the rest
+       of the session; on a page with this many sections that is dozens of
+       layers held for no benefit. */
+    will-change: auto;
+  }
+
+  /* ---------- magnetic button -------------------------------
+     --mx/--my are written by the delegated pointer handler.
+     Touch devices and reduced-motion never receive them, so the
+     button simply sits still.
+     -------------------------------------------------------- */
+  .magnetic-btn {
+    transform: translate3d(var(--mx, 0), var(--my, 0), 0);
+    transition: transform var(--dur) var(--ease);
+  }
+
+  .magnetic-btn.is-magnetic {
+    transition: transform 80ms linear;
+  }
+
+  /* ---------- scroll progress ------------------------------- */
+  .scroll-progress {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 1px;
+    transform: scaleX(var(--scroll-progress, 0));
+    transform-origin: 0 50%;
+    background: var(--color-mineral);
+    z-index: var(--z-scanline);
+    pointer-events: none;
+  }
+}
+
+
+/* ============================================================
+   Per-project motion in the work orbit
+
+   Each project gets one small behaviour, played only while it is
+   the card in focus. Everything here is transform or opacity;
+   nothing animates layout. All of it stops under reduced motion
+   via the global block at the end of this file.
+   ============================================================ */
+@keyframes au-drift-y {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(0, -4.5%, 0); }
+}
+@keyframes au-drift-x {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.04); }
+  50%      { transform: translate3d(-3%, 0, 0) scale(1.04); }
+}
+@keyframes au-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.035); }
+}
+@keyframes au-crop {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  50%      { transform: translate3d(2.5%, -1.5%, 0) scale(1.05); }
+}
+@keyframes au-scan {
+  0%   { transform: translateY(0);    opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+@keyframes au-wipe {
+  0%, 12%   { transform: scaleY(0); }
+  46%, 64%  { transform: scaleY(1); }
+  100%      { transform: scaleY(0); }
+}
+
+.au-m-scroll  { animation: au-drift-y 9s ease-in-out infinite; }
+.au-m-spatial { animation: au-drift-x 11s ease-in-out infinite; }
+.au-m-menu    { animation: au-breathe 10s ease-in-out infinite; }
+.au-m-crop    { animation: au-crop 10s ease-in-out infinite; }
+.au-m-scan    { animation: au-breathe 12s ease-in-out infinite; }
+.au-m-panels  { animation: au-drift-y 12s ease-in-out infinite; }
+
+.au-scanline {
+  background: linear-gradient(90deg, transparent, var(--color-lume), transparent);
+  box-shadow: 0 0 22px 2px color-mix(in srgb, var(--color-lume) 35%, transparent);
+  animation: au-scan 4.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.au-panels { display: flex; }
+.au-panels i {
+  flex: 1;
+  transform-origin: top;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-lume) 12%, transparent), transparent);
+  animation: au-wipe 6.5s ease-in-out infinite;
+}
+.au-panels i:nth-child(2) { animation-delay: 0.22s; }
+.au-panels i:nth-child(3) { animation-delay: 0.44s; }
+
+
+/* Range marquee. Pauses on hover and on keyboard focus inside it, so nothing
+   slides away from under a pointer or a focused link. */
+@keyframes au-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+.au-marquee {
+  animation: au-marquee 46s linear infinite;
+}
+.au-marquee:hover,
+.au-marquee:focus-within {
+  animation-play-state: paused;
+}
+
+/* ============================================================
+   Reduced motion
+   Every effect is neutralised individually rather than with a
+   blanket rule, so nothing ends up stuck in a half-applied
+   transform.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .magnetic-btn {
+    transform: none;
+    transition: none;
+  }
+
+  .scroll-progress {
+    display: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

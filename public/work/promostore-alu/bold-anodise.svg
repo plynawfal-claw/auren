@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PROMOSTORE ALU">
+  <defs>
+    <linearGradient id="aTop" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a8874a"/><stop offset="35%" stop-color="#e2c78f"/>
+      <stop offset="60%" stop-color="#fdf4de"/><stop offset="100%" stop-color="#c9a96e"/>
+    </linearGradient>
+    <linearGradient id="aSide" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c9a96e"/><stop offset="50%" stop-color="#96773f"/>
+      <stop offset="100%" stop-color="#6d5527"/>
+    </linearGradient>
+    <linearGradient id="aFace" x1=".1" y1="0" x2=".9" y2="1">
+      <stop offset="0%" stop-color="#f2f4f6"/><stop offset="22%" stop-color="#b9bec4"/>
+      <stop offset="45%" stop-color="#7d8288"/><stop offset="62%" stop-color="#e9ecef"/>
+      <stop offset="82%" stop-color="#8a8f95"/><stop offset="100%" stop-color="#c3c8cd"/>
+    </linearGradient>
+    <linearGradient id="aBore" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2c2f34"/><stop offset="100%" stop-color="#0d0f12"/>
+    </linearGradient>
+  </defs>
+
+  <!-- extruded section, anodised gold cap -->
+  <path fill="url(#aTop)"  d="M8 20 20 8h36L44 20H8Z"/>
+  <path fill="url(#aSide)" d="m44 20 12-12v36L44 56V20Z"/>
+  <path fill="url(#aFace)" d="M8 20h36v36H8V20Z"/>
+  <!-- the hollow bore -->
+  <path fill="url(#aBore)" d="M18 30h16v16H18V30Z"/>
+  <!-- crisp highlight on the leading edge -->
+  <path stroke="#fff" stroke-opacity=".55" stroke-width="1.1" d="M8.6 20.5h35"/>
+</svg>

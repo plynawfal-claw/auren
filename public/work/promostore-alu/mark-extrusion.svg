@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="PROMOSTORE ALU">
+  <!-- extrusion faces, attached to the section: top then right -->
+  <path fill="#c9a96e" d="M8 20 20 8h36L44 20H8Z"/>
+  <path fill="#c9a96e" fill-opacity=".72" d="m44 20 12-12v36L44 56V20Z"/>
+  <!-- the finished section, face on -->
+  <path fill="currentColor" fill-rule="evenodd" d="M8 20h36v36H8V20Zm10 10h16v16H18V30Z"/>
+</svg>

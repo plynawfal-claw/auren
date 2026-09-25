@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PROMOSTORE ALU">
+  <defs>
+    <!-- plate: lit centre falling to near-black corners -->
+    <radialGradient id="xPlate" cx=".38" cy=".3" r=".95">
+      <stop offset="0%" stop-color="#33383f"/><stop offset="45%" stop-color="#16191d"/>
+      <stop offset="100%" stop-color="#030407"/>
+    </radialGradient>
+    <!-- gold bloom sitting behind the letter -->
+    <radialGradient id="xGlow" cx=".5" cy=".5" r=".5">
+      <stop offset="0%" stop-color="#c9a96e" stop-opacity=".55"/>
+      <stop offset="55%" stop-color="#c9a96e" stop-opacity=".16"/>
+      <stop offset="100%" stop-color="#c9a96e" stop-opacity="0"/>
+    </radialGradient>
+    <!-- polished chrome: hard light/dark banding is what sells metal -->
+    <linearGradient id="xChrome" x1=".05" y1="0" x2=".95" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="11%" stop-color="#eef1f4"/>
+      <stop offset="26%" stop-color="#6e747c"/><stop offset="38%" stop-color="#b9bfc6"/>
+      <stop offset="50%" stop-color="#ffffff"/><stop offset="62%" stop-color="#848a92"/>
+      <stop offset="76%" stop-color="#e6eaee"/><stop offset="88%" stop-color="#5f656d"/>
+      <stop offset="100%" stop-color="#cfd4d9"/>
+    </linearGradient>
+    <!-- the extruded flank under the letter -->
+    <linearGradient id="xEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0dcae"/><stop offset="30%" stop-color="#c9a96e"/>
+      <stop offset="65%" stop-color="#8d6f37"/><stop offset="100%" stop-color="#57431f"/>
+    </linearGradient>
+    <linearGradient id="xBreak" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f7e7c2"/><stop offset="50%" stop-color="#c9a96e"/>
+      <stop offset="100%" stop-color="#8d6f37"/>
+    </linearGradient>
+    <linearGradient id="xRim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5e6c2"/><stop offset="40%" stop-color="#c9a96e"/>
+      <stop offset="70%" stop-color="#6d5527"/><stop offset="100%" stop-color="#d8bc83"/>
+    </linearGradient>
+    <linearGradient id="xFlare" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff" stop-opacity=".42"/>
+      <stop offset="38%" stop-color="#fff" stop-opacity=".10"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="xClip"><rect width="64" height="64" rx="15"/></clipPath>
+    <path id="xP" fill-rule="evenodd"
+      d="M10 6h28a15 15 0 0 1 0 30H22v22H10V6Zm12 10h14a5 5 0 0 1 0 10H22V16Z"/>
+  </defs>
+
+  <rect width="64" height="64" rx="15" fill="url(#xPlate)"/>
+  <ellipse cx="30" cy="31" rx="25" ry="25" fill="url(#xGlow)"/>
+
+  <g transform="translate(9.6 9) scale(.72)">
+    <!-- gold flank, offset to give the letter real thickness -->
+    <g transform="translate(3.2 3.2)"><use href="#xP" fill="url(#xEdge)"/></g>
+    <!-- chrome face -->
+    <use href="#xP" fill="url(#xChrome)"/>
+    <!-- thermal break, widened so it survives at small sizes -->
+    <rect x="10" y="40" width="12" height="7.5" fill="url(#xBreak)"/>
+  </g>
+
+  <!-- hard specular flare across the whole plate -->
+  <g clip-path="url(#xClip)">
+    <path fill="url(#xFlare)" d="M-16 50 30-18h17L1 50Z"/>
+  </g>
+
+  <rect x=".9" y=".9" width="62.2" height="62.2" rx="14.2"
+        fill="none" stroke="url(#xRim)" stroke-width="1.5"/>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PROMOSTORE ALU">
+  <!-- Profile picture, maximum-impact version.
+       No ring, letter pushed large. In a TikTok feed the avatar renders
+       around 45px — at that size a ring becomes noise and only the
+       silhouette survives, so this trades detail for legibility. -->
+  <defs>
+    <radialGradient id="hBg" cx=".36" cy=".28" r="1">
+      <stop offset="0%" stop-color="#383e46"/><stop offset="45%" stop-color="#15181c"/>
+      <stop offset="100%" stop-color="#010204"/>
+    </radialGradient>
+    <radialGradient id="hGlow" cx=".5" cy=".52" r=".55">
+      <stop offset="0%" stop-color="#c9a96e" stop-opacity=".55"/>
+      <stop offset="60%" stop-color="#c9a96e" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="#c9a96e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hChrome" x1=".05" y1="0" x2=".95" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="14%" stop-color="#f2f5f7"/>
+      <stop offset="30%" stop-color="#6e747c"/><stop offset="42%" stop-color="#c6ccd2"/>
+      <stop offset="54%" stop-color="#ffffff"/><stop offset="66%" stop-color="#848a92"/>
+      <stop offset="80%" stop-color="#eaeef1"/><stop offset="100%" stop-color="#c6cbd1"/>
+    </linearGradient>
+    <linearGradient id="hEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f4e2b8"/><stop offset="30%" stop-color="#c9a96e"/>
+      <stop offset="66%" stop-color="#8d6f37"/><stop offset="100%" stop-color="#4e3b1a"/>
+    </linearGradient>
+    <linearGradient id="hBreak" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f9ecca"/><stop offset="55%" stop-color="#c9a96e"/>
+      <stop offset="100%" stop-color="#8d6f37"/>
+    </linearGradient>
+    <clipPath id="hClip"><rect width="64" height="64"/></clipPath>
+    <path id="hP" fill-rule="evenodd"
+      d="M10 6h28a15 15 0 0 1 0 30H22v22H10V6Zm12 10h14a5 5 0 0 1 0 10H22V16Z"/>
+  </defs>
+
+  <rect width="64" height="64" fill="url(#hBg)"/>
+  <circle cx="32" cy="33" r="27" fill="url(#hGlow)"/>
+
+  <g transform="translate(5.4 5) scale(.846)">
+    <g transform="translate(3.6 3.6)"><use href="#hP" fill="url(#hEdge)"/></g>
+    <use href="#hP" fill="url(#hChrome)"/>
+    <rect x="10" y="46" width="12" height="12" fill="url(#hBreak)"/>
+  </g>
+
+  <g clip-path="url(#hClip)">
+    <path fill="#fff" fill-opacity=".12" d="M-14 46 28-20h19L5 46Z"/>
+  </g>
+</svg>

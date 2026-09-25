@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PROMOSTORE ALU">
+  <defs>
+    <linearGradient id="bDisc" x1=".2" y1="0" x2=".8" y2="1">
+      <stop offset="0%" stop-color="#26292e"/><stop offset="60%" stop-color="#101216"/>
+      <stop offset="100%" stop-color="#04050880"/>
+    </linearGradient>
+    <linearGradient id="bRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fdf3dc"/><stop offset="24%" stop-color="#c9a96e"/>
+      <stop offset="46%" stop-color="#8d6f37"/><stop offset="62%" stop-color="#f5e6c2"/>
+      <stop offset="82%" stop-color="#b8974f"/><stop offset="100%" stop-color="#7d6230"/>
+    </linearGradient>
+    <linearGradient id="bP" x1=".1" y1="0" x2=".9" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="24%" stop-color="#d6dade"/>
+      <stop offset="46%" stop-color="#8f949a"/><stop offset="62%" stop-color="#f6f8fa"/>
+      <stop offset="84%" stop-color="#9ba0a6"/><stop offset="100%" stop-color="#787d83"/>
+    </linearGradient>
+    <clipPath id="bClip"><circle cx="32" cy="32" r="31"/></clipPath>
+  </defs>
+
+  <circle cx="32" cy="32" r="31" fill="url(#bDisc)"/>
+  <circle cx="32" cy="32" r="29.4" fill="none" stroke="url(#bRing)" stroke-width="2.6"/>
+  <circle cx="32" cy="32" r="25.2" fill="none" stroke="#c9a96e" stroke-opacity=".3" stroke-width=".9"/>
+
+  <g transform="translate(13.8 13.6) scale(.565)">
+    <path fill="url(#bP)" fill-rule="evenodd"
+      d="M10 6h28a15 15 0 0 1 0 30H22v22H10V6Zm12 10h14a5 5 0 0 1 0 10H22V16Z"/>
+    <rect x="10" y="41" width="12" height="6" fill="url(#bRing)"/>
+  </g>
+
+  <g clip-path="url(#bClip)">
+    <path fill="#fff" fill-opacity=".10" d="M-10 40 26-16h18L8 40Z"/>
+  </g>
+</svg>

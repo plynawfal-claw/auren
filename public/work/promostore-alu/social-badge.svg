@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="PROMOSTORE ALU">
+  <!-- Profile picture, ring version.
+       Full-bleed background: TikTok and WhatsApp crop to a circle, so the
+       artwork must reach the square edges or the corners come back empty.
+       Everything meaningful sits inside r=25.5 so the crop never clips it. -->
+  <defs>
+    <radialGradient id="gBg" cx=".38" cy=".3" r=".95">
+      <stop offset="0%" stop-color="#33383f"/><stop offset="45%" stop-color="#15181c"/>
+      <stop offset="100%" stop-color="#020306"/>
+    </radialGradient>
+    <radialGradient id="gGlow" cx=".5" cy=".5" r=".5">
+      <stop offset="0%" stop-color="#c9a96e" stop-opacity=".5"/>
+      <stop offset="60%" stop-color="#c9a96e" stop-opacity=".14"/>
+      <stop offset="100%" stop-color="#c9a96e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fdf3dc"/><stop offset="26%" stop-color="#c9a96e"/>
+      <stop offset="48%" stop-color="#8d6f37"/><stop offset="66%" stop-color="#f5e6c2"/>
+      <stop offset="84%" stop-color="#b8974f"/><stop offset="100%" stop-color="#7d6230"/>
+    </linearGradient>
+    <linearGradient id="gChrome" x1=".05" y1="0" x2=".95" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/><stop offset="12%" stop-color="#eef1f4"/>
+      <stop offset="27%" stop-color="#767c84"/><stop offset="40%" stop-color="#c2c8ce"/>
+      <stop offset="52%" stop-color="#ffffff"/><stop offset="64%" stop-color="#8b9199"/>
+      <stop offset="78%" stop-color="#e8ecef"/><stop offset="100%" stop-color="#cfd4d9"/>
+    </linearGradient>
+    <linearGradient id="gEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0dcae"/><stop offset="32%" stop-color="#c9a96e"/>
+      <stop offset="68%" stop-color="#8d6f37"/><stop offset="100%" stop-color="#54401d"/>
+    </linearGradient>
+    <clipPath id="gClip"><rect width="64" height="64"/></clipPath>
+    <path id="gP" fill-rule="evenodd"
+      d="M10 6h28a15 15 0 0 1 0 30H22v22H10V6Zm12 10h14a5 5 0 0 1 0 10H22V16Z"/>
+  </defs>
+
+  <rect width="64" height="64" fill="url(#gBg)"/>
+  <circle cx="32" cy="32" r="24" fill="url(#gGlow)"/>
+
+  <!-- rings sit inside the circular crop -->
+  <circle cx="32" cy="32" r="28.4" fill="none" stroke="url(#gRing)" stroke-width="1.6"/>
+  <circle cx="32" cy="32" r="25.4" fill="none" stroke="#c9a96e" stroke-opacity=".32" stroke-width=".5"/>
+
+  <g transform="translate(11.4 11.1) scale(.654)">
+    <g transform="translate(3.4 3.4)"><use href="#gP" fill="url(#gEdge)"/></g>
+    <use href="#gP" fill="url(#gChrome)"/>
+    <rect x="10" y="46" width="12" height="12" fill="url(#gRing)"/>
+  </g>
+
+  <g clip-path="url(#gClip)">
+    <path fill="#fff" fill-opacity=".10" d="M-12 44 26-18h17L5 44Z"/>
+  </g>
+</svg>

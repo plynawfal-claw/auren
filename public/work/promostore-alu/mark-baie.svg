@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="PROMOSTORE ALU">
+  <!-- one pane catching the light -->
+  <rect x="36" y="8" width="20" height="24" fill="#c9a96e"/>
+  <!-- frame, mullion and transom — a baie vitrée in elevation -->
+  <rect x="8" y="8" width="48" height="48" stroke="currentColor" stroke-width="5"/>
+  <path stroke="currentColor" stroke-width="5" d="M36 8v48M36 32h20"/>
+</svg>
