@@ -69,7 +69,7 @@ export default async function ServicesIndex({
                     <Reveal as="li" key={s.slug} delay={i * 70}>
                       <Link
                         href={`/services/${s.slug}`}
-                        className="group flex items-start gap-6 border-b border-line py-7"
+                        className="spatial-object group flex items-start gap-6 border-b border-line bg-graphite/40 px-5 py-7"
                       >
                         <div className="flex-1">
                           <h3 className="font-display text-[clamp(1.5rem,2.6vw,2.1rem)] leading-none">

@@ -122,18 +122,20 @@ export function Process() {
                       on ? "translate-y-0 opacity-100" : "translate-y-3 opacity-45",
                     )}
                   >
-                    <span className="font-mono text-[0.68rem] tracking-[0.18em] text-grey">
-                      {s.n}
-                    </span>
-                    <h3 className="mt-4 font-display text-[clamp(1.9rem,4vw,3rem)] leading-none">
-                      {s.title}
-                    </h3>
-                    <p className="mt-4 max-w-[38ch] leading-relaxed text-silver md:inline-block">
-                      {s.body}
-                    </p>
-                    <p className="mt-4 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-grey-deep">
-                      {s.note}
-                    </p>
+                    <div className="spatial-object process-stage p-6 md:p-8">
+                      <span className="font-mono text-[0.68rem] tracking-[0.18em] text-grey">
+                        {s.n}
+                      </span>
+                      <h3 className="mt-4 font-display text-[clamp(1.9rem,4vw,3rem)] leading-none">
+                        {s.title}
+                      </h3>
+                      <p className="mt-4 max-w-[38ch] leading-relaxed text-silver md:inline-block">
+                        {s.body}
+                      </p>
+                      <p className="mt-4 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-grey-deep">
+                        {s.note}
+                      </p>
+                    </div>
                   </div>
                 </li>
               );

@@ -136,15 +136,15 @@ export function WhatWeBuild() {
               being read. */}
           <div className="order-2 lg:order-1 lg:col-span-6">
             <div className="lg:sticky lg:top-28">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line bg-graphite">
+              <div className="spatial-object capability-stage relative aspect-[4/3] w-full rounded-2xl border border-line [perspective:850px] [transform-style:preserve-3d]">
                 {cells.map((c, i) => (
                   <span
                     key={i}
                     aria-hidden="true"
                     className={cn(
-                      "absolute bg-mineral/[0.09]",
+                      "absolute border border-mineral/15 bg-mineral/[0.09] shadow-[0_18px_35px_-20px_rgba(0,0,0,0.85)]",
                       !reduced &&
-                        "transition-[left,top,width,height,opacity,border-radius] duration-[700ms] ease-[var(--ease)]",
+                        "transition-[left,top,width,height,opacity,border-radius,transform] duration-[700ms] ease-[var(--ease)]",
                       i === 7 && "bg-lume/30",
                     )}
                     style={{
@@ -154,6 +154,7 @@ export function WhatWeBuild() {
                       height: `${c.h}%`,
                       opacity: c.o ?? 0.85,
                       borderRadius: `${c.r ?? 4}px`,
+                      transform: `translateZ(${[32, 68, 88, 24, 52, 72, 18, 110][i]}px)`,
                       transitionDelay: reduced ? undefined : `${i * 42}ms`,
                     }}
                   />

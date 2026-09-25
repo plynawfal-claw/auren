@@ -107,7 +107,7 @@ export default async function StudioPage({
           </div>
           <ul className="md:col-span-8">
             {PRINCIPLES.map((p, i) => (
-              <li key={p.title} className="border-t border-line py-8">
+              <li key={p.title} className="spatial-object border-t border-line bg-graphite/40 px-6 py-8">
                 <div className="flex gap-6">
                   <span className="font-mono text-[0.68rem] tracking-[0.16em] text-grey">
                     {String(i + 1).padStart(2, "0")}
@@ -131,7 +131,7 @@ export default async function StudioPage({
         <h2 className="eyebrow">The four practices</h2>
         <ul className="mt-10 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
           {practices.map((d) => (
-            <li key={d.id} className="bg-ink p-7">
+            <li key={d.id} className="spatial-object bg-ink p-7">
               <h3 className="font-display text-2xl leading-none">
                 {d.label}
               </h3>

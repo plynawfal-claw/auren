@@ -5,12 +5,14 @@ import { setRequestLocale } from "next-intl/server";
 import { Bodoni_Moda, Inter_Tight, JetBrains_Mono } from "next/font/google";
 
 import { MotionProvider } from "@/components/motion/providers";
+import { SpatialStage } from "@/components/motion/spatial-stage";
 import { MagneticButtons } from "@/components/motion/magnetic-buttons";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
 import { SiteHeader } from "@/components/sections/site-header";
 import { SiteFooter } from "@/components/sections/site-footer";
 import { EntityGraph } from "@/components/seo/entity-graph";
 import { Analytics } from "@/components/seo/analytics";
+import { PaletteSwitcher } from "@/components/ui/palette-switcher";
 import { locales, localeHtmlLang, type Locale } from "@/i18n/config";
 import { routing } from "@/i18n/navigation";
 import { site, siteUrl } from "@/config/site";
@@ -114,11 +116,13 @@ export default async function LocaleLayout({
         </a>
         <NextIntlClientProvider>
           <MotionProvider>
+            <SpatialStage />
             <ScrollProgress />
             <MagneticButtons />
             <SiteHeader />
             <main id="main">{children}</main>
             <SiteFooter />
+            <PaletteSwitcher />
           </MotionProvider>
         </NextIntlClientProvider>
       </body>

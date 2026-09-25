@@ -107,6 +107,7 @@ void main() {
 export type SurfaceHandle = {
   setPointer: (x: number, y: number) => void;
   setIntensity: (v: number) => void;
+  setColors: (base: string, light: string) => void;
   destroy: () => void;
 };
 
@@ -133,10 +134,6 @@ const rgb = (hex: string): [number, number, number] => {
     parseInt(h.slice(4, 6), 16) / 255,
   ];
 };
-
-/** Keep in sync with --color-ink and --color-lume. */
-const BASE = rgb("0a0b0d");
-const LUME = rgb("dce6f5");
 
 export function createSurface(canvas: HTMLCanvasElement): SurfaceHandle | null {
   const gl = canvas.getContext("webgl", {
@@ -176,8 +173,17 @@ export function createSurface(canvas: HTMLCanvasElement): SurfaceHandle | null {
     pointer: gl.getUniformLocation(prog, "u_pointer"),
     intensity: gl.getUniformLocation(prog, "u_intensity"),
   };
-  gl.uniform3fv(gl.getUniformLocation(prog, "u_base"), new Float32Array(BASE));
-  gl.uniform3fv(gl.getUniformLocation(prog, "u_lume"), new Float32Array(LUME));
+  const baseLocation = gl.getUniformLocation(prog, "u_base");
+  const lumeLocation = gl.getUniformLocation(prog, "u_lume");
+  const setColors = (base: string, light: string) => {
+    gl.uniform3fv(baseLocation, new Float32Array(rgb(base)));
+    gl.uniform3fv(lumeLocation, new Float32Array(rgb(light)));
+  };
+  const styles = getComputedStyle(canvas);
+  setColors(
+    styles.getPropertyValue("--color-ink").trim() || "#0a0b0d",
+    styles.getPropertyValue("--color-lume").trim() || "#dce6f5",
+  );
 
   let px = 0.5;
   let py = 0.55;
@@ -252,6 +258,7 @@ export function createSurface(canvas: HTMLCanvasElement): SurfaceHandle | null {
     setIntensity: (v) => {
       intensity = v;
     },
+    setColors,
     destroy: () => {
       disposed = true;
       stop();

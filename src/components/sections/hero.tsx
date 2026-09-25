@@ -1,4 +1,5 @@
 import { Surface } from "@/components/surface/surface";
+import { OrbitalSculpture } from "@/components/motion/orbital-sculpture";
 import { ButtonLink } from "@/components/ui/button";
 
 /**
@@ -14,8 +15,9 @@ export function Hero() {
       {/* The signature. Decorative by definition — every word below is real
           text in the server HTML, never inside the canvas. */}
       <Surface className="pointer-events-none absolute inset-0 -z-10" />
+      <OrbitalSculpture className="right-[-21%] top-[10%] z-0 hidden opacity-55 md:block xl:right-[-12%] xl:opacity-70" />
 
-      <div className="shell relative">
+      <div className="shell relative z-10">
         <h1 className="max-w-[15ch] text-[length:var(--text-statement)] leading-[0.92] tracking-[-0.03em]">
           We build digital experiences designed to move businesses{" "}
           <em className="italic">forward.</em>

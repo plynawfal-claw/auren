@@ -147,7 +147,7 @@ export default async function ServicePage({
         </h2>
         <ul className="mt-6 grid gap-px border border-line bg-line md:grid-cols-3">
           {service.takeaways.map((t, i) => (
-            <li key={i} className="bg-ink p-7">
+            <li key={i} className="spatial-object bg-ink p-7">
               <span className="font-mono text-[0.66rem] tracking-[0.16em] text-grey">
                 {String(i + 1).padStart(2, "0")}
               </span>

@@ -47,7 +47,7 @@ export function BrowserFrame({
   return (
     <figure
       className={cn(
-        "overflow-hidden rounded-xl border border-line bg-graphite shadow-[0_30px_80px_-20px_rgba(0,0,0,0.75)]",
+        "spatial-object overflow-hidden rounded-xl border border-line bg-graphite shadow-[0_30px_80px_-20px_rgba(0,0,0,0.75)]",
         className,
       )}
     >
@@ -119,7 +119,7 @@ export function DeviceFrame({
   return (
     <figure
       className={cn(
-        "overflow-hidden rounded-[1.6rem] border border-line bg-graphite p-1.5 shadow-[0_24px_60px_-18px_rgba(0,0,0,0.8)]",
+        "spatial-object overflow-hidden rounded-[1.6rem] border border-line bg-graphite p-1.5 shadow-[0_24px_60px_-18px_rgba(0,0,0,0.8)]",
         className,
       )}
     >

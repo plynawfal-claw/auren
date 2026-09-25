@@ -72,11 +72,15 @@ export function WhyAuren() {
       const x = lerp(fx, tx, e) + (fx < 50 ? crowd : -crowd);
       const y = lerp(fy, ty, e) + (fy < 50 ? crowd * 0.5 : -crowd * 0.5);
       const r = lerp(rot, 0, e);
+      const z = lerp([-90, 75, 150, -45, 105][i], 24, e);
+      const ry = lerp((i - 2) * -10, 0, e);
+      const rx = lerp(i % 2 === 0 ? 11 : -11, 0, e);
 
       el.style.left = `${x}%`;
       el.style.top = `${y}%`;
-      el.style.transform = `translate(-50%, -50%) rotate(${r.toFixed(2)}deg)`;
+      el.style.transform = `translate(-50%, -50%) translateZ(${z.toFixed(2)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${r.toFixed(2)}deg)`;
       el.style.opacity = String(0.55 + 0.45 * e);
+      el.style.zIndex = String(Math.round(z + 100));
     });
 
     const line = lineRef.current;
@@ -194,7 +198,7 @@ export function WhyAuren() {
           // viewport or the scene loses the line it is illustrating.
           className="relative mx-auto mt-7 h-[34svh] w-full max-w-[1100px] px-[var(--page-gutter)] md:mt-14 md:h-[34svh]"
         >
-          <div className="relative h-full w-full">
+          <div className="relative h-full w-full [perspective:900px] [transform-style:preserve-3d]">
             <svg
               className="pointer-events-none absolute inset-0 h-full w-full"
               viewBox="0 0 100 100"
@@ -218,10 +222,10 @@ export function WhyAuren() {
                 ref={(el) => {
                   pieceRefs.current[i] = el;
                 }}
-                className="absolute will-change-transform"
+                className="absolute will-change-transform [transform-style:preserve-3d]"
                 style={{ left: `${p.from[0]}%`, top: `${p.from[1]}%` }}
               >
-                <span className="block whitespace-nowrap rounded-md border border-line-strong bg-graphite px-3.5 py-2 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-silver shadow-[0_10px_30px_-12px_rgba(0,0,0,0.9)]">
+                <span className="block whitespace-nowrap rounded-md border border-line-strong bg-graphite px-3.5 py-2 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-silver shadow-[0_24px_50px_-15px_rgba(0,0,0,0.9)]">
                   {p.label}
                 </span>
               </div>

@@ -1,9 +1,11 @@
 import { ButtonLink } from "@/components/ui/button";
+import { OrbitalSculpture } from "@/components/motion/orbital-sculpture";
 import { contact, hasEmail, hasWhatsApp } from "@/config/site";
 
 export function ContactCta() {
   return (
     <section className="relative overflow-hidden border-t border-line py-24 md:py-32" aria-labelledby="cta-heading">
+      <OrbitalSculpture className="right-[-18%] top-[-42%] z-0 hidden opacity-40 md:block" />
       {/* A single soft light, low in the section. Pure CSS — a second WebGL
           context for an ambient glow would not earn its cost. */}
       <div
@@ -15,7 +17,7 @@ export function ContactCta() {
         }}
       />
 
-      <div className="shell relative">
+      <div className="shell relative z-10">
         <h2 id="cta-heading" className="max-w-[13ch] text-[length:var(--text-display)] leading-[0.94]">
           Have something worth building?
         </h2>

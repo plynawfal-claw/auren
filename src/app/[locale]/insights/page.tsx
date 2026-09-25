@@ -46,7 +46,7 @@ export default async function InsightsIndex({
             <Reveal as="li" key={a.slug} delay={i * 80}>
               <Link
                 href={`/insights/${a.slug}`}
-                className="group grid gap-6 border-b border-line py-10 md:grid-cols-12"
+                className="spatial-object group grid gap-6 border-b border-line bg-graphite/40 px-5 py-10 md:grid-cols-12"
               >
                 <div className="md:col-span-3">
                   <p className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-grey">

@@ -88,8 +88,10 @@ export function WorkOrbit() {
       const scale = 0.52 + 0.48 * Math.pow(t, 1.25);
       const lift = (1 - t) * 30;
       const opacity = 0.10 + 0.90 * Math.pow(t, 2.1);
+      const z = -220 + 300 * t;
+      const turn = -Math.sin(theta) * (w < 720 ? 14 : 24);
 
-      el.style.transform = `translate3d(calc(-50% + ${x.toFixed(2)}px), calc(-50% + ${lift.toFixed(2)}px), 0) scale(${scale.toFixed(4)})`;
+      el.style.transform = `translate3d(calc(-50% + ${x.toFixed(2)}px), calc(-50% + ${lift.toFixed(2)}px), ${z.toFixed(2)}px) rotateY(${turn.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
       el.style.opacity = opacity.toFixed(3);
       el.style.zIndex = String(Math.round(t * 100));
       // Only the front card may be clicked or focused; the others are scenery
@@ -343,7 +345,7 @@ export function WorkOrbit() {
           }
         }}
         className={cn(
-          "relative mt-12 h-[clamp(300px,42vw,470px)] w-full touch-pan-y select-none",
+          "relative mt-12 h-[clamp(300px,42vw,470px)] w-full touch-pan-y select-none [perspective:1200px] [transform-style:preserve-3d]",
           grabbing ? "cursor-grabbing" : "cursor-grab",
         )}
       >
@@ -353,7 +355,7 @@ export function WorkOrbit() {
             ref={(el) => {
               cardRefs.current[i] = el;
             }}
-            className="absolute left-1/2 top-1/2 w-[min(78vw,540px)] will-change-transform"
+            className="absolute left-1/2 top-1/2 w-[min(78vw,540px)] will-change-transform [backface-visibility:hidden] [transform-style:preserve-3d]"
           >
             <Link
               href={`/work/${p.slug}`}

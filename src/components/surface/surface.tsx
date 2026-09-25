@@ -34,6 +34,15 @@ export function Surface({ className }: { className?: string }) {
     if (!handle) return;
     setLive(true);
 
+    const onPalette = () => {
+      const styles = getComputedStyle(canvas);
+      handle.setColors(
+        styles.getPropertyValue("--color-ink").trim() || "#0a0b0d",
+        styles.getPropertyValue("--color-lume").trim() || "#dce6f5",
+      );
+    };
+    window.addEventListener("auren:palette-change", onPalette);
+
     // Resting position sits a little above centre — where the light naturally
     // falls behind the statement, before anyone touches anything.
     const sx = createSpring(0.5, { damping: 1, response: 0.9 });
@@ -77,6 +86,7 @@ export function Surface({ className }: { className?: string }) {
     return () => {
       window.removeEventListener("pointermove", onMove);
       document.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("auren:palette-change", onPalette);
       stopTicker?.();
       handle.destroy();
       setLive(false);
@@ -93,12 +103,8 @@ export function Surface({ className }: { className?: string }) {
       {/* The static stand-in. Present in the server HTML and on every path the
           shader does not run: reduced motion, no WebGL, narrow viewports. */}
       <div
-        className="absolute inset-0 transition-opacity duration-700 ease-[var(--ease)]"
-        style={{
-          opacity: live ? 0 : 1,
-          background:
-            "radial-gradient(60% 50% at 50% 42%, rgba(220,230,245,0.16), rgba(220,230,245,0.04) 45%, transparent 72%), linear-gradient(180deg, #141619 0%, #0a0b0d 70%)",
-        }}
+        className="au-surface-static absolute inset-0 transition-opacity duration-700 ease-[var(--ease)]"
+        style={{ opacity: live ? 0 : 1 }}
       />
     </div>
   );

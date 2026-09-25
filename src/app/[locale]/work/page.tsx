@@ -92,7 +92,7 @@ export default async function WorkIndex({
                       badge={project.kind === "concept" ? "Studio concept" : undefined}
                       priority={i < 2 && group.kind === "client"}
                       sizes="(max-width: 768px) 92vw, 46vw"
-                      className="transition-transform duration-[var(--dur-editorial)] ease-[var(--ease)] group-hover:-translate-y-1.5"
+                      className="transition-colors duration-[var(--dur)] ease-[var(--ease)] group-hover:border-line-strong"
                     />
                     <h3 className="mt-7 font-display text-[clamp(1.75rem,3vw,2.5rem)] leading-none">
                       {project.title}
