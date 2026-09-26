@@ -40,6 +40,8 @@ export const contact = {
   email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || siteConfig.email,
   /** Digits only, international format, no `+` or spaces. e.g. 212600000000 */
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || siteConfig.whatsapp,
+  /** Human-readable form used in copy, never in links. */
+  whatsappDisplay: siteConfig.whatsappDisplay,
 } as const;
 
 export const hasEmail = contact.email.length > 0;

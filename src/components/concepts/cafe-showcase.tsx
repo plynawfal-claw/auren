@@ -66,7 +66,7 @@ export function CafeShowcase({ concept, locale }: { concept: CafeConcept; locale
           <Plate
             image={concept.signature.image}
             alt="Coffee being poured, slow, without pressure"
-            className="aspect-[4/5] w-full rounded-2xl"
+            className="w-full rounded-2xl"
             position="50% 50%"
             sizes="(max-width: 1024px) 92vw, 44vw"
           />

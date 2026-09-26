@@ -33,9 +33,10 @@ export function RestaurantShowcase({ concept, locale }: { concept: RestaurantCon
             <Plate
               image={concept.hero}
               alt="A restaurant table laid for dinner, low light, warm wood"
-              className="aspect-[4/5] w-full lg:aspect-[3/4]"
+              className="w-full"
               position="50% 58%"
               sizes="(max-width: 1024px) 92vw, 56vw"
+              priority
             />
           </div>
 
@@ -51,7 +52,7 @@ export function RestaurantShowcase({ concept, locale }: { concept: RestaurantCon
             <Plate
               image={concept.menu.image}
               alt="A plated dish photographed from above on a dark table"
-              className="aspect-square w-full"
+              className="w-full"
               position="50% 50%"
               sizes="(max-width: 1024px) 92vw, 40vw"
             />
@@ -154,7 +155,7 @@ export function RestaurantShowcase({ concept, locale }: { concept: RestaurantCon
             <Plate
               image={concept.location.image}
               alt="The dining room of the restaurant, empty, evening light"
-              className="aspect-[4/3] w-full"
+              className="w-full"
               position="50% 50%"
               sizes="(max-width: 1024px) 92vw, 48vw"
             />

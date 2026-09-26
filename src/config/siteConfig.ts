@@ -15,7 +15,7 @@ export const siteConfig = {
   /** Primary contact channel. */
   email: "hello@auren.studio",
   /** WhatsApp: digits only, international format, no `+` or spaces. */
-  whatsapp: "34600000000",
+  whatsapp: "212699643511",
   /** Human-readable form used in copy, never in links. */
-  whatsappDisplay: "+34 600 000 000",
+  whatsappDisplay: "+212 699 643511",
 } as const;

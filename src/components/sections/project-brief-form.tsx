@@ -1,95 +1,159 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useLocale } from "next-intl";
 import {
-  BUDGET_OPTIONS,
-  SERVICE_OPTIONS,
+  CREATE_COPY,
+  CREATE_OPTIONS,
+  OBJECTIVE_COPY,
+  OBJECTIVE_OPTIONS,
+  PRESENCE_COPY,
+  PRESENCE_OPTIONS,
+  STAGE_COPY,
+  STAGE_OPTIONS,
+  TIMELINE_COPY,
   TIMELINE_OPTIONS,
+  type Create,
+  type Objective,
+  type Presence,
+  type Stage,
+  type Timeline,
 } from "@/lib/brief-schema";
 import { captureAttribution, readAttribution } from "@/lib/attribution";
 import { track } from "@/lib/analytics";
+import { contact } from "@/config/site";
+import { tr } from "@/i18n/copy";
 import { cn } from "@/lib/cn";
 
 /**
- * The project brief.
+ * The project brief, rebuilt around business stage rather than budget.
  *
- * Six steps rather than one long form: each screen asks one thing, so the
- * commitment grows gradually instead of arriving all at once. Contact details
- * are asked for last, after the visitor has already invested in describing the
- * work.
+ * Seven screens, one decision each. It opens by asking where the visitor's
+ * business is — starting out, wanting more clients, or levelling up — because
+ * that is the question a studio can actually act on, and asking a Moroccan
+ * prospect how much money they have is a worse first move than asking what
+ * they are trying to build. No MAD amounts appear anywhere.
  *
  * Every step is a real fieldset in the DOM. Steps are hidden, not unmounted,
  * so answers survive navigating backwards and the browser can restore them.
+ *
+ * On completion the brief is saved to the configured inbox exactly as before,
+ * then the visitor is offered a prefilled WhatsApp message — they press send
+ * themselves, in their own app. Nothing is ever sent automatically.
  */
-const STEPS = ["Need", "Project", "Budget", "Timeline", "You", "Detail"] as const;
+const STEP_COUNT = 7;
 
 type Errors = Record<string, string>;
 
 export function ProjectBriefForm() {
+  const locale = useLocale();
   const [step, setStep] = useState(0);
-  const [services, setServices] = useState<string[]>([]);
+  const [stage, setStage] = useState<Stage | "">("");
+  const [create, setCreate] = useState<Create[]>([]);
+  const [objective, setObjective] = useState<Objective | "">("");
+  const [presence, setPresence] = useState<Presence | "">("");
+  const [presenceLink, setPresenceLink] = useState("");
+  const [timeline, setTimeline] = useState<Timeline | "">("");
   const [project, setProject] = useState("");
-  const [budget, setBudget] = useState("");
-  const [timeline, setTimeline] = useState("");
   const [name, setName] = useState("");
   const [company, setCompany] = useState("");
-  const [email, setEmail] = useState("");
+  const [city, setCity] = useState("");
   const [phone, setPhone] = useState("");
-  const [detail, setDetail] = useState("");
+  const [email, setEmail] = useState("");
   const [website, setWebsite] = useState(""); // honeypot
   const [errors, setErrors] = useState<Errors>({});
   const [state, setState] = useState<"idle" | "sending" | "sent" | "failed">("idle");
 
-  // Set on mount, not during render: Date.now() in a render body is impure
-  // and React may call it more than once. 0 means 'not measured yet', which
-  // the server treats as no timing signal rather than as an instant submit.
   const mountedAt = useRef(0);
   const headingRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     mountedAt.current = Date.now();
     captureAttribution();
-    // `once` guards this against Strict Mode's double effect invocation in
-    // development, which would otherwise double every top-of-funnel count.
     track("start_project", { step: 1 }, true);
   }, []);
 
-  // Moving between steps must announce itself, otherwise a screen-reader user
-  // gets no feedback that anything happened.
   useEffect(() => {
     if (step > 0) headingRef.current?.focus();
   }, [step]);
 
+  const L = (en: string, fr: string, ar: string) => tr(locale, { en, fr, ar });
+
   function validateStep(i: number): Errors {
     const e: Errors = {};
-    if (i === 0 && services.length === 0) e.services = "Choose at least one.";
-    if (i === 1 && project.trim().length < 10)
-      e.project = "A sentence or two is enough.";
-    if (i === 2 && !budget) e.budget = "Pick the closest range.";
-    if (i === 3 && !timeline) e.timeline = "Pick the closest option.";
-    if (i === 4) {
-      if (name.trim().length < 2) e.name = "Required.";
-      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
-        e.email = "Use a valid email address.";
+    if (i === 0 && !stage) e.stage = L("Choose the closest one.", "Choisissez la plus proche.", "اختر الأقرب ليك.");
+    if (i === 1 && create.length === 0)
+      e.create = L("Choose at least one.", "Choisissez au moins une option.", "اختر واحدة على الأقل.");
+    if (i === 2 && !objective)
+      e.objective = L("Pick the closest one.", "Choisissez la plus proche.", "اختر الأقرب ليك.");
+    if (i === 3 && !presence)
+      e.presence = L("Pick one.", "Choisissez une option.", "اختر واحدة.");
+    if (i === 4 && !timeline)
+      e.timeline = L("Pick the closest option.", "Choisissez la plus proche.", "اختر الأقرب ليك.");
+    if (i === 5 && project.trim().length < 10)
+      e.project = L("A sentence or two is enough.", "Quelques phrases suffisent.", "شي سطرين كافيين.");
+    if (i === 6) {
+      if (name.trim().length < 2) e.name = L("Required.", "Obligatoire.", "ضروري.");
+      if (phone.trim().length < 6)
+        e.phone = L("A WhatsApp number helps us reply.", "Un numéro WhatsApp nous aide à répondre.", "رقم واتساب كيعاونا نجاوبوك.");
+      if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email))
+        e.email = L("Use a valid email address.", "Utilisez une adresse e-mail valide.", "استعمل بريد إلكتروني صحيح.");
     }
     return e;
+  }
+
+  function goTo(target: number) {
+    setErrors({});
+    setStep(target);
+    track("form_step", { step: target + 1 });
   }
 
   function next() {
     const e = validateStep(step);
     setErrors(e);
     if (Object.keys(e).length !== 0) return;
-    const target = Math.min(STEPS.length - 1, step + 1);
-    setStep(target);
-    track("form_step", { step: target + 1, name: STEPS[target] });
+    goTo(Math.min(STEP_COUNT - 1, step + 1));
+  }
+
+  /** Stage cards advance on their own once chosen — one tap, forward. */
+  function chooseStage(value: Stage) {
+    setStage(value);
+    setErrors({});
+    goTo(1);
+  }
+
+  function buildMessage(): string {
+    const lines = [
+      L("Hello Auren 👋", "Bonjour Auren 👋", "سلام Auren 👋"),
+      "",
+      L("I just completed my brief.", "Je viens de compléter mon brief.", "غادي كملت البريف ديالي."),
+      "",
+      L("PROFILE", "PROFIL", "الملف"),
+      stage ? tr(locale, STAGE_COPY[stage].label) : "",
+      "",
+      L("PROJECT", "PROJET", "المشروع"),
+      `${L("Type", "Type", "النوع")} : ${create.map((v) => tr(locale, CREATE_COPY[v])).join(", ")}`,
+      `${L("Goal", "Objectif", "الهدف")} : ${objective ? tr(locale, OBJECTIVE_COPY[objective]) : ""}`,
+      `${L("Current presence", "Présence actuelle", "الحضور الحالي")} : ${presence ? tr(locale, PRESENCE_COPY[presence]) : ""}${presenceLink ? ` (${presenceLink})` : ""}`,
+      `${L("Timeline", "Délai", "الأجل")} : ${timeline ? tr(locale, TIMELINE_COPY[timeline]) : ""}`,
+      "",
+      L("MY PROJECT", "MON PROJET", "المشروع ديالي"),
+      project,
+      "",
+      L("CONTACT", "CONTACT", "معلومات التواصل"),
+      `${L("Name", "Nom", "السمية")} : ${name}`,
+      company ? `${L("Company", "Entreprise", "الشركة")} : ${company}` : "",
+      city ? `${L("City", "Ville", "المدينة")} : ${city}` : "",
+      "",
+      L("I'd like to discuss it with you.", "Je souhaite en discuter avec vous.", "بغيت نهضر عليه معاكم."),
+    ];
+    return lines.filter((l) => l !== "").join("\n");
   }
 
   async function submit(ev: React.FormEvent) {
     ev.preventDefault();
-
-    // Re-check every step, not just the visible one.
     const all: Errors = {};
-    for (let i = 0; i <= 4; i++) Object.assign(all, validateStep(i));
+    for (let i = 0; i <= 6; i++) Object.assign(all, validateStep(i));
     setErrors(all);
     if (Object.keys(all).length > 0) return;
 
@@ -99,25 +163,26 @@ export function ProjectBriefForm() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          services,
-          project,
-          budget,
+          stage,
+          create,
+          objective,
+          presence,
+          presenceLink: presenceLink || undefined,
           timeline,
+          project,
           name,
           company: company || undefined,
-          email,
-          phone: phone || undefined,
-          detail: detail || undefined,
+          city: city || undefined,
+          phone,
+          email: email || undefined,
           website,
           elapsedMs: mountedAt.current ? Date.now() - mountedAt.current : undefined,
           attribution: readAttribution(),
         }),
       });
       setState(res.ok ? "sent" : "failed");
-      // Fired on the response, never optimistically — a conversion counted
-      // for a request that failed is worse than one not counted at all.
       if (res.ok) {
-        track("form_submit", { services: services.join(", "), budget, timeline }, true);
+        track("form_submit", { stage, create: create.join(", "), timeline }, true);
       }
     } catch {
       setState("failed");
@@ -125,15 +190,32 @@ export function ProjectBriefForm() {
   }
 
   if (state === "sent") {
+    const waUrl = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(buildMessage())}`;
     return (
-      <div className="border border-line bg-graphite p-10" role="status">
-        <p className="eyebrow">Received</p>
+      <div className="border border-line bg-graphite p-8 sm:p-10" role="status">
+        <p className="eyebrow">{L("Ready", "Prêt", "واجد")}</p>
         <h2 className="mt-5 font-display text-[clamp(1.8rem,3.5vw,2.8rem)] leading-tight">
-          Thank you — that is enough to work with.
+          {L("Your brief is ready.", "Votre brief est prêt.", "البريف ديالك واجد.")}
         </h2>
         <p className="mt-5 max-w-[52ch] leading-relaxed text-silver">
-          You will get a considered reply, usually within two working days. If
-          something is urgent, say so in a follow-up and it moves up the queue.
+          {L(
+            "We've saved it. The fastest way to talk it through is WhatsApp — your answers are already written, you just press send.",
+            "Nous l'avons enregistré. Le moyen le plus rapide d'en parler est WhatsApp — vos réponses sont déjà écrites, il ne reste qu'à envoyer.",
+            "سجلناه. أسرع طريقة نهضرو بيها هي واتساب — الأجوبة ديالك مكتوبين، غير اضغط إرسال.",
+          )}
+        </p>
+        <a
+          href={waUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => track("whatsapp_click", { source: "brief" }, true)}
+          className="magnetic-btn mt-9 inline-flex items-center justify-center gap-2 rounded-full bg-mineral px-7 py-4 font-mono text-[0.72rem] uppercase tracking-[0.16em] text-ink transition-transform duration-[var(--dur)] ease-[var(--ease)] hover:bg-mineral-hi active:scale-[0.97]"
+        >
+          {L("Continue on WhatsApp", "Continuer sur WhatsApp", "كمل فواتساب")}
+          <span aria-hidden="true">→</span>
+        </a>
+        <p className="mt-4 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-grey-deep">
+          {contact.whatsappDisplay ?? contact.whatsapp}
         </p>
       </div>
     );
@@ -143,25 +225,38 @@ export function ProjectBriefForm() {
     "w-full border border-line bg-graphite px-4 py-3.5 text-mineral placeholder:text-grey-deep " +
     "focus:border-silver focus:outline-none";
   const chip =
-    "border px-4 py-3 text-left text-sm transition-colors duration-[var(--dur-fast)]";
+    "border px-4 py-3.5 text-left text-[0.95rem] transition-all duration-[var(--dur-fast)]";
+
+  const stepTitle = [
+    L("Which situation fits you best?", "Quelle situation vous ressemble le plus ?", "شنو الحالة لي كتشبه ليك أكثر؟"),
+    L("What do you want to create?", "Que souhaitez-vous créer ?", "شنو بغيتي تصاوب؟"),
+    L("What is your main goal?", "Quel est votre objectif principal ?", "شنو الهدف الرئيسي ديالك؟"),
+    L("Do you already have an online presence?", "Vous avez déjà une présence en ligne ?", "واش عندك شي حضور أونلاين؟"),
+    L("When do you want to move forward?", "Quand souhaitez-vous avancer ?", "إمتى بغيتي تبدا؟"),
+    L("Tell us briefly about your project.", "Parlez-nous rapidement de votre projet.", "هضر لينا شوية على المشروع ديالك."),
+    L("How can we reach you?", "Comment peut-on vous joindre ?", "كيفاش نقدرو نتواصلو معاك؟"),
+  ];
 
   return (
     <form onSubmit={submit} noValidate>
-      {/* Progress. Ordered, because the steps genuinely are a sequence. */}
-      <ol className="flex flex-wrap gap-x-5 gap-y-2" aria-label="Progress">
-        {STEPS.map((label, i) => (
-          <li
-            key={label}
-            aria-current={i === step ? "step" : undefined}
-            className={cn(
-              "font-mono text-[0.66rem] uppercase tracking-[0.14em]",
-              i === step ? "text-mineral" : i < step ? "text-grey" : "text-grey-deep",
-            )}
-          >
-            {String(i + 1).padStart(2, "0")} {label}
-          </li>
-        ))}
-      </ol>
+      {/* Progress. */}
+      <div className="flex items-center gap-4" aria-label="Progress">
+        <ol className="flex flex-1 gap-1.5">
+          {Array.from({ length: STEP_COUNT }).map((_, i) => (
+            <li
+              key={i}
+              aria-current={i === step ? "step" : undefined}
+              className={cn(
+                "h-px flex-1 transition-colors duration-[var(--dur)]",
+                i <= step ? "bg-mineral" : "bg-line",
+              )}
+            />
+          ))}
+        </ol>
+        <span className="font-mono text-[0.66rem] uppercase tracking-[0.14em] text-grey">
+          {String(step + 1).padStart(2, "0")} / {String(STEP_COUNT).padStart(2, "0")}
+        </span>
+      </div>
 
       <p
         ref={headingRef}
@@ -169,28 +264,77 @@ export function ProjectBriefForm() {
         aria-live="polite"
         className="mt-8 font-display text-[clamp(1.6rem,3vw,2.4rem)] leading-tight outline-none"
       >
-        {
-          [
-            "What do you need?",
-            "What are you building or fixing?",
-            "What budget are you working with?",
-            "When do you want it live?",
-            "Who are you?",
-            "Anything else worth knowing?",
-          ][step]
-        }
+        {stepTitle[step]}
       </p>
 
-      <div className="mt-8 min-h-[280px]">
-        {/* 01 — need */}
+      <div className="mt-8 min-h-[300px]">
+        {/* 01 — business stage */}
         <fieldset hidden={step !== 0} className="border-0 p-0">
-          <legend className="sr-only">Services needed</legend>
+          <legend className="sr-only">{stepTitle[0]}</legend>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {STAGE_OPTIONS.map((value, i) => {
+              const copy = STAGE_COPY[value];
+              const on = stage === value;
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => chooseStage(value)}
+                  aria-pressed={on}
+                  className={cn(
+                    "stage-card group relative flex min-h-[190px] flex-col justify-between overflow-hidden rounded-2xl border p-5 text-left",
+                    "transition-all duration-[var(--dur)] ease-[var(--ease)] active:scale-[0.98]",
+                    on
+                      ? "border-mineral bg-mineral text-ink"
+                      : "border-line bg-graphite text-mineral hover:border-line-strong",
+                  )}
+                  style={{ transitionDelay: `${i * 40}ms` }}
+                >
+                  <span
+                    className={cn(
+                      "font-mono text-[0.62rem] uppercase tracking-[0.16em]",
+                      on ? "text-ink/60" : "text-grey-deep",
+                    )}
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="mt-6">
+                    <span className="block font-display text-[1.4rem] leading-tight">
+                      {tr(locale, copy.label)}
+                    </span>
+                    <span
+                      className={cn(
+                        "mt-2 block text-[0.85rem] leading-snug",
+                        on ? "text-ink/80" : "text-silver",
+                      )}
+                    >
+                      {tr(locale, copy.sub)}
+                    </span>
+                    <span
+                      className={cn(
+                        "mt-3 block font-mono text-[0.6rem] uppercase tracking-[0.14em]",
+                        on ? "text-ink/55" : "text-grey",
+                      )}
+                    >
+                      {tr(locale, copy.support)}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {errors.stage && <Err id="stage">{errors.stage}</Err>}
+        </fieldset>
+
+        {/* 02 — what to create */}
+        <fieldset hidden={step !== 1} className="border-0 p-0">
+          <legend className="sr-only">{stepTitle[1]}</legend>
           <div className="grid gap-2 sm:grid-cols-2">
-            {SERVICE_OPTIONS.map((s) => {
-              const on = services.includes(s);
+            {CREATE_OPTIONS.map((value) => {
+              const on = create.includes(value);
               return (
                 <label
-                  key={s}
+                  key={value}
                   className={cn(
                     chip,
                     "cursor-pointer",
@@ -204,77 +348,102 @@ export function ProjectBriefForm() {
                     className="sr-only"
                     checked={on}
                     onChange={() =>
-                      setServices((prev) =>
-                        on ? prev.filter((x) => x !== s) : [...prev, s],
+                      setCreate((prev) =>
+                        on ? prev.filter((x) => x !== value) : [...prev, value],
                       )
                     }
                   />
-                  {s}
+                  {tr(locale, CREATE_COPY[value])}
                 </label>
               );
             })}
           </div>
-          {errors.services && <Err id="services">{errors.services}</Err>}
+          {errors.create && <Err id="create">{errors.create}</Err>}
         </fieldset>
 
-        {/* 02 — project */}
-        <fieldset hidden={step !== 1} className="border-0 p-0">
-          <legend className="sr-only">Project description</legend>
-          <label htmlFor="project" className="eyebrow">
-            In your own words
-          </label>
-          <textarea
-            id="project"
-            rows={6}
-            className={cn(field, "mt-3")}
-            placeholder="We sell handmade lamps and our site converts badly on mobile…"
-            value={project}
-            onChange={(e) => setProject(e.target.value)}
-            aria-invalid={!!errors.project}
-          />
-          {errors.project && <Err id="project">{errors.project}</Err>}
-        </fieldset>
-
-        {/* 03 — budget */}
+        {/* 03 — objective */}
         <fieldset hidden={step !== 2} className="border-0 p-0">
-          <legend className="sr-only">Budget</legend>
+          <legend className="sr-only">{stepTitle[2]}</legend>
           <div className="grid gap-2 sm:grid-cols-2">
-            {BUDGET_OPTIONS.map((b) => (
+            {OBJECTIVE_OPTIONS.map((value) => (
               <label
-                key={b}
+                key={value}
                 className={cn(
                   chip,
                   "cursor-pointer",
-                  budget === b
+                  objective === value
                     ? "border-mineral bg-mineral text-ink"
                     : "border-line text-silver hover:border-line-strong",
                 )}
               >
                 <input
                   type="radio"
-                  name="budget"
+                  name="objective"
                   className="sr-only"
-                  checked={budget === b}
-                  onChange={() => setBudget(b)}
+                  checked={objective === value}
+                  onChange={() => setObjective(value)}
                 />
-                {b}
+                {tr(locale, OBJECTIVE_COPY[value])}
               </label>
             ))}
           </div>
-          {errors.budget && <Err id="budget">{errors.budget}</Err>}
+          {errors.objective && <Err id="objective">{errors.objective}</Err>}
         </fieldset>
 
-        {/* 04 — timeline */}
+        {/* 04 — presence */}
         <fieldset hidden={step !== 3} className="border-0 p-0">
-          <legend className="sr-only">Timeline</legend>
+          <legend className="sr-only">{stepTitle[3]}</legend>
           <div className="grid gap-2 sm:grid-cols-2">
-            {TIMELINE_OPTIONS.map((t) => (
+            {PRESENCE_OPTIONS.map((value) => (
               <label
-                key={t}
+                key={value}
                 className={cn(
                   chip,
                   "cursor-pointer",
-                  timeline === t
+                  presence === value
+                    ? "border-mineral bg-mineral text-ink"
+                    : "border-line text-silver hover:border-line-strong",
+                )}
+              >
+                <input
+                  type="radio"
+                  name="presence"
+                  className="sr-only"
+                  checked={presence === value}
+                  onChange={() => setPresence(value)}
+                />
+                {tr(locale, PRESENCE_COPY[value])}
+              </label>
+            ))}
+          </div>
+          {presence && presence !== "none" && (
+            <div className="mt-4">
+              <label htmlFor="presenceLink" className="eyebrow">
+                {L("Link or @handle (optional)", "Lien ou @pseudo (optionnel)", "الرابط ولا @الحساب (اختياري)")}
+              </label>
+              <input
+                id="presenceLink"
+                className={cn(field, "mt-3")}
+                placeholder={L("yoursite.ma or @yourhandle", "votresite.ma ou @votrepseudo", "الموقع ديالك ولا @الحساب")}
+                value={presenceLink}
+                onChange={(e) => setPresenceLink(e.target.value)}
+              />
+            </div>
+          )}
+          {errors.presence && <Err id="presence">{errors.presence}</Err>}
+        </fieldset>
+
+        {/* 05 — timeline */}
+        <fieldset hidden={step !== 4} className="border-0 p-0">
+          <legend className="sr-only">{stepTitle[4]}</legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {TIMELINE_OPTIONS.map((value) => (
+              <label
+                key={value}
+                className={cn(
+                  chip,
+                  "cursor-pointer",
+                  timeline === value
                     ? "border-mineral bg-mineral text-ink"
                     : "border-line text-silver hover:border-line-strong",
                 )}
@@ -283,22 +452,43 @@ export function ProjectBriefForm() {
                   type="radio"
                   name="timeline"
                   className="sr-only"
-                  checked={timeline === t}
-                  onChange={() => setTimeline(t)}
+                  checked={timeline === value}
+                  onChange={() => setTimeline(value)}
                 />
-                {t}
+                {tr(locale, TIMELINE_COPY[value])}
               </label>
             ))}
           </div>
           {errors.timeline && <Err id="timeline">{errors.timeline}</Err>}
         </fieldset>
 
-        {/* 05 — contact */}
-        <fieldset hidden={step !== 4} className="border-0 p-0">
-          <legend className="sr-only">Your details</legend>
+        {/* 06 — project detail */}
+        <fieldset hidden={step !== 5} className="border-0 p-0">
+          <legend className="sr-only">{stepTitle[5]}</legend>
+          <label htmlFor="project" className="eyebrow">
+            {L(
+              "A few sentences are enough — activity, idea, problem to solve, important features…",
+              "Quelques phrases suffisent — activité, idée, problème à résoudre, fonctionnalités importantes…",
+              "شي سطرين كافيين — النشاط، الفكرة، المشكل لي بغيتي تحلو، الحوايج المهمين…",
+            )}
+          </label>
+          <textarea
+            id="project"
+            rows={6}
+            className={cn(field, "mt-3")}
+            value={project}
+            onChange={(e) => setProject(e.target.value)}
+            aria-invalid={!!errors.project}
+          />
+          {errors.project && <Err id="project">{errors.project}</Err>}
+        </fieldset>
+
+        {/* 07 — contact */}
+        <fieldset hidden={step !== 6} className="border-0 p-0">
+          <legend className="sr-only">{stepTitle[6]}</legend>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label htmlFor="name" className="eyebrow">Name</label>
+              <label htmlFor="name" className="eyebrow">{L("Name", "Nom", "السمية")}</label>
               <input
                 id="name"
                 className={cn(field, "mt-3")}
@@ -310,7 +500,25 @@ export function ProjectBriefForm() {
               {errors.name && <Err id="name">{errors.name}</Err>}
             </div>
             <div>
-              <label htmlFor="company" className="eyebrow">Company (optional)</label>
+              <label htmlFor="phone" className="eyebrow">
+                {L("Phone / WhatsApp", "Téléphone / WhatsApp", "التيليفون / واتساب")}
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                inputMode="tel"
+                className={cn(field, "mt-3")}
+                value={phone}
+                autoComplete="tel"
+                onChange={(e) => setPhone(e.target.value)}
+                aria-invalid={!!errors.phone}
+              />
+              {errors.phone && <Err id="phone">{errors.phone}</Err>}
+            </div>
+            <div>
+              <label htmlFor="company" className="eyebrow">
+                {L("Company (optional)", "Entreprise (optionnel)", "الشركة (اختياري)")}
+              </label>
               <input
                 id="company"
                 className={cn(field, "mt-3")}
@@ -320,7 +528,21 @@ export function ProjectBriefForm() {
               />
             </div>
             <div>
-              <label htmlFor="email" className="eyebrow">Email</label>
+              <label htmlFor="city" className="eyebrow">
+                {L("City (optional)", "Ville (optionnel)", "المدينة (اختياري)")}
+              </label>
+              <input
+                id="city"
+                className={cn(field, "mt-3")}
+                value={city}
+                autoComplete="address-level2"
+                onChange={(e) => setCity(e.target.value)}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label htmlFor="email" className="eyebrow">
+                {L("Email (optional)", "E-mail (optionnel)", "البريد الإلكتروني (اختياري)")}
+              </label>
               <input
                 id="email"
                 type="email"
@@ -333,34 +555,7 @@ export function ProjectBriefForm() {
               />
               {errors.email && <Err id="email">{errors.email}</Err>}
             </div>
-            <div>
-              <label htmlFor="phone" className="eyebrow">Phone (optional)</label>
-              <input
-                id="phone"
-                type="tel"
-                inputMode="tel"
-                className={cn(field, "mt-3")}
-                value={phone}
-                autoComplete="tel"
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
           </div>
-        </fieldset>
-
-        {/* 06 — detail */}
-        <fieldset hidden={step !== 5} className="border-0 p-0">
-          <legend className="sr-only">Additional detail</legend>
-          <label htmlFor="detail" className="eyebrow">
-            Links, references, constraints — optional
-          </label>
-          <textarea
-            id="detail"
-            rows={6}
-            className={cn(field, "mt-3")}
-            value={detail}
-            onChange={(e) => setDetail(e.target.value)}
-          />
         </fieldset>
 
         {/* Honeypot. Hidden from people, irresistible to bots. */}
@@ -380,40 +575,43 @@ export function ProjectBriefForm() {
         {step > 0 && (
           <button
             type="button"
-            onClick={() => setStep((s) => s - 1)}
+            onClick={() => goTo(step - 1)}
             className="border border-line px-5 py-3 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-silver hover:border-line-strong"
           >
-            Back
+            {L("Back", "Retour", "رجوع")}
           </button>
         )}
 
-        {step < STEPS.length - 1 ? (
-          <button
-            type="button"
-            onClick={next}
-            className="magnetic-btn bg-mineral px-7 py-3.5 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink hover:bg-white"
-          >
-            Continue
-          </button>
+        {step < STEP_COUNT - 1 ? (
+          step !== 0 && (
+            <button
+              type="button"
+              onClick={next}
+              className="magnetic-btn bg-mineral px-7 py-3.5 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink hover:bg-mineral-hi"
+            >
+              {L("Continue", "Continuer", "كمل")}
+            </button>
+          )
         ) : (
           <button
             type="submit"
             disabled={state === "sending"}
-            className="magnetic-btn bg-mineral px-7 py-3.5 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink hover:bg-white disabled:opacity-60"
+            className="magnetic-btn bg-mineral px-7 py-3.5 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-ink hover:bg-mineral-hi disabled:opacity-60"
           >
-            {state === "sending" ? "Sending…" : "Send the brief"}
+            {state === "sending"
+              ? L("Sending…", "Envoi…", "كيتصيفط…")
+              : L("Prepare my brief", "Préparer mon brief", "وجّد البريف ديالي")}
           </button>
         )}
-
-        <span className="font-mono text-[0.66rem] uppercase tracking-[0.14em] text-grey-deep">
-          Step {step + 1} of {STEPS.length}
-        </span>
       </div>
 
       {state === "failed" && (
         <p role="alert" className="mt-5 border border-line-strong px-4 py-3 text-sm text-mineral">
-          That did not send. Your answers are still here; please try again in a
-          moment.
+          {L(
+            "That did not save. Your answers are still here; please try again in a moment.",
+            "Cela n'a pas été enregistré. Vos réponses sont toujours là ; réessayez dans un instant.",
+            "ما تسجلش. الأجوبة ديالك مازال كاينين؛ عاود المحاولة من بعد.",
+          )}
         </p>
       )}
     </form>

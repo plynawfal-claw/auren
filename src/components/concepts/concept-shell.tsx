@@ -133,7 +133,17 @@ export function ConceptCan({ concept, locale }: { concept: Concept; locale: Loca
   );
 }
 
-/** A photograph. Real ratio, real object-position, average colour behind it. */
+/**
+ * A photograph. Real ratio, real object-position, average colour behind it.
+ *
+ * Reference artwork is never cropped to fill a box. When the layout gives the
+ * plate a frame of its own (an `aspect-*` class), the image still fills that
+ * frame — that is a deliberate composition. When it does not, the plate takes
+ * the image's own aspect ratio, so a landscape hero stays landscape and a tall
+ * detail stays tall. The frame never forces the artwork to be something it is
+ * not, and nothing is upscaled: `sizes` stays honest so the browser picks the
+ * smallest adequate source.
+ */
 export function Plate({
   image,
   alt,
@@ -152,10 +162,14 @@ export function Plate({
   /** A caption that belongs to the picture, not to the layout. */
   overlay?: React.ReactNode;
 }) {
+  const hasFrame = className ? /\baspect-/.test(className) : false;
   return (
     <figure
       className={cn("c-plate relative overflow-hidden rounded-2xl", className)}
-      style={{ background: image.tint }}
+      style={{
+        background: image.tint,
+        ...(hasFrame ? {} : { aspectRatio: `${image.width} / ${image.height}` }),
+      }}
     >
       <Image
         src={image.src}

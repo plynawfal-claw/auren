@@ -38,9 +38,10 @@ export function FashionShowcase({ concept, locale }: { concept: FashionConcept; 
             <Plate
               image={concept.hero}
               alt="A model in a wool coat, photographed full length against a plain wall"
-              className="aspect-[4/5] w-full lg:aspect-[9/11]"
+              className="w-full"
               position="50% 35%"
               sizes="(max-width: 1024px) 92vw, 56vw"
+              priority
             />
           </div>
         </div>
@@ -53,7 +54,7 @@ export function FashionShowcase({ concept, locale }: { concept: FashionConcept; 
             <Plate
               image={concept.look.image}
               alt="A full-length look: wool coat over a knit, bag in hand"
-              className="aspect-[3/4] w-full"
+              className="w-full"
               position="50% 30%"
               sizes="(max-width: 1024px) 92vw, 48vw"
             />

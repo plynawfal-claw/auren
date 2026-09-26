@@ -101,8 +101,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#06070A",
-  colorScheme: "dark",
+  // Both palettes are dark-first; the browser chrome and the media query stay
+  // in sync with whichever is active via the two themeColor entries.
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#06070A" },
+    { media: "(prefers-color-scheme: light)", color: "#f4f4f6" },
+  ],
+  colorScheme: "dark light",
 };
 
 export default async function LocaleLayout({

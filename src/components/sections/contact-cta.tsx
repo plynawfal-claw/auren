@@ -50,7 +50,7 @@ export function ContactCta() {
         aria-hidden="true"
         style={{
           background:
-            "radial-gradient(55% 100% at 50% 100%, rgba(220,230,245,0.10), transparent 70%)",
+            "radial-gradient(55% 100% at 50% 100%, color-mix(in srgb, var(--color-lume) 10%, transparent), transparent 70%)",
         }}
       />
 

@@ -96,7 +96,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             ))}
             <Link
               href="/contact"
-              className="magnetic-btn rounded-full bg-mineral px-5 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink transition-transform duration-[var(--dur)] ease-[var(--ease)] hover:bg-white active:scale-[0.97] active:duration-[120ms]"
+              className="magnetic-btn rounded-full bg-mineral px-5 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-ink transition-transform duration-[var(--dur)] ease-[var(--ease)] hover:bg-mineral-hi active:scale-[0.97] active:duration-[120ms]"
             >
               Start a project
             </Link>

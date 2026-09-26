@@ -34,6 +34,7 @@
        grey-deep   3.2:1  — LARGE TEXT AND RULES ONLY
      ------------------------------------------------------- */
   --color-mineral: #f2f3f5;
+  --color-mineral-hi: #ffffff;
   --color-silver: #c3c8cf;
   --color-grey: #888f98;
   --color-grey-deep: #575d65;
@@ -86,32 +87,25 @@
   color-scheme: dark;
 }
 
-/* Three complete palettes for the spatial preview. Every component keeps the
-   same contrast hierarchy; the material and light change, not the content. */
-html[data-palette="copper"] {
-  --color-ink: #120d0a;
-  --color-graphite: #211813;
-  --color-graphite-hi: #2d211a;
-  --color-line: #47372e;
-  --color-line-strong: #644b3a;
-  --color-mineral: #fff3e6;
-  --color-silver: #e0cdbb;
-  --color-grey: #ae9582;
-  --color-grey-deep: #806a5b;
-  --color-lume: #e8ae78;
-}
+/* Two palettes for the whole site. Dark is the default above; light is the
+   same envelope turned over — every component keeps its contrast hierarchy,
+   only the material and the light change. No accent hue is ever selected:
+   the interface stays monochrome in both, and colour still belongs to the
+   work. */
+html[data-palette="light"] {
+  --color-ink: #f4f4f6;
+  --color-graphite: #ffffff;
+  --color-graphite-hi: #ffffff;
+  --color-line: #e2e3e7;
+  --color-line-strong: #c8cbd1;
+  --color-mineral: #141519;
+  --color-mineral-hi: #000000;
+  --color-silver: #31343b;
+  --color-grey: #646973;
+  --color-grey-deep: #9aa0a9;
+  --color-lume: #35507a;
 
-html[data-palette="teal"] {
-  --color-ink: #071112;
-  --color-graphite: #102124;
-  --color-graphite-hi: #183034;
-  --color-line: #29494b;
-  --color-line-strong: #3b6262;
-  --color-mineral: #ecfaf6;
-  --color-silver: #c0ddd5;
-  --color-grey: #8caeaa;
-  --color-grey-deep: #618681;
-  --color-lume: #89dfcf;
+  color-scheme: light;
 }
 
 /* A quiet architectural object lives behind every route. Its planes share one
@@ -1157,4 +1151,53 @@ html[lang^="ar"] {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ============================================================
+   Liquid-glass theme toggle
+   The track and the travelling lens. Theme-aware: the lens is a
+   brighter, more refractive element in dark, a frosted solid in
+   light. Both use the same geometry so the motion reads identically.
+   ============================================================ */
+.glass-track {
+  background: color-mix(in srgb, var(--color-mineral) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-mineral) 14%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--color-mineral) 8%, transparent),
+    0 8px 24px color-mix(in srgb, var(--color-ink) 40%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  color: var(--color-mineral);
+}
+
+.glass-lens {
+  background:
+    radial-gradient(120% 120% at 30% 25%, color-mix(in srgb, var(--color-mineral) 26%, transparent), transparent 55%),
+    color-mix(in srgb, var(--color-mineral) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-mineral) 30%, transparent);
+  box-shadow:
+    inset 0 1px 1px color-mix(in srgb, var(--color-mineral) 40%, transparent),
+    inset 0 -2px 4px color-mix(in srgb, var(--color-ink) 22%, transparent),
+    0 4px 14px color-mix(in srgb, var(--color-ink) 45%, transparent);
+  backdrop-filter: blur(8px) saturate(160%) brightness(1.08);
+  -webkit-backdrop-filter: blur(8px) saturate(160%) brightness(1.08);
+}
+
+html[data-palette="light"] .glass-track {
+  background: color-mix(in srgb, var(--color-mineral) 4%, transparent);
+  border-color: color-mix(in srgb, var(--color-mineral) 16%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, #ffffff 70%, transparent),
+    0 6px 18px color-mix(in srgb, var(--color-mineral) 14%, transparent);
+}
+
+html[data-palette="light"] .glass-lens {
+  background:
+    radial-gradient(120% 120% at 30% 25%, rgba(255, 255, 255, 0.85), transparent 55%),
+    color-mix(in srgb, #ffffff 60%, transparent);
+  border-color: color-mix(in srgb, var(--color-mineral) 12%, transparent);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -2px 4px color-mix(in srgb, var(--color-mineral) 10%, transparent),
+    0 4px 12px color-mix(in srgb, var(--color-mineral) 22%, transparent);
 }

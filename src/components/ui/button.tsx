@@ -37,7 +37,7 @@ const variants = {
   // A hairline rather than a filled surface. `--color-grey` would fail contrast
   // as a border, so the line is drawn in silver.
   ghost: "btn--ghost border border-silver/40 text-mineral hover:border-silver",
-  quiet: "btn--quiet px-0 text-mineral hover:text-white",
+  quiet: "btn--quiet px-0 text-mineral hover:text-mineral-hi",
 } as const;
 
 type Variant = keyof typeof variants;

@@ -1,9 +1,9 @@
 /**
  * The site's palette store.
  *
- * Three complete palettes. Every component keeps the same contrast hierarchy;
- * the material and the light change, not the content. The interface itself
- * never gains a hue — these are alternative versions of the same envelope.
+ * Two palettes — dark and light. Every component keeps the same contrast
+ * hierarchy; the material and the light change, not the content. The interface
+ * itself never gains a hue — these are two versions of the same envelope.
  *
  * The choice lives outside React, in three places a component does not own:
  * the URL, localStorage, and `data-palette` on <html>. That is what makes it
@@ -18,9 +18,8 @@
  */
 
 export const PALETTES = [
-  { id: "obsidian", name: "Obsidian", color: "#dce6f5" },
-  { id: "copper", name: "Copper", color: "#e8ae78" },
-  { id: "teal", name: "Teal", color: "#89dfcf" },
+  { id: "obsidian", name: "Dark" },
+  { id: "light", name: "Light" },
 ] as const;
 
 export type Palette = (typeof PALETTES)[number]["id"];
