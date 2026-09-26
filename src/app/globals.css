@@ -5,7 +5,7 @@
 
    The studio interface is deliberately colourless. Every hue on
    this site comes from the client work itself: TagPet's gold,
-   Kutia's warm neutrals, PromoStore's architectural light,
+   PromoStore's architectural light,
    Docteur Plante's green. The wrapper stays out of their way.
 
    This replaces an earlier system that encoded the four
@@ -114,15 +114,36 @@ html[data-palette="teal"] {
   --color-lume: #89dfcf;
 }
 
-/* A quiet architectural object lives behind every route. Its three planes
-   share one camera, so the site has depth without a second WebGL context. */
+/* A quiet architectural object lives behind every route. Its planes share one
+   camera, so the site has depth without a second WebGL context.
+
+   The planes are rectangular frames rather than rings. Concentric circles are
+   the most over-used shape in this genre, and this studio's motif is
+   convergence on an axis — rectangles receding toward a vanishing point say
+   the same thing about depth without borrowing someone else's signature. The
+   micro-grid underneath is the measuring surface: faint enough to be felt
+   rather than read. */
 .spatial-backdrop {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  background: radial-gradient(55% 65% at 82% 38%, color-mix(in srgb, var(--color-lume) 7%, transparent), transparent 78%);
+  background:
+    repeating-linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-lume) 3.2%, transparent) 0 1px,
+      transparent 1px 96px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-lume) 3.2%, transparent) 0 1px,
+      transparent 1px 96px
+    ),
+    radial-gradient(55% 65% at 82% 38%, color-mix(in srgb, var(--color-lume) 7%, transparent), transparent 78%);
+  /* The grid fades toward the middle of the page so it never competes with
+     the type sitting on top of it. */
+  mask-image: radial-gradient(120% 100% at 78% 34%, #000 0%, transparent 72%);
 }
 
 .spatial-backdrop__world {
@@ -140,76 +161,36 @@ html[data-palette="teal"] {
 .spatial-backdrop__plane {
   position: absolute;
   inset: 13%;
-  border: 1px solid color-mix(in srgb, var(--color-lume) 30%, transparent);
-  border-radius: 50%;
-  box-shadow: 0 0 65px color-mix(in srgb, var(--color-lume) 5%, transparent), inset 0 0 45px color-mix(in srgb, var(--color-lume) 4%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-lume) 26%, transparent);
+  box-shadow: 0 0 65px color-mix(in srgb, var(--color-lume) 4%, transparent);
 }
 
-.spatial-backdrop__plane:nth-child(1) { transform: translateZ(-135px) rotateZ(12deg) scale(1.16); }
+.spatial-backdrop__plane:nth-child(1) { transform: translateZ(-135px) rotateZ(6deg) scale(1.16); }
 .spatial-backdrop__plane:nth-child(2) { transform: translateZ(0) rotateX(58deg) scale(0.9); }
 .spatial-backdrop__plane:nth-child(3) { transform: translateZ(150px) rotateY(63deg) scale(0.62); }
-.spatial-backdrop__plane:nth-child(4) { transform: translateZ(225px) scale(0.22); background: color-mix(in srgb, var(--color-lume) 8%, transparent); }
-
-.orbital-sculpture {
-  position: absolute;
-  width: min(60vw, 780px);
-  aspect-ratio: 1;
-  perspective: 1100px;
-  pointer-events: none;
-  transform-style: preserve-3d;
-  filter: drop-shadow(0 35px 90px color-mix(in srgb, var(--color-lume) 14%, transparent));
-}
-
-.orbital-sculpture__assembly {
-  position: absolute;
-  inset: 8%;
-  transform-style: preserve-3d;
-  transform: rotateX(22deg) rotateY(-26deg) rotateZ(-12deg);
-  animation: auren-orbit-breathe 14s ease-in-out infinite alternate;
-}
-
-.orbital-sculpture__ring {
-  position: absolute;
-  inset: 12%;
-  border: 2px solid color-mix(in srgb, var(--color-lume) 60%, transparent);
-  border-radius: 50%;
-  background: radial-gradient(circle at 25% 18%, color-mix(in srgb, var(--color-lume) 15%, transparent), transparent 55%);
-  box-shadow: inset 0 0 32px color-mix(in srgb, var(--color-lume) 18%, transparent), 0 0 54px color-mix(in srgb, var(--color-lume) 18%, transparent);
-  backface-visibility: visible;
-}
-
-.orbital-sculpture__ring--a { transform: rotateY(68deg) translateZ(28px); }
-.orbital-sculpture__ring--b { transform: rotateX(67deg) rotateZ(18deg) translateZ(55px); }
-.orbital-sculpture__ring--c { transform: rotateX(18deg) rotateY(-28deg) translateZ(-70px) scale(0.86); opacity: 0.6; }
-
-.orbital-sculpture__core {
-  position: absolute;
-  inset: 34%;
-  border: 1px solid color-mix(in srgb, var(--color-lume) 65%, transparent);
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--color-mineral) 78%, transparent), color-mix(in srgb, var(--color-lume) 35%, var(--color-graphite)) 40%, var(--color-ink) 74%);
-  box-shadow: inset -28px -32px 60px rgb(0 0 0 / 55%), 0 0 90px color-mix(in srgb, var(--color-lume) 30%, transparent);
-  transform: translateZ(95px);
-}
-
-.orbital-sculpture__ground {
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: 10%;
-  height: 12%;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--color-lume) 22%, transparent);
-  filter: blur(42px);
-  transform: rotateX(75deg);
-}
-
-@keyframes auren-orbit-breathe {
-  from { transform: rotateX(18deg) rotateY(-30deg) rotateZ(-14deg) translateZ(-18px); }
-  to { transform: rotateX(30deg) rotateY(-13deg) rotateZ(-4deg) translateZ(20px); }
+.spatial-backdrop__plane:nth-child(4) {
+  transform: translateZ(225px) scale(0.22);
+  border-color: color-mix(in srgb, var(--color-lume) 55%, transparent);
+  background: color-mix(in srgb, var(--color-lume) 8%, transparent);
 }
 
 main, footer { position: relative; z-index: 1; }
+
+/* ============================================================
+   Global depth camera
+   One perspective for the page, applied by the motion provider
+   only when it is actually running (never under reduced motion).
+   Under 768px the camera pulls back — depth reads at half strength
+   without anyone animating anything twice.
+   ============================================================ */
+html.depth-on main {
+  perspective: 1200px;
+}
+@media (max-width: 767px) {
+  html.depth-on main {
+    perspective: 1600px;
+  }
+}
 
 /* Interactive surfaces follow the pointer in 3D. The lift is small enough
    for text and form controls to remain easy to read and click. */
@@ -243,6 +224,235 @@ main, footer { position: relative; z-index: 1; }
   box-shadow: 0 28px 65px -35px rgb(0 0 0 / 85%), inset 0 1px 0 color-mix(in srgb, var(--color-lume) 12%, transparent);
 }
 
+/* ---------- concept stages ---------------------------------
+   The five studio concepts. Each one is a full-bleed band with
+   its own palette delivered as inline custom properties
+   (--c-bg, --c-ink, --c-soft, --c-line, --c-accent), set in
+   content/concepts/*.ts. Nothing here knows a colour value —
+   adding a sixth concept requires no stylesheet at all.
+
+   The rules below are structural only: surfaces, rules, and the
+   type scale that each composition inherits. What differs
+   between the five is the markup, not the CSS.
+   ----------------------------------------------------------- */
+.c-stage {
+  background: var(--c-bg);
+  color: var(--c-ink);
+  border-radius: 2px;
+}
+
+/* The AUREN header is a fixed dark bar; a concept's own colours must not
+   bleed under it, so the section carries its own darkening veil only where
+   text sits over a photograph. */
+.c-stage .c-masthead,
+.c-stage .c-name,
+.c-stage .c-subhead {
+  color: var(--c-ink);
+}
+
+.c-stage .c-name {
+  margin-top: 1.5rem;
+  font-size: clamp(2.25rem, 6.5vw, 5.25rem);
+  letter-spacing: -0.02em;
+}
+
+.c-stage .c-subhead {
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
+}
+
+.c-stage .c-promise {
+  margin-top: 1.75rem;
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+}
+
+/* The badge. Border and text in the concept's own line colour, at a size
+   that stays legible when the whole stage is seen on a phone. */
+.c-badge {
+  border-color: var(--c-line);
+  color: var(--c-ink);
+}
+
+/* What the visitor could do. A hairline grid rather than four cards: the
+   list is one object, and cards would make it four. */
+.c-can {
+  margin-top: 2.75rem;
+  background: var(--c-line);
+  border: 1px solid var(--c-line);
+}
+
+.c-can__item {
+  display: flex;
+  gap: 0.875rem;
+  align-items: baseline;
+  padding: 1.25rem 1.375rem;
+  background: var(--c-panel);
+  font-size: 0.9375rem;
+}
+
+/* Surfaces inside a concept: the booking panel, the bag, the enquiry card. */
+.c-panel {
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+}
+
+.c-field {
+  padding: 1.125rem 1.25rem;
+  background: var(--c-bg);
+}
+
+.c-rows__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  padding: 1.05rem 0;
+  border-top: 1px solid var(--c-line);
+}
+.c-rows > .c-rows__row:last-child {
+  border-bottom: 1px solid var(--c-line);
+}
+
+/* The menu. A printed card: name, a dotted leader drawn in the concept's
+   line colour, and the price on the right. The leader is what makes it read
+   as a menu rather than as a list with two columns. */
+.c-menu__row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  column-gap: 0.75rem;
+  padding: 1.15rem 0;
+  border-bottom: 1px solid var(--c-line);
+}
+
+.c-menu__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 1.9vw, 1.4rem);
+  line-height: 1.1;
+  color: var(--c-ink);
+}
+
+.c-menu__tag {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--c-line);
+  color: var(--c-soft);
+}
+
+.c-menu__leader {
+  height: 1px;
+  margin-bottom: 0.3em;
+  background-image: linear-gradient(to right, var(--c-line) 0 2px, transparent 2px 5px);
+  background-size: 5px 1px;
+  background-repeat: repeat-x;
+}
+
+.c-menu__price {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--c-ink);
+}
+
+/* The bag. A single hairline list, indented, so it reads as a receipt rather
+   than as a second grid of products. */
+.c-bag {
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+  max-width: 46rem;
+  margin-inline-start: auto;
+}
+
+.c-bag__row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--c-line);
+}
+
+.c-fit__row {
+  display: flex;
+  gap: 0.875rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--c-line);
+}
+
+/* Car hire. Three category cards, one of them picked — the state the
+   interface is actually in when somebody has chosen a car. */
+.c-car {
+  padding: 1.125rem;
+  border: 1px solid var(--c-line);
+  border-radius: 0.875rem;
+  background: var(--c-bg);
+}
+
+.c-car--picked {
+  border-color: var(--c-accent);
+  box-shadow: inset 0 0 0 1px var(--c-accent);
+}
+
+/* Showroom materials. A swatch, a name, a hex, a sentence — the four things
+   you are handed in a showroom when you ask what something is made of. */
+.c-materials__row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem 1.25rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--c-line);
+}
+
+.c-swatch {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--c-line);
+}
+
+.c-place,
+.c-bake,
+.c-room,
+.c-piece,
+.c-route {
+  color: inherit;
+}
+
+.c-place {
+  background: var(--c-panel);
+  border: 1px solid var(--c-line);
+}
+
+.c-hours__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--c-line);
+}
+
+/* RTL. The five concepts are laid out with logical properties throughout, so
+   the only thing Arabic needs is the reading direction on the stage itself
+   plus a mirrored dotted leader — which is symmetric and needs nothing. The
+   numbered lists and the price columns flip automatically. */
+
+@media (max-width: 767px) {
+  .c-stage .c-can__item {
+    padding: 1rem 1.125rem;
+    font-size: 0.875rem;
+  }
+  .c-menu__row {
+    column-gap: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .c-stage * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 @media (max-width: 767px) {
   .spatial-backdrop__world { width: 120vw; right: -48vw; top: 8%; opacity: 0.22; }
 }
@@ -250,7 +460,60 @@ main, footer { position: relative; z-index: 1; }
 @media (prefers-reduced-motion: reduce) {
   .spatial-backdrop__world { transform: perspective(1100px) rotateX(-22deg) rotateY(29deg); transition: none; }
   .spatial-object, .spatial-object.is-spatial-active { transform: none; transition: none; }
-  .orbital-sculpture__assembly { animation: none; }
+}
+
+/* ---------- RTL -------------------------------------------------
+   The document direction is set on <html> in the locale layout,
+   and the five concept stages set it again on their own
+   section so a concept can be right-to-left inside a page
+   that is not.
+
+   What is left is the handful of places where the shell used a
+   physical property. Tailwind's `ms-`/`me-`/`ps-`/`pe-` and
+   `text-start` utilities already flip with `dir`; what does
+   not flip is a decorative offset, an arrow, or a gradient
+   that runs left-to-right. Those are corrected here rather
+   than by scattering `rtl:` variants through every component,
+   so a new component gets the right behaviour for free.
+   ----------------------------------------------------------- */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .au-marquee {
+  animation-direction: reverse;
+}
+
+/* Headings set tight left-to-right need the optical correction in Arabic:
+   negative tracking on Arabic script pulls the letters together and reads as
+   a mistake rather than as precision. */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] .font-display {
+  letter-spacing: 0;
+}
+
+[dir="rtl"] .shell {
+  text-align: start;
+}
+
+/* Darija is written in Arabic script, so the site needs a face that actually
+   has Arabic glyphs. Inter Tight is loaded Latin-only for the interface, and
+   on `/ar` every string would otherwise be picked per character by whatever
+   fallback the device happens to have — which is how a page ends up with two
+   different Arabic typefaces in the same paragraph. `--font-arabic` is loaded
+   in the layout and swapped in for the two families that carry copy. */
+html[lang^="ar"] {
+  --font-display: var(--font-arabic), "Times New Roman", serif;
+  --font-sans: var(--font-arabic), system-ui, -apple-system, sans-serif;
+}
+
+/* JetBrains Mono has no Arabic glyphs either, and the labels are half the
+   interface. The Arabic face takes over entirely rather than being mixed
+   character-by-character, which is what the per-character fallback does. */
+html[lang^="ar"] {
+  --font-mono: var(--font-arabic), ui-monospace, "SF Mono", monospace;
 }
 
 @layer base {
@@ -415,14 +678,24 @@ main, footer { position: relative; z-index: 1; }
      --mx/--my are written by the delegated pointer handler.
      Touch devices and reduced-motion never receive them, so the
      button simply sits still.
+     --ml is the hover lift: a translateZ on the shared page
+     camera plus a deep shadow, so a button rises instead of
+     brightening. It only plays on fine pointers.
      -------------------------------------------------------- */
   .magnetic-btn {
-    transform: translate3d(var(--mx, 0), var(--my, 0), 0);
-    transition: transform var(--dur) var(--ease);
+    transform: translate3d(var(--mx, 0), var(--my, 0), var(--ml, 0px));
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
   }
 
   .magnetic-btn.is-magnetic {
-    transition: transform 80ms linear;
+    transition: transform 80ms linear, box-shadow var(--dur) var(--ease);
+  }
+
+  @media (hover: hover) {
+    html.depth-on .magnetic-btn:hover {
+      --ml: -3px;
+      box-shadow: 0 18px 40px -18px rgb(0 0 0 / 70%), 0 8px 22px -12px color-mix(in srgb, var(--color-lume) 18%, transparent);
+    }
   }
 
   /* ---------- scroll progress ------------------------------- */
@@ -515,6 +788,328 @@ main, footer { position: relative; z-index: 1; }
 }
 
 /* ============================================================
+   The signature object — static twin
+
+   What renders when the shader does not: reduced motion, no
+   WebGL, and every viewport under 768px. It is the same
+   composition — six blades converging on one axis, three
+   crossing them, a halo at the centre — built in CSS 3D, so the
+   motif survives on the majority of sessions rather than
+   collapsing into an empty box.
+
+   Container query units are deliberate: the object is
+   `min(62vw, 780px)` wide, so a percentage radius would resolve
+   against the blade rather than the sculpture. `cqw` resolves
+   against the containing block, which is the stage.
+   ============================================================ */
+.au-signature-static {
+  container-type: size;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.au-blade,
+.au-cross,
+.au-signature-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-style: preserve-3d;
+}
+
+.au-blade {
+  width: 3.4cqw;
+  height: 46cqw;
+  margin-left: -1.7cqw;
+  margin-top: -23cqw;
+  border: 1px solid color-mix(in srgb, var(--color-lume) 40%, transparent);
+  border-radius: 50% 50% 42% 42% / 9% 9% 16% 16%;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-lume) 15%, transparent),
+    transparent 72%
+  );
+  box-shadow: inset 0 0 20px color-mix(in srgb, var(--color-lume) 10%, transparent);
+}
+
+.au-blade--1 { transform: rotateY(0deg)   translateZ(13cqw) rotateZ(-4deg); }
+.au-blade--2 { transform: rotateY(60deg)  translateZ(13cqw) rotateZ(2.5deg); }
+.au-blade--3 { transform: rotateY(120deg) translateZ(13cqw) rotateZ(-2deg); }
+.au-blade--4 { transform: rotateY(180deg) translateZ(13cqw) rotateZ(3.5deg); }
+.au-blade--5 { transform: rotateY(240deg) translateZ(13cqw) rotateZ(-3deg); }
+.au-blade--6 { transform: rotateY(300deg) translateZ(13cqw) rotateZ(1.5deg); }
+
+.au-cross {
+  width: 9cqw;
+  height: 20cqw;
+  margin-left: -4.5cqw;
+  margin-top: -10cqw;
+  border: 1px solid color-mix(in srgb, var(--color-lume) 52%, transparent);
+  border-radius: 46% 46% 40% 40% / 14% 14% 14% 14%;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-lume) 22%, transparent),
+    transparent 78%
+  );
+}
+
+.au-cross--1 { transform: rotateY(20deg) translateZ(6cqw) translateY(-14cqw) rotateZ(9deg); }
+.au-cross--2 { transform: rotateY(140deg) translateZ(6cqw) translateY(-16cqw) rotateZ(-7deg); }
+.au-cross--3 { transform: rotateY(260deg) translateZ(6cqw) translateY(-12cqw) rotateZ(6deg); }
+
+.au-signature-halo {
+  width: 34cqw;
+  height: 34cqw;
+  margin-left: -17cqw;
+  margin-top: -17cqw;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--color-lume) 16%, transparent),
+    transparent 68%
+  );
+  filter: blur(14px);
+}
+
+/* ============================================================
+   Button language
+
+   The surface moves, not just the colour. `.btn__fill` slides up
+   from below the label; the label is doubled and the pair
+   travels exactly one line height, so the label appears to
+   replace itself. The second copy is aria-hidden in the markup —
+   it is a stage effect, never a second announcement.
+
+   Everything is transform only: no width, height or padding is
+   animated, so a hover never reflows the row the button sits in.
+   ============================================================ */
+.btn__fill {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform: translate3d(0, 101%, 0);
+  transition: transform var(--dur) var(--ease);
+}
+
+.btn--primary .btn__fill {
+  background: color-mix(in srgb, var(--color-mineral) 78%, var(--color-lume));
+}
+
+.btn--ghost .btn__fill {
+  background: color-mix(in srgb, var(--color-mineral) 9%, transparent);
+}
+
+/* The sheen gives the sliding surface a direction — it reads as
+   something arriving rather than a rectangle filling up. */
+.btn__fill-sheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-lume) 60%, transparent),
+    transparent 52%
+  );
+  opacity: 0.55;
+}
+
+.btn__content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  transition: transform var(--dur) var(--ease);
+}
+
+.btn__stack {
+  display: block;
+  height: 1.5em;
+  overflow: hidden;
+}
+
+.btn__track {
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--dur) var(--ease);
+}
+
+.btn__label {
+  display: block;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.btn--sm {
+  padding: 0.55rem 1.25rem;
+  font-size: 0.68rem;
+}
+
+@media (hover: hover) {
+  .btn:hover .btn__fill,
+  .btn:focus-visible .btn__fill {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .btn:hover .btn__content,
+  .btn:focus-visible .btn__content {
+    transform: translateX(2px);
+  }
+
+  .btn:hover .btn__track,
+  .btn:focus-visible .btn__track {
+    transform: translateY(-50%);
+  }
+}
+
+/* ============================================================
+   Typography motion
+
+   Word-level clip reveal. The heading is split into words, each
+   in its own overflow-hidden box, and the words rise into place
+   with a 34ms stagger. Line-level reveals are cheaper but read
+   as a wipe; word-level reads as typesetting.
+
+   Restraint rules, same as everywhere else on this site:
+     - it is used on section statements only, never on body copy;
+     - the hidden state is gated behind `.js`, so crawlers and
+       no-JS readers get every word;
+     - the words are real, selectable, server-rendered text — the
+       split happens in the DOM, never in a canvas;
+     - reduced motion removes the transform entirely rather than
+       leaving a half-applied state.
+   ============================================================ */
+.tr {
+  display: block;
+}
+
+.tr__w {
+  display: inline-block;
+  overflow: hidden;
+  /* Descenders (g, y, p) would be clipped by the mask without this. */
+  padding-bottom: 0.08em;
+  vertical-align: bottom;
+}
+
+.tr__i {
+  display: inline-block;
+}
+
+.js .tr__i {
+  transform: translate3d(0, 112%, 0);
+  transition: transform 1050ms var(--ease)
+    calc(var(--reveal-delay, 0ms) + var(--i, 0) * 34ms);
+  will-change: transform;
+}
+
+.js .tr.is-visible .tr__i {
+  transform: none;
+  will-change: auto;
+}
+
+/* ============================================================
+   Atmosphere
+
+   Grain and vignette. Both sit above the content and below the
+   chrome, both are pointer-events:none, and both are quiet enough
+   that a visitor feels the surface rather than noticing a filter.
+   The grain is desaturated at the source (feColorMatrix) — colour
+   noise at any opacity would break the monochrome rule that the
+   rest of the site keeps.
+   ============================================================ */
+.au-atmosphere {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.au-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+.au-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(125% 95% at 50% 38%, transparent 46%, rgb(0 0 0 / 0.34) 100%);
+}
+
+/* ============================================================
+   Ecosystem signals
+
+   Once the five parts of the ecosystem have connected, light
+   travels between them. Three dots run the length of the
+   connection on a loop, delayed so they read as a current rather
+   than as a metronome.
+
+   `left`/`top` are animated rather than a transform: the stage's
+   width is fluid and a percentage transform would resolve against
+   the dot, not the stage. Three elements inside a fixed-height
+   container is not a layout cost worth engineering around.
+   ============================================================ */
+.au-signal {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--color-lume);
+  box-shadow: 0 0 14px 3px color-mix(in srgb, var(--color-lume) 45%, transparent);
+  opacity: 0;
+  animation: au-travel-x 4.8s cubic-bezier(0.62, 0, 0.38, 1) infinite;
+}
+
+@keyframes au-travel-x {
+  0%   { left: 10%; opacity: 0; }
+  14%  { opacity: 1; }
+  86%  { opacity: 1; }
+  100% { left: 90%; opacity: 0; }
+}
+
+@keyframes au-travel-y {
+  0%   { top: 9%; opacity: 0; }
+  14%  { opacity: 1; }
+  86%  { opacity: 1; }
+  100% { top: 89%; opacity: 0; }
+}
+
+@media (max-width: 767px) {
+  .au-signal {
+    animation-name: au-travel-y;
+    top: 9%;
+  }
+}
+
+.au-signal--2 { animation-delay: 1.6s; }
+.au-signal--3 { animation-delay: 3.2s; }
+
+/* ============================================================
+   Project presentation
+
+   The showcase's image motion. The frame brightens and the
+   picture pushes in very slightly; that is the whole hover. A
+   project presentation earns attention through size, layout and
+   typography — not through a hover effect competing with them.
+   ============================================================ */
+.work-frame__img {
+  transition: transform 1400ms var(--ease), filter var(--dur) var(--ease);
+}
+
+@media (hover: hover) {
+  .work-frame:hover .work-frame__img {
+    transform: scale(1.035);
+  }
+}
+
+/* The convergence lines above the closing statement. */
+.au-converge {
+  mask-image: linear-gradient(180deg, transparent, #000 26%, #000 86%, transparent);
+}
+
+/* ============================================================
    Reduced motion
    Every effect is neutralised individually rather than with a
    blanket rule, so nothing ends up stuck in a half-applied
@@ -537,6 +1132,20 @@ main, footer { position: relative; z-index: 1; }
   }
 
   .scroll-progress {
+    display: none;
+  }
+
+  /* The word reveal must be neutralised explicitly: the blanket
+     transition-duration rule below would otherwise leave every revealed word
+     sitting 112% below its mask. */
+  .js .tr__i {
+    transform: none;
+    transition: none;
+  }
+
+  /* Signals are motion by definition — there is no still version of a
+     travelling dot that is worth showing. */
+  .au-signal {
     display: none;
   }
 

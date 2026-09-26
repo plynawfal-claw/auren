@@ -2,18 +2,20 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
-import { Bodoni_Moda, Inter_Tight, JetBrains_Mono } from "next/font/google";
+import { Bodoni_Moda, IBM_Plex_Sans_Arabic, Inter_Tight, JetBrains_Mono } from "next/font/google";
 
-import { MotionProvider } from "@/components/motion/providers";
+import { SmoothScrollProvider } from "@/components/providers/smooth-scroll";
 import { SpatialStage } from "@/components/motion/spatial-stage";
+import { Atmosphere } from "@/components/motion/atmosphere";
 import { MagneticButtons } from "@/components/motion/magnetic-buttons";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
 import { SiteHeader } from "@/components/sections/site-header";
 import { SiteFooter } from "@/components/sections/site-footer";
 import { EntityGraph } from "@/components/seo/entity-graph";
 import { Analytics } from "@/components/seo/analytics";
+import { LocaleAlternates } from "@/components/seo/locale-alternates";
 import { PaletteSwitcher } from "@/components/ui/palette-switcher";
-import { locales, localeHtmlLang, type Locale } from "@/i18n/config";
+import { locales, localeHtmlLang, localeDir, type Locale } from "@/i18n/config";
 import { routing } from "@/i18n/navigation";
 import { site, siteUrl } from "@/config/site";
 import "../globals.css";
@@ -47,6 +49,26 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+/**
+ * Arabic, for Darija.
+ *
+ * The three Latin faces above have no Arabic glyphs, so on `/ar` the browser
+ * would fall back per character and a single paragraph could come out set in
+ * two different families. This is loaded once and swapped in for all three
+ * custom properties when the document language is Arabic — see the
+ * `html[lang^="ar"]` block in `globals.css`.
+ *
+ * Plex Sans Arabic rather than a Kufi or Naskh revival: Darija here is working
+ * copy — prices, hours, an address, a button — and a text face designed for
+ * interface strings holds up at 12px in a way a display Naskh does not.
+ */
+const plexArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-arabic",
+  display: "swap",
+});
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -59,13 +81,11 @@ export const metadata: Metadata = {
   },
   description: site.description,
   applicationName: site.name,
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: site.name,
     title: `${site.name} — ${site.tagline}`,
     description: site.description,
-    url: siteUrl,
     locale: "en",
   },
   twitter: {
@@ -101,8 +121,13 @@ export default async function LocaleLayout({
   return (
     <html
       lang={localeHtmlLang[typed]}
-      dir="ltr"
-      className={`${bodoni.variable} ${interTight.variable} ${jetbrains.variable}`}
+      // Arabic reads right-to-left. This was hardcoded to "ltr" while `ar` was
+      // already a declared locale, so the Darija pages were marked as an
+      // Arabic document and then laid out as an English one — which breaks
+      // text direction, punctuation placement and the meaning of the CSS
+      // logical properties the layout depends on.
+      dir={localeDir[typed]}
+      className={`${bodoni.variable} ${interTight.variable} ${jetbrains.variable} ${plexArabic.variable}`}
       suppressHydrationWarning
     >
       <body>
@@ -115,15 +140,23 @@ export default async function LocaleLayout({
           Skip to content
         </a>
         <NextIntlClientProvider>
-          <MotionProvider>
+          <SmoothScrollProvider>
+            {/* Inside the intl provider, not beside it: this uses
+                `usePathname` from next-intl, which throws without the provider
+                above it in the tree. It owns `canonical` + `hreflang` for every
+                route, because a relative canonical in a page's `metadata`
+                resolves against `metadataBase` and comes out English on every
+                locale. */}
+            <LocaleAlternates locale={typed} />
             <SpatialStage />
+            <Atmosphere />
             <ScrollProgress />
             <MagneticButtons />
-            <SiteHeader />
+            <SiteHeader locale={typed} />
             <main id="main">{children}</main>
             <SiteFooter />
             <PaletteSwitcher />
-          </MotionProvider>
+          </SmoothScrollProvider>
         </NextIntlClientProvider>
       </body>
     </html>

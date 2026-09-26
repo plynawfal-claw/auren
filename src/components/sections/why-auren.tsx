@@ -230,6 +230,23 @@ export function WhyAuren() {
                 </span>
               </div>
             ))}
+
+            {/* The connection is live. Light now travels between the parts,
+                which is the section's argument completed: they are not just
+                touching, they are feeding each other. Rendered only once the
+                row has resolved, so the signals read as a consequence of the
+                connection rather than as decoration floating over the stage.
+
+                Above the pieces (z-300) because those carry inline z-indexes.
+                Skipped entirely under reduced motion — a travelling dot has no
+                still equivalent worth showing. */}
+            {!reduced && stage >= 2 && (
+              <div className="pointer-events-none absolute inset-0 z-[300]" aria-hidden="true">
+                <span className="au-signal" />
+                <span className="au-signal au-signal--2" />
+                <span className="au-signal au-signal--3" />
+              </div>
+            )}
           </div>
         </div>
 

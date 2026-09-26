@@ -5,6 +5,10 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The development-tools badge defaults to the bottom-left corner, where it
+  // obscures the palette control during visual review. Keep error overlays
+  // available while removing the badge itself.
+  devIndicators: false,
   images: {
     formats: ["image/avif", "image/webp"],
   },

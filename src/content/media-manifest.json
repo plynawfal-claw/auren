@@ -1,0 +1,396 @@
+{
+ "restaurant-concept": {
+  "hero": {
+   "src": "/work/restaurant-concept/hero.jpg",
+   "width": 356,
+   "height": 228,
+   "ratio": 1.561,
+   "kb": 29,
+   "tint": "#6b3f23"
+  },
+  "platter": {
+   "src": "/work/restaurant-concept/platter.jpg",
+   "width": 364,
+   "height": 188,
+   "ratio": 1.936,
+   "kb": 24,
+   "tint": "#6d3e21"
+  },
+  "room": {
+   "src": "/work/restaurant-concept/room.jpg",
+   "width": 206,
+   "height": 120,
+   "ratio": 1.717,
+   "kb": 10,
+   "tint": "#573e29"
+  },
+  "dish-pasta": {
+   "src": "/work/restaurant-concept/dish-pasta.jpg",
+   "width": 156,
+   "height": 90,
+   "ratio": 1.733,
+   "kb": 6,
+   "tint": "#b99860"
+  },
+  "dish-steak": {
+   "src": "/work/restaurant-concept/dish-steak.jpg",
+   "width": 156,
+   "height": 90,
+   "ratio": 1.733,
+   "kb": 6,
+   "tint": "#9a6947"
+  },
+  "dish-pizza": {
+   "src": "/work/restaurant-concept/dish-pizza.jpg",
+   "width": 156,
+   "height": 90,
+   "ratio": 1.733,
+   "kb": 6,
+   "tint": "#b3805a"
+  },
+  "dish-dessert": {
+   "src": "/work/restaurant-concept/dish-dessert.jpg",
+   "width": 138,
+   "height": 90,
+   "ratio": 1.533,
+   "kb": 5,
+   "tint": "#8b7a67"
+  },
+  "salad": {
+   "src": "/work/restaurant-concept/salad.jpg",
+   "width": 262,
+   "height": 260,
+   "ratio": 1.008,
+   "kb": 18,
+   "tint": "#524b33"
+  }
+ },
+ "fashion-concept": {
+  "model": {
+   "src": "/work/fashion-concept/model.jpg",
+   "width": 428,
+   "height": 368,
+   "ratio": 1.163,
+   "kb": 24,
+   "tint": "#bdad9f"
+  },
+  "model-full": {
+   "src": "/work/fashion-concept/model-full.jpg",
+   "width": 392,
+   "height": 388,
+   "ratio": 1.01,
+   "kb": 22,
+   "tint": "#c1b2a5"
+  },
+  "silk": {
+   "src": "/work/fashion-concept/silk.jpg",
+   "width": 192,
+   "height": 178,
+   "ratio": 1.079,
+   "kb": 6,
+   "tint": "#baa692"
+  },
+  "insp-a": {
+   "src": "/work/fashion-concept/insp-a.jpg",
+   "width": 156,
+   "height": 120,
+   "ratio": 1.3,
+   "kb": 4,
+   "tint": "#bfb4ab"
+  },
+  "insp-b": {
+   "src": "/work/fashion-concept/insp-b.jpg",
+   "width": 156,
+   "height": 120,
+   "ratio": 1.3,
+   "kb": 5,
+   "tint": "#8e857d"
+  },
+  "insp-c": {
+   "src": "/work/fashion-concept/insp-c.jpg",
+   "width": 156,
+   "height": 120,
+   "ratio": 1.3,
+   "kb": 5,
+   "tint": "#8f847b"
+  },
+  "insp-d": {
+   "src": "/work/fashion-concept/insp-d.jpg",
+   "width": 156,
+   "height": 120,
+   "ratio": 1.3,
+   "kb": 4,
+   "tint": "#564e47"
+  },
+  "insp-e": {
+   "src": "/work/fashion-concept/insp-e.jpg",
+   "width": 156,
+   "height": 120,
+   "ratio": 1.3,
+   "kb": 5,
+   "tint": "#a49486"
+  },
+  "insp-f": {
+   "src": "/work/fashion-concept/insp-f.jpg",
+   "width": 140,
+   "height": 120,
+   "ratio": 1.167,
+   "kb": 4,
+   "tint": "#a69c99"
+  },
+  "tryon": {
+   "src": "/work/fashion-concept/tryon.jpg",
+   "width": 180,
+   "height": 396,
+   "ratio": 0.455,
+   "kb": 11,
+   "tint": "#aba197"
+  },
+  "tryon-wide": {
+   "src": "/work/fashion-concept/tryon-wide.jpg",
+   "width": 354,
+   "height": 370,
+   "ratio": 0.957,
+   "kb": 18,
+   "tint": "#a59c92"
+  },
+  "garment": {
+   "src": "/work/fashion-concept/garment.jpg",
+   "width": 122,
+   "height": 164,
+   "ratio": 0.744,
+   "kb": 3,
+   "tint": "#b1aca6"
+  }
+ },
+ "showroom-concept": {
+  "hero": {
+   "src": "/work/showroom-concept/hero.jpg",
+   "width": 591,
+   "height": 288,
+   "ratio": 2.052,
+   "kb": 34,
+   "tint": "#83684f"
+  },
+  "living": {
+   "src": "/work/showroom-concept/living.jpg",
+   "width": 154,
+   "height": 116,
+   "ratio": 1.328,
+   "kb": 6,
+   "tint": "#8b7c65"
+  },
+  "bedroom": {
+   "src": "/work/showroom-concept/bedroom.jpg",
+   "width": 154,
+   "height": 116,
+   "ratio": 1.328,
+   "kb": 4,
+   "tint": "#968771"
+  },
+  "dining": {
+   "src": "/work/showroom-concept/dining.jpg",
+   "width": 154,
+   "height": 116,
+   "ratio": 1.328,
+   "kb": 5,
+   "tint": "#a9937c"
+  },
+  "office": {
+   "src": "/work/showroom-concept/office.jpg",
+   "width": 154,
+   "height": 116,
+   "ratio": 1.328,
+   "kb": 5,
+   "tint": "#71624f"
+  },
+  "outdoor": {
+   "src": "/work/showroom-concept/outdoor.jpg",
+   "width": 138,
+   "height": 116,
+   "ratio": 1.19,
+   "kb": 4,
+   "tint": "#8f8c76"
+  },
+  "chair": {
+   "src": "/work/showroom-concept/chair.jpg",
+   "width": 112,
+   "height": 130,
+   "ratio": 0.862,
+   "kb": 2,
+   "tint": "#dbd0c3"
+  },
+  "vase": {
+   "src": "/work/showroom-concept/vase.jpg",
+   "width": 112,
+   "height": 130,
+   "ratio": 0.862,
+   "kb": 4,
+   "tint": "#d3c8b9"
+  },
+  "lamp": {
+   "src": "/work/showroom-concept/lamp.jpg",
+   "width": 112,
+   "height": 130,
+   "ratio": 0.862,
+   "kb": 2,
+   "tint": "#d7d0c6"
+  },
+  "cabinet": {
+   "src": "/work/showroom-concept/cabinet.jpg",
+   "width": 112,
+   "height": 130,
+   "ratio": 0.862,
+   "kb": 2,
+   "tint": "#c9b6a6"
+  },
+  "cushion": {
+   "src": "/work/showroom-concept/cushion.jpg",
+   "width": 112,
+   "height": 130,
+   "ratio": 0.862,
+   "kb": 2,
+   "tint": "#dfcdc3"
+  },
+  "gallery-a": {
+   "src": "/work/showroom-concept/gallery-a.jpg",
+   "width": 132,
+   "height": 92,
+   "ratio": 1.435,
+   "kb": 3,
+   "tint": "#8a8072"
+  },
+  "gallery-b": {
+   "src": "/work/showroom-concept/gallery-b.jpg",
+   "width": 132,
+   "height": 92,
+   "ratio": 1.435,
+   "kb": 4,
+   "tint": "#513a24"
+  },
+  "gallery-c": {
+   "src": "/work/showroom-concept/gallery-c.jpg",
+   "width": 132,
+   "height": 92,
+   "ratio": 1.435,
+   "kb": 4,
+   "tint": "#806a52"
+  },
+  "gallery-d": {
+   "src": "/work/showroom-concept/gallery-d.jpg",
+   "width": 132,
+   "height": 92,
+   "ratio": 1.435,
+   "kb": 3,
+   "tint": "#80705d"
+  },
+  "gallery-e": {
+   "src": "/work/showroom-concept/gallery-e.jpg",
+   "width": 128,
+   "height": 92,
+   "ratio": 1.391,
+   "kb": 3,
+   "tint": "#90795f"
+  }
+ },
+ "roadtrip-concept": {
+  "landscape": {
+   "src": "/work/roadtrip-concept/landscape.jpg",
+   "width": 1024,
+   "height": 352,
+   "ratio": 2.909,
+   "kb": 68,
+   "tint": "#7d563a"
+  },
+  "valley": {
+   "src": "/work/roadtrip-concept/valley.jpg",
+   "width": 620,
+   "height": 316,
+   "ratio": 1.962,
+   "kb": 38,
+   "tint": "#754e34"
+  },
+  "vehicle": {
+   "src": "/work/roadtrip-concept/vehicle.jpg",
+   "width": 580,
+   "height": 434,
+   "ratio": 1.336,
+   "kb": 50,
+   "tint": "#433026"
+  },
+  "road": {
+   "src": "/work/roadtrip-concept/road.jpg",
+   "width": 452,
+   "height": 520,
+   "ratio": 0.869,
+   "kb": 55,
+   "tint": "#5f3e2a"
+  },
+  "tea": {
+   "src": "/work/roadtrip-concept/tea.jpg",
+   "width": 512,
+   "height": 308,
+   "ratio": 1.662,
+   "kb": 22,
+   "tint": "#543823"
+  },
+  "dusk": {
+   "src": "/work/roadtrip-concept/dusk.jpg",
+   "width": 704,
+   "height": 352,
+   "ratio": 2.0,
+   "kb": 44,
+   "tint": "#845c3e"
+  }
+ },
+ "cafe-concept": {
+  "cup": {
+   "src": "/work/cafe-concept/cup.jpg",
+   "width": 344,
+   "height": 296,
+   "ratio": 1.162,
+   "kb": 19,
+   "tint": "#474431"
+  },
+  "cup-wide": {
+   "src": "/work/cafe-concept/cup-wide.jpg",
+   "width": 384,
+   "height": 350,
+   "ratio": 1.097,
+   "kb": 23,
+   "tint": "#524f3d"
+  },
+  "pastry-green": {
+   "src": "/work/cafe-concept/pastry-green.jpg",
+   "width": 180,
+   "height": 164,
+   "ratio": 1.098,
+   "kb": 8,
+   "tint": "#a99d6d"
+  },
+  "pastry-choc": {
+   "src": "/work/cafe-concept/pastry-choc.jpg",
+   "width": 180,
+   "height": 164,
+   "ratio": 1.098,
+   "kb": 7,
+   "tint": "#8f715e"
+  },
+  "pastry-berry": {
+   "src": "/work/cafe-concept/pastry-berry.jpg",
+   "width": 180,
+   "height": 164,
+   "ratio": 1.098,
+   "kb": 7,
+   "tint": "#a68679"
+  },
+  "brew": {
+   "src": "/work/cafe-concept/brew.jpg",
+   "width": 292,
+   "height": 184,
+   "ratio": 1.587,
+   "kb": 13,
+   "tint": "#5e4c33"
+  }
+ }
+}

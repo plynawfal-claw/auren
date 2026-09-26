@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { TextReveal } from "@/components/motion/text-reveal";
 import { cn } from "@/lib/cn";
 
 /**
@@ -76,12 +77,12 @@ export function Process() {
     <section className="py-24 md:py-32" aria-labelledby="process-heading">
       <div className="shell">
         <p className="eyebrow">How we work</p>
-        <h2
+        <TextReveal
           id="process-heading"
+          as="h2"
+          text="Four steps, in this order."
           className="mt-6 max-w-[16ch] text-[length:var(--text-display)] leading-[0.94]"
-        >
-          Four steps, in this order.
-        </h2>
+        />
 
         <div className="relative mt-20">
           {/* The line, and the part of it you have travelled. */}

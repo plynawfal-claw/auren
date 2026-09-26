@@ -16,6 +16,9 @@ import { cn } from "@/lib/cn";
  *    viewport inside a single frame — a hash jump, or browser scroll
  *    restoration on reload. Without the sweep those sections stay invisible
  *    forever, which on this site would mean blank case studies.
+ *
+ * `useRevealOnView` is exported so the word-level reveal in `text-reveal.tsx`
+ * shares this machinery rather than standing up a second observer set.
  */
 
 let observer: IntersectionObserver | null = null;
@@ -58,20 +61,8 @@ function ensureObserver() {
   );
 }
 
-export function Reveal({
-  children,
-  className,
-  delay = 0,
-  as: Tag = "div",
-}: {
-  children: React.ReactNode;
-  className?: string;
-  /** Milliseconds. Use for stagger within a group, not between sections. */
-  delay?: number;
-  as?: "div" | "section" | "li" | "article" | "header" | "figure";
-}) {
-  const ref = useRef<HTMLElement>(null);
-
+/** Adds `is-visible` to the referenced element once it enters the viewport. */
+export function useRevealOnView(ref: React.RefObject<Element | null>) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -89,7 +80,23 @@ export function Reveal({
       pending.delete(el);
       observer?.unobserve(el);
     };
-  }, []);
+  }, [ref]);
+}
+
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+  as: Tag = "div",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  /** Milliseconds. Use for stagger within a group, not between sections. */
+  delay?: number;
+  as?: "div" | "section" | "li" | "article" | "header" | "figure";
+}) {
+  const ref = useRef<HTMLElement>(null);
+  useRevealOnView(ref);
 
   return (
     <Tag

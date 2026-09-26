@@ -28,12 +28,10 @@ export async function generateMetadata({
   return {
     title: `${project.title} — ${project.industry}`,
     description: project.tagline,
-    alternates: { canonical: `/work/${project.slug}` },
     openGraph: {
       type: "article",
       title: `${project.title} · AUREN`,
       description: project.tagline,
-      url: `${siteUrl}/work/${project.slug}`,
       images: [{ url: project.site.desktop }],
     },
   };

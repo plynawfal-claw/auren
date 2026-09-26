@@ -40,10 +40,18 @@ does without decoding anything.
   gesture is *going*, using the exponential-decay form Apple ships.
 - **One rAF loop** shared by every spring on the page.
 
-One tuning note worth keeping: Apple's `0.998` deceleration constant is
-calibrated for scroll surfaces and has an effective multiplier of ~500. On a
-four-item carousel that projects a gentle flick nearly two positions too far,
-so the orbit uses `0.975` (~39x) instead.
+The first two rules are in active use — the hero's signature object and the
+hero surface both re-target mid-flight without a seam. Momentum projection is
+currently unused (see "Selected work" below): it shipped with the orbit, and
+`projectMomentum` is retained unused rather than deleted, so the rule and its
+tuning stay documented next to the code.
+
+A tuning note worth keeping: Apple's `0.998` deceleration constant is calibrated
+for scroll surfaces and has an effective multiplier of ~500. On a small carousel
+that projects a gentle flick nearly two positions too far, so momentum
+projection is calibrated to `0.975` (~39x). Anything that reintroduces
+flick-to-snap must keep that number — feeding radians through a px-calibrated
+constant, or using `0.998`, overshoots by orders of magnitude.
 
 ## Sections and their motion
 
@@ -51,33 +59,33 @@ Each homepage section owns exactly one motion idea, and nothing else animates:
 
 | Section | Idea |
 |---|---|
-| Hero | ambient light following the pointer on a spring |
+| Hero | ambient light on a pointer-driven surface, plus the signature object unfolding on scroll |
 | Why AUREN | five labels pull from scattered into one connected row |
-| Selected work | six projects on an ellipse, dragged and thrown |
-| What we build | eight cells reform between four capabilities |
+| Selected work | four presentations — full-bleed, split, cinematic, device |
+| What we build | eight cells reform between four capabilities, then the concept stage |
 | Who we build for | a marquee that pauses under pointer or focus |
 | How we work | a line that lights as you travel it |
 | Contact | one soft light rising from the base |
 
-### The orbit
+### Selected work
 
-`src/components/work/work-orbit.tsx` is the selected-work browser and the
-site's showreel — the interaction demonstrates the work rather than a video of
-it. `touch-action: pan-y` keeps vertical scrolling with the page; only
-horizontal intent reaches the orbit. Under reduced motion it renders as an
-ordinary two-column list.
+`src/components/sections/work-showcase.tsx` replaced the orbit carousel. The
+ellipse was a good interaction and a bad presentation: six identical frames, one
+at a time, each at a third of its size — and work is the reason anyone visits.
+There are now four layouts, each laid out *for* the project rather than pouring
+the project into a slot, and the interaction is carried by the layout rather
+than by a hover effect competing with it.
 
-Three details that will bite if changed:
+The `work-orbit.tsx` and `orbital-sculpture.tsx` files it replaced are deleted.
+Nothing imports them, and the README previously still documented the orbit's
+momentum constants, which no longer exist.
 
-1. **`reduced` must stay in the paint effect's dependencies.** Its server
-   snapshot is `true`, so the first client render is the plain list and
-   `stageRef` is null. Without it the effect never re-runs after hydration and
-   every card stays stacked and untransformed.
-2. **Momentum is projected in pixel space, then converted to an angle.**
-   Feeding radians through a px-calibrated constant projects ~100x too far.
-3. **`CAROUSEL_DECELERATION` is 0.975, not Apple's 0.998.** The latter is for
-   scroll surfaces and multiplies by ~500; on a six-item carousel a gentle
-   flick would overshoot by two positions.
+`src/lib/spring.ts` still owns the spring and ticker primitives, used by the
+hero's signature object, the hero surface and "Why AUREN". Its three carousel
+helpers — `projectMomentum`, `rubberband` and `VelocityTracker` — are now
+imported by nothing, because the orbit was their only consumer. They are left in
+place rather than deleted, so the momentum-projection and rubber-banding rules
+they encode stay available and documented; nothing depends on them either way.
 
 ### What we build
 
@@ -121,6 +129,34 @@ The site sells search visibility, so its own has to hold up.
 - `llms.txt` describes the site in prose, including an explicit note that no
   metrics or testimonials are published — so a model cannot attribute invented
   figures to the studio.
+
+### Locales
+
+Three locales are declared in `src/i18n/config.ts` — `en`, `fr`, `ar` — and all
+three are routable and reachable from the header switcher. English is served
+unprefixed; the other two carry a segment.
+
+Two things about this setup are load-bearing:
+
+1. **The proxy derives its prefixes from the locale registry.** It used to
+   hardcode `/fr`, so adding `ar` to the config published a locale that 404'd on
+   every route — `/ar/work` was rewritten to `/en/ar/work`, which matches no
+   segment pair. Deriving `prefixed` from `locales` means a declared locale
+   cannot be silently unrouted.
+2. **`canonical`, `hreflang`, `og:url` and `twitter:url` all come from one
+   component**, `src/components/seo/locale-alternates.tsx`. A relative
+   `alternates.canonical` in a page's `metadata` is resolved against the
+   locale-free `metadataBase`, so it emits the *English* URL on every locale —
+   telling crawlers that `/fr/work` and `/ar/work` are duplicates of `/work` and
+   should be dropped. That was latent while only English was routable and became
+   a live bug the moment the other two started resolving. Do not reintroduce
+   `alternates.canonical` in a page's `metadata`.
+
+English is currently the only locale with written copy. The French and Arabic
+routes serve the same content with translated `lang`/`dir`, and are deliberately
+absent from `sitemap.xml` — listing three copies of the same English text is a
+reliable way to earn a thin-content assessment. They are added to the sitemap the
+day the translations land; nothing else needs to change at that point.
 
 ## Honesty rules
 

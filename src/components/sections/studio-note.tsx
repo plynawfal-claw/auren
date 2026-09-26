@@ -1,12 +1,14 @@
 import { Link } from "@/i18n/navigation";
 import { Reveal } from "@/components/motion/reveal";
+import { TextReveal } from "@/components/motion/text-reveal";
 import { founder, site } from "@/config/site";
 
 /**
  * A short human note, not a corporate biography.
  *
  * Full-bleed and quiet, with no border and no card — it is one of the moments
- * that breaks the page's rhythm of framed sections.
+ * that breaks the page's rhythm of framed sections. It is also the one place
+ * on this route with no interactivity at all: a rest before the close.
  */
 export function StudioNote() {
   return (
@@ -15,10 +17,12 @@ export function StudioNote() {
         <h2 id="studio-note" className="eyebrow">
           The studio
         </h2>
+        <TextReveal
+          as="p"
+          text="Small on purpose."
+          className="mt-8 max-w-[19ch] font-display text-[length:var(--text-display)] leading-[0.96]"
+        />
         <Reveal>
-          <p className="mt-8 max-w-[19ch] font-display text-[length:var(--text-display)] leading-[0.96]">
-            Small on purpose.
-          </p>
           <p className="mt-10 max-w-[54ch] text-[length:var(--text-lead)] leading-[1.5] text-silver">
             {site.name} is led by {founder.name}, working from {site.region} with
             clients beyond it. Small enough that the person you talk to is the
@@ -30,7 +34,10 @@ export function StudioNote() {
             className="group mt-10 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-mineral"
           >
             More about the studio
-            <span className="transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1">
+            <span
+              aria-hidden="true"
+              className="transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1"
+            >
               →
             </span>
           </Link>

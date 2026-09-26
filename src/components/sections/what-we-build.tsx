@@ -3,14 +3,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { cn } from "@/lib/cn";
+import { TextReveal } from "@/components/motion/text-reveal";
 
 /**
  * What we build.
  *
- * One stage, eight cells, four arrangements. The same eight elements move
- * between a web page, a brand system, a set of touchpoints and a queue of
- * customer follow-ups — so it reads as one system changing form rather than
- * four unrelated illustrations.
+ * One stage, eight cells, six arrangements. The same eight elements move
+ * between a web page, a set of touchpoints, an acquisition spread, an
+ * operational system, a storefront and a network — so it reads as one system
+ * changing form rather than six unrelated illustrations.
  *
  * Movement uses CSS transitions rather than JS springs on purpose. Thirty-two
  * animated values driven from rAF would cost far more than this earns, and a
@@ -89,6 +90,36 @@ const CAPABILITIES: Capability[] = [
       { x: 5, y: 92, w: 32, h: 4, o: 1, r: 20 },
     ],
   },
+  {
+    id: "ecommerce",
+    title: "Shops that take orders",
+    body: "Product pages, baskets and a checkout that works on a phone.",
+    cells: [
+      { x: 3, y: 5, w: 94, h: 8, r: 3 },
+      { x: 3, y: 17, w: 46, h: 46, r: 5 },
+      { x: 53, y: 17, w: 44, h: 21, r: 5 },
+      { x: 53, y: 42, w: 44, h: 21, r: 5 },
+      { x: 3, y: 67, w: 29, h: 10, r: 3 },
+      { x: 36, y: 67, w: 28, h: 10, r: 3 },
+      { x: 68, y: 67, w: 29, h: 10, r: 3 },
+      { x: 3, y: 82, w: 94, h: 12, o: 1, r: 4 },
+    ],
+  },
+  {
+    id: "ai",
+    title: "Systems that think",
+    body: "Automation, assistants and follow-up that handles itself.",
+    cells: [
+      { x: 33, y: 34, w: 34, h: 26, r: 9 },
+      { x: 4, y: 8, w: 20, h: 12, r: 20 },
+      { x: 40, y: 4, w: 20, h: 12, r: 20 },
+      { x: 76, y: 8, w: 20, h: 12, r: 20 },
+      { x: 4, y: 44, w: 20, h: 12, r: 20 },
+      { x: 76, y: 44, w: 20, h: 12, r: 20 },
+      { x: 40, y: 78, w: 20, h: 12, r: 20 },
+      { x: 4, y: 78, w: 26, h: 5, o: 1, r: 20 },
+    ],
+  },
 ];
 
 export function WhatWeBuild() {
@@ -124,12 +155,13 @@ export function WhatWeBuild() {
   return (
     <section className="py-24 md:py-32" aria-labelledby="build-heading">
       <div className="shell">
-        <h2
+        <p className="eyebrow">Capabilities</p>
+        <TextReveal
           id="build-heading"
-          className="max-w-[12ch] text-[length:var(--text-display)] leading-[0.92]"
-        >
-          What we build
-        </h2>
+          as="h2"
+          text="What we build"
+          className="mt-6 max-w-[12ch] text-[length:var(--text-display)] leading-[0.92]"
+        />
 
         <div className="mt-16 grid gap-14 lg:grid-cols-12 lg:gap-16">
           {/* The stage. Sticky on desktop so it stays beside whichever row is
@@ -202,6 +234,7 @@ export function WhatWeBuild() {
             })}
           </ul>
         </div>
+
       </div>
     </section>
   );

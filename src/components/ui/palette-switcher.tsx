@@ -1,49 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
+import {
+  PALETTES,
+  applyPalette,
+  getPalette,
+  getServerPalette,
+  resolveInitialPalette,
+  setPalette,
+  subscribePalette,
+} from "@/lib/palette-store";
 
-const PALETTES = [
-  { id: "obsidian", name: "Obsidian", color: "#dce6f5" },
-  { id: "copper", name: "Copper", color: "#e8ae78" },
-  { id: "teal", name: "Teal", color: "#89dfcf" },
-] as const;
-
-type Palette = (typeof PALETTES)[number]["id"];
-const STORAGE_KEY = "auren-palette";
-
-function isPalette(value: string | null): value is Palette {
-  return PALETTES.some((palette) => palette.id === value);
-}
-
-function applyPalette(value: Palette) {
-  document.documentElement.dataset.palette = value;
-  window.dispatchEvent(new Event("auren:palette-change"));
-}
-
-/** Three real site palettes, shareable with `?palette=` on any route. */
+/**
+ * Three real site palettes, shareable with `?palette=` on any route.
+ *
+ * The state lives in `lib/palette-store.ts`; this component only reads it and
+ * writes to it. The read goes through `useSyncExternalStore`, so the server
+ * renders "obsidian" and the stored choice arrives after mount without a
+ * hydration mismatch — exactly the behaviour the previous effect-based version
+ * had, minus the cascading render.
+ */
 export function PaletteSwitcher() {
-  const [palette, setPalette] = useState<Palette>("obsidian");
+  const palette = useSyncExternalStore(subscribePalette, getPalette, getServerPalette);
 
   useEffect(() => {
-    const fromUrl = new URLSearchParams(window.location.search).get("palette");
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    const selected = isPalette(fromUrl) ? fromUrl : isPalette(stored) ? stored : "obsidian";
-    setPalette(selected);
-    applyPalette(selected);
+    const resolved = resolveInitialPalette();
+    applyPalette(resolved);
+    if (resolved !== getPalette()) setPalette(resolved);
   }, []);
-
-  function select(value: Palette) {
-    setPalette(value);
-    applyPalette(value);
-    window.localStorage.setItem(STORAGE_KEY, value);
-    const url = new URL(window.location.href);
-    url.searchParams.set("palette", value);
-    window.history.replaceState(window.history.state, "", url);
-  }
 
   return (
     <div
-      className="fixed bottom-4 left-4 z-50 flex items-center gap-2 rounded-full border border-line-strong bg-graphite/95 px-3 py-2 shadow-[0_16px_45px_rgba(0,0,0,0.45)] backdrop-blur-xl sm:bottom-6 sm:left-6"
+      className="fixed bottom-4 start-4 z-50 flex max-w-fit origin-bottom-start scale-90 items-center gap-1.5 rounded-full border border-line-strong bg-graphite/95 px-2.5 py-1.5 opacity-90 shadow-[0_16px_45px_rgba(0,0,0,0.45)] backdrop-blur-xl transition-opacity hover:opacity-100 sm:bottom-6 sm:start-6 sm:scale-100 sm:gap-2 sm:px-3 sm:py-2"
       role="group"
       aria-label="Color versions"
     >
@@ -57,14 +45,17 @@ export function PaletteSwitcher() {
           title={option.name}
           aria-label={`${option.name} color version`}
           aria-pressed={palette === option.id}
-          onClick={() => select(option.id)}
+          onClick={() => setPalette(option.id, true)}
           className="flex h-9 w-9 items-center justify-center rounded-full transition-transform duration-200 hover:scale-110 active:scale-95"
         >
           <span
             className="h-5 w-5 rounded-full border border-white/30"
             style={{
               backgroundColor: option.color,
-              boxShadow: palette === option.id ? `0 0 0 3px var(--color-graphite), 0 0 0 4px ${option.color}` : undefined,
+              boxShadow:
+                palette === option.id
+                  ? `0 0 0 3px var(--color-graphite), 0 0 0 4px ${option.color}`
+                  : undefined,
             }}
           />
         </button>
@@ -72,3 +63,4 @@ export function PaletteSwitcher() {
     </div>
   );
 }
+

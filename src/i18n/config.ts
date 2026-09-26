@@ -1,29 +1,31 @@
-/**
- * Locale registry.
- *
- * English ships fully written; French is wired but unpopulated. Adding it is a
- * content task — drop `fr.json` beside `en.json` and flip `enabled` — not a
- * refactor, and no English URL changes when it lands.
- */
-export const locales = ["en", "fr"] as const;
+/** The three shipped reading experiences. Darija is written in Arabic script. */
+export const locales = ["en", "fr", "ar"] as const;
 export type Locale = (typeof locales)[number];
 
 export const defaultLocale: Locale = "en";
-
-/** Locales with a complete message catalogue. Drives sitemap + hreflang. */
-export const enabledLocales: readonly Locale[] = ["en"];
+export const enabledLocales: readonly Locale[] = locales;
 
 export const localeDir: Record<Locale, "ltr" | "rtl"> = {
   en: "ltr",
   fr: "ltr",
+  ar: "rtl",
 };
 
 export const localeHtmlLang: Record<Locale, string> = {
   en: "en",
   fr: "fr-MA",
+  ar: "ar-MA",
 };
 
 export const localeLabel: Record<Locale, string> = {
   en: "English",
   fr: "Français",
+  ar: "دارجة",
 };
+
+export const localeShortLabel: Record<Locale, string> = {
+  en: "EN",
+  fr: "FR",
+  ar: "AR",
+};
+

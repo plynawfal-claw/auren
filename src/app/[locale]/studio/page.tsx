@@ -10,10 +10,13 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
+  // No `alternates.canonical` here on purpose. A relative canonical resolves
+  // against the locale-free `metadataBase`, so it emitted the English URL on
+  // every locale. `LocaleAlternates` derives canonical + hreflang per route
+  // and per locale instead.
   title: "Studio",
   description:
     "AUREN is a digital studio in Morocco building products, creative, acquisition and automation as one connected system. Founded by Naoufal El Absi.",
-  alternates: { canonical: "/studio" },
 };
 
 const PRINCIPLES = [

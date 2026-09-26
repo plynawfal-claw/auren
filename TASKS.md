@@ -82,9 +82,34 @@ headless Chrome, exactly like the client projects.
 ## Next
 
 - [ ] Shared-element transition from an orbit card into the case study hero
+      (the orbit is gone; the equivalent handoff is now showcase card → case study)
 - [ ] Deepen the concepts into full multi-page case studies
-- [ ] Per-route OG images
-- [ ] French content pass
+- [x] Per-route OG images
+- [ ] French content pass — the routes exist and are routable, but `fr` has no
+      written copy yet, so it is deliberately absent from `sitemap.xml`
+- [ ] Darija content pass — same state as French; see the "Locales" note in
+      `README.md` for why it is routed but not indexed
+
+## Locales
+
+`en`, `fr` and `ar` are declared in `src/i18n/config.ts`, all three are routable,
+and the header carries a language switcher that preserves the current route.
+
+Three bugs were found and fixed in this pass, all the same root cause — a locale
+added to the registry without the routing and metadata following it:
+
+- `src/proxy.ts` hardcoded `/fr` as the only prefixed locale, so `/ar` and every
+  `/ar/*` route 404'd. Prefixes are now derived from `locales`.
+- `dir` was hardcoded to `"ltr"` while `ar` was already declared, so Arabic
+  pages were marked as Arabic documents and laid out left-to-right.
+- Every locale emitted the *English* URL as `canonical` (and `og:url`), because
+  a relative `alternates.canonical` resolves against the locale-free
+  `metadataBase`. That tells crawlers `/fr/work` and `/ar/work` are duplicates
+  of `/work`. Canonical, hreflang, `og:url` and `twitter:url` now all come from
+  `src/components/seo/locale-alternates.tsx`.
+
+English is still the only locale with written copy, so the other two are
+routable but deliberately absent from `sitemap.xml`.
 
 ## Rules that must not drift
 

@@ -25,12 +25,10 @@ export async function generateMetadata({
   return {
     title: a.metaTitle,
     description: a.description,
-    alternates: { canonical: `/insights/${a.slug}` },
     openGraph: {
       type: "article",
       title: a.title,
       description: a.description,
-      url: `${siteUrl}/insights/${a.slug}`,
       publishedTime: a.published,
       ...(a.updated ? { modifiedTime: a.updated } : {}),
       authors: [founder.name],

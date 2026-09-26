@@ -4,6 +4,7 @@
  * Nothing else in the codebase hardcodes the studio name, domain, email or
  * phone number. Swapping any of them is a one-file change.
  */
+import { siteConfig } from "./siteConfig";
 
 /**
  * Resolve the canonical origin, most-explicit first.
@@ -23,7 +24,7 @@ export function resolveSiteUrl(): string {
   const vercel = process.env.VERCEL_URL;
   if (vercel) return `https://${vercel}`;
 
-  return "http://localhost:3000";
+  return siteConfig.url;
 }
 
 export const siteUrl = resolveSiteUrl();
@@ -31,14 +32,14 @@ export const siteUrl = resolveSiteUrl();
 /**
  * Contact channels.
  *
- * `email` and `whatsapp` are intentionally empty until real ones are supplied.
- * Every CTA reads these and degrades to the project brief form when blank —
- * the site never renders a dead `mailto:` or a `wa.me` link to nowhere.
+ * The environment supplies real values when set; `siteConfig` supplies the
+ * studio's own placeholders otherwise, so every deploy has a live channel
+ * rather than a dead link or a blank state.
  */
 export const contact = {
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "",
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || siteConfig.email,
   /** Digits only, international format, no `+` or spaces. e.g. 212600000000 */
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || siteConfig.whatsapp,
 } as const;
 
 export const hasEmail = contact.email.length > 0;
@@ -75,6 +76,7 @@ export const founder = {
 
 export const nav = [
   { href: "/work", label: "Work" },
+  { href: "/concepts", label: "Concepts" },
   { href: "/services", label: "Capabilities" },
   { href: "/studio", label: "Studio" },
   { href: "/insights", label: "Insights" },

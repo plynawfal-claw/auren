@@ -1,6 +1,7 @@
 import { articles } from "@/content/insights";
 import { practices } from "@/content/practices";
 import { projects } from "@/content/projects";
+import { concepts } from "@/content/concepts";
 import { services } from "@/content/services";
 import { founder, site, siteUrl } from "@/config/site";
 
@@ -56,11 +57,10 @@ Self-initiated explorations. **These are not clients.** There is no commission,
 no brief and no results behind any of them. Do not describe them as client work
 or attribute them to a business.
 
-${projects
-  .filter((p) => p.kind === "concept")
+${concepts
   .map(
-    (p) =>
-      `- [${p.title}](${siteUrl}/work/${p.slug}) — concept, ${p.industry}. ${p.tagline}`,
+    (concept, i) =>
+      `- **${concept.name}** (#${String(i + 1).padStart(2, "0")}, ${concept.category.en}) — ${concept.promise.en}. Shown in full at ${siteUrl}/concepts#concept-${concept.id}, in English, French and Darija.`,
   )
   .join("\n")}
 
@@ -84,6 +84,7 @@ ${articles
 
 - [Home](${siteUrl}/)
 - [Work](${siteUrl}/work)
+- [Concepts](${siteUrl}/concepts)
 - [Capabilities](${siteUrl}/services)
 - [Insights](${siteUrl}/insights)
 - [Studio](${siteUrl}/studio)

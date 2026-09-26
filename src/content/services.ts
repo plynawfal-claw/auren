@@ -89,7 +89,7 @@ export const services: readonly Service[] = [
         a: "We do, unless you would rather. Copy is treated as design material and drafted alongside the layout, because words chosen after the design is finished tend to be squeezed into space that was never shaped for them.",
       },
     ],
-    projects: ["tagpet", "kutia", "promostore-alu"],
+    projects: ["tagpet", "promostore-alu"],
   },
   {
     slug: "apps-digital-products",
@@ -185,7 +185,7 @@ export const services: readonly Service[] = [
         a: "Yes. If the brand has conventions worth keeping, we extend them systematically rather than starting a second, competing system beside them.",
       },
     ],
-    projects: ["tagpet", "promostore-alu", "kutia"],
+    projects: ["tagpet", "promostore-alu"],
   },
   {
     slug: "seo",
@@ -330,7 +330,7 @@ export const services: readonly Service[] = [
         a: "Yes — that is the usual arrangement, and it is why the creative and the landing page stay consistent. TagPet's entire ad library was produced in-house.",
       },
     ],
-    projects: ["tagpet", "kutia"],
+    projects: ["tagpet"],
   },
   {
     slug: "ai-automation-crm",
@@ -379,7 +379,7 @@ export const services: readonly Service[] = [
         a: "No. A simple rule is often faster and more dependable. AI can help sort a free-text enquiry; pricing decisions and sensitive replies stay with a person.",
       },
     ],
-    projects: ["tagpet", "kutia", "docteur-plante"],
+    projects: ["tagpet", "docteur-plante"],
   },
 ] as const;
 

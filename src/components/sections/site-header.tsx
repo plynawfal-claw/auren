@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Wordmark } from "@/components/ui/wordmark";
+import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { nav } from "@/config/site";
+import type { Locale } from "@/i18n/config";
 import { cn } from "@/lib/cn";
 
 /**
@@ -16,10 +18,16 @@ import { cn } from "@/lib/cn";
  *
  * Chrome is a translucent layer with content passing underneath, and the
  * boundary is a fading edge rather than a hard 1px rule (apple-design §12).
+ *
+ * The language control lives in the desktop nav beside the actions, and at the
+ * foot of the mobile menu rather than in the bar itself — three codes do not
+ * fit next to a wordmark on a 320px screen, and a control you have to open a
+ * menu to reach is a control nobody uses. The locale arrives as a prop from
+ * the server layout so the active code is correct in the first paint.
  */
 const HEADER_H = "h-16 md:h-20";
 
-export function SiteHeader() {
+export function SiteHeader({ locale }: { locale: Locale }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -92,6 +100,7 @@ export function SiteHeader() {
             >
               Start a project
             </Link>
+            <LocaleSwitcher locale={locale} />
           </nav>
 
           {/* Mobile: the only other thing in the header. */}
@@ -171,6 +180,11 @@ export function SiteHeader() {
           >
             Start a project
           </Link>
+
+          <LocaleSwitcher
+            locale={locale}
+            className="mt-12 justify-center border-t border-line pt-8 md:hidden"
+          />
         </nav>
       </div>
     </>

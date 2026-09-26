@@ -12,10 +12,13 @@ export function generateStaticParams() {
 }
 
 export const metadata: Metadata = {
+  // No `alternates.canonical` here on purpose. A relative canonical resolves
+  // against the locale-free `metadataBase`, so it emitted the English URL on
+  // every locale. `LocaleAlternates` derives canonical + hreflang per route
+  // and per locale instead.
   title: "Capabilities",
   description:
     "Digital products, creative and brand, growth, and AI systems — the four disciplines AUREN runs as one connected engagement.",
-  alternates: { canonical: "/services" },
 };
 
 export default async function ServicesIndex({
