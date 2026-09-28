@@ -3,20 +3,15 @@ import type { PracticeId } from "./practices";
 /**
  * The portfolio.
  *
- * Two kinds of entry, and the distinction is never blurred:
- *
- *   kind: "client"  — shipped work for a real business.
- *   kind: "concept" — a studio exploration. No client, no brief, no results.
- *                     Labelled as a concept everywhere it appears.
+ * Every entry is shipped work for a real business: kind: "client".
  *
  * `outcome` is null on every entry. No revenue, conversion rate, testimonial
- * or award has been verified, so none is shown — on either kind.
+ * or award has been verified, so none is shown.
  *
- * Client previews are real captures of the running products. Concept previews
- * are captures of pages this studio designed and built for the purpose.
+ * Client previews are real captures of the running products.
  */
 
-export type ProjectKind = "client" | "concept";
+export type ProjectKind = "client";
 
 export type Project = {
   slug: string;

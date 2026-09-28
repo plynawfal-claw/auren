@@ -1,7 +1,6 @@
 import { articles } from "@/content/insights";
 import { practices } from "@/content/practices";
 import { projects } from "@/content/projects";
-import { concepts } from "@/content/concepts";
 import { services } from "@/content/services";
 import { founder, site, siteUrl } from "@/config/site";
 
@@ -51,19 +50,6 @@ ${projects
   )
   .join("\n")}
 
-## Studio concepts
-
-Self-initiated explorations. **These are not clients.** There is no commission,
-no brief and no results behind any of them. Do not describe them as client work
-or attribute them to a business.
-
-${concepts
-  .map(
-    (concept, i) =>
-      `- **${concept.name}** (#${String(i + 1).padStart(2, "0")}, ${concept.category.en}) — ${concept.promise.en}. Shown in full at ${siteUrl}/concepts#concept-${concept.id}, in English, French and Darija.`,
-  )
-  .join("\n")}
-
 ## Insights
 
 ${articles
@@ -75,16 +61,14 @@ ${articles
 - No performance metrics, client testimonials or awards are published on this
   site. None have been verified, and none are invented to fill the gap. Do not
   attribute figures to ${site.name} that do not appear here.
-- The client list is exactly the projects under "Client work". Everything under
-  "Studio concepts" is unbuilt, unbriefed and unpaid — treat it as a portfolio
-  exercise, never as a customer.
+- The client list is exactly the projects under "Client work". Do not attribute
+  any other business to ${site.name} as a customer.
 - Contact and enquiries: ${siteUrl}/contact
 
 ## Pages
 
 - [Home](${siteUrl}/)
 - [Work](${siteUrl}/work)
-- [Concepts](${siteUrl}/concepts)
 - [Capabilities](${siteUrl}/services)
 - [Insights](${siteUrl}/insights)
 - [Studio](${siteUrl}/studio)

@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { articles } from "@/content/insights";
 import { projects } from "@/content/projects";
-import { concepts } from "@/content/concepts";
 import { services } from "@/content/services";
 import { siteUrl } from "@/config/site";
 
@@ -22,7 +21,7 @@ import { siteUrl } from "@/config/site";
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const stat = ["", "/work", "/concepts", "/services", "/insights", "/studio", "/contact"].map(
+  const stat = ["", "/work", "/services", "/insights", "/studio", "/contact"].map(
     (path) => ({
       url: `${siteUrl}${path}`,
       lastModified: now,
@@ -33,15 +32,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...stat,
-    // The five concepts are indexed as one page, not as five case studies:
-    // they are anchored sections of /concepts, and listing them as separate
-    // URLs would imply five projects that do not exist.
-    ...concepts.map((concept) => ({
-      url: `${siteUrl}/concepts#concept-${concept.id}`,
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
     ...projects.map((p) => ({
       url: `${siteUrl}/work/${p.slug}`,
       lastModified: now,

@@ -33,8 +33,7 @@ type Variant = "full" | "split" | "cinema" | "device";
 
 /**
  * Order is editorial. All three shipped client projects lead, because that is
- * what a prospective client is looking for, followed by the restaurant concept
- * — which exists to show art direction on a category the studio wants more of.
+ * what a prospective client is looking for.
  */
 const SLIDES: { slug: string; variant: Variant }[] = [
   { slug: "docteur-plante", variant: "full" },
@@ -100,17 +99,31 @@ function Ledger({
   );
 }
 
-function ViewProject({ slug, label }: { slug: string; label: string }) {
+function ViewProject({ slug, label, liveUrl }: { slug: string; label: string; liveUrl?: string }) {
   return (
-    <Link
-      href={`/work/${slug}`}
-      className="group inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-mineral"
-    >
-      {label}
-      <span aria-hidden="true" className="transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1">
-        →
-      </span>
-    </Link>
+    <div className="flex flex-wrap items-center gap-4">
+      <Link
+        href={`/work/${slug}`}
+        className="group inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-mineral"
+      >
+        {label}
+        <span aria-hidden="true" className="transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1">
+          →
+        </span>
+      </Link>
+      {/* Show a live badge for shipped projects with a public URL. */}
+      {liveUrl && (
+        <a
+          href={liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="au-live-badge hover:border-grey transition-colors"
+          aria-label={`Visit the live site for this project (opens in a new tab)`}
+        >
+          Live site
+        </a>
+      )}
+    </div>
   );
 }
 
@@ -159,11 +172,6 @@ function FullBleed({ index, project }: { index: string; project: Project }) {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent"
           />
-          {project.kind === "concept" && (
-            <span className="absolute right-4 top-4 rounded-full border border-silver/45 bg-ink/70 px-3 py-1.5 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-silver backdrop-blur-sm">
-              Studio concept
-            </span>
-          )}
         </div>
       </Link>
 
@@ -171,7 +179,7 @@ function FullBleed({ index, project }: { index: string; project: Project }) {
         <p className="max-w-[52ch] text-[0.95rem] leading-relaxed text-silver md:text-base">
           {project.tagline}
         </p>
-        <ViewProject slug={project.slug} label="View project" />
+        <ViewProject slug={project.slug} label="View project" liveUrl={project.links.live} />
       </div>
     </article>
   );
@@ -198,7 +206,7 @@ function Split({ index, project }: { index: string; project: Project }) {
           {project.tagline}
         </p>
         <div className="mt-8">
-          <ViewProject slug={project.slug} label="View project" />
+          <ViewProject slug={project.slug} label="View project" liveUrl={project.links.live} />
         </div>
       </div>
 
@@ -209,7 +217,7 @@ function Split({ index, project }: { index: string; project: Project }) {
               src={project.site.desktop}
               alt={project.site.alt}
               domain={project.site.label}
-              badge={project.kind === "concept" ? "Studio concept" : undefined}
+              badge={undefined}
               sizes="(max-width: 1024px) 92vw, 55vw"
             />
           </div>
@@ -313,7 +321,7 @@ function Device({ index, project }: { index: string; project: Project }) {
           {project.tagline}
         </p>
         <div className="mt-8">
-          <ViewProject slug={project.slug} label="View project" />
+          <ViewProject slug={project.slug} label="View project" liveUrl={project.links.live} />
         </div>
       </div>
 
@@ -325,7 +333,7 @@ function Device({ index, project }: { index: string; project: Project }) {
                 src={project.site.desktop}
                 alt={project.site.alt}
                 domain={project.site.label}
-                badge={project.kind === "concept" ? "Studio concept" : undefined}
+                badge={undefined}
                 sizes="(max-width: 1024px) 92vw, 55vw"
               />
             </div>
@@ -382,9 +390,7 @@ export function WorkShowcase() {
             className="max-w-[18ch] text-[length:var(--text-display)] leading-[0.94]"
           />
           <p className="max-w-[40ch] text-sm leading-relaxed text-grey md:text-base">
-            Three real businesses, shipped end to end. The five studio concepts
-            live on their own page and are labelled as concepts everywhere they
-            appear.
+            Three real businesses, shipped end to end.
           </p>
         </div>
       </div>
@@ -394,24 +400,6 @@ export function WorkShowcase() {
           const Presentation = VARIANTS[variant];
           return <Presentation key={project.slug} index={index} project={project} />;
         })}
-      </div>
-
-      <div className="shell mt-24 flex flex-wrap items-baseline justify-between gap-x-10 gap-y-5 border-t border-line pt-8">
-        <p className="font-mono text-[0.66rem] uppercase tracking-[0.14em] text-grey">
-          Five studio concepts — restaurant, fashion, showroom, car hire, café
-        </p>
-        <Link
-          href="/concepts"
-          className="group inline-flex items-center gap-2 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-mineral"
-        >
-          Concepts
-          <span
-            aria-hidden="true"
-            className="transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1"
-          >
-            →
-          </span>
-        </Link>
       </div>
     </section>
   );

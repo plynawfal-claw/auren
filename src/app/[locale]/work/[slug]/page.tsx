@@ -115,20 +115,6 @@ export default async function CaseStudy({
           <p className="mt-6 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-grey">
             {project.industry} · {tags.join(" · ")} · {project.year}
           </p>
-
-          {/* Stated plainly, at the top, in the visitor's line of sight. A
-              concept must never be mistaken for a client engagement. */}
-          {project.kind === "concept" && (
-            <p className="mt-8 max-w-[52ch] border-l border-line-strong pl-5 text-sm leading-relaxed text-grey">
-              <span className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-silver">
-                Studio concept
-              </span>
-              <br />
-              This is our own exploration, not a commission. There is no client,
-              no brief and no results to report — we designed and built it to
-              show how we would approach this kind of business.
-            </p>
-          )}
         </div>
 
         {/* The work, immediately. */}
@@ -137,7 +123,6 @@ export default async function CaseStudy({
             src={project.site.desktop}
             alt={project.site.alt}
             domain={project.site.label}
-            badge={project.kind === "concept" ? "Studio concept" : undefined}
             priority
             sizes="(max-width: 768px) 92vw, 88vw"
           />
@@ -217,9 +202,9 @@ export default async function CaseStudy({
           there is no number — which is more persuasive than inventing one. */}
       <Section heading="Outcome">
         <p className="max-w-[60ch] leading-relaxed text-grey">
-          {project.kind === "concept"
-            ? "Nothing to report. No concept on this site carries results, because no concept has a client, a budget or a launch behind it."
-            : "No performance figures are published for this project. Verified numbers will appear here when the client agrees to release them; until then the delivered work above is the evidence."}
+          No performance figures are published for this project. Verified
+          numbers will appear here when the client agrees to release them;
+          until then the delivered work above is the evidence.
         </p>
       </Section>
 
