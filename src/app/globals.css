@@ -218,234 +218,6 @@ html.depth-on main {
   box-shadow: 0 28px 65px -35px rgb(0 0 0 / 85%), inset 0 1px 0 color-mix(in srgb, var(--color-lume) 12%, transparent);
 }
 
-/* ---------- concept stages ---------------------------------
-   The five studio concepts. Each one is a full-bleed band with
-   its own palette delivered as inline custom properties
-   (--c-bg, --c-ink, --c-soft, --c-line, --c-accent), set in
-   content/concepts/*.ts. Nothing here knows a colour value —
-   adding a sixth concept requires no stylesheet at all.
-
-   The rules below are structural only: surfaces, rules, and the
-   type scale that each composition inherits. What differs
-   between the five is the markup, not the CSS.
-   ----------------------------------------------------------- */
-.c-stage {
-  background: var(--c-bg);
-  color: var(--c-ink);
-  border-radius: 2px;
-}
-
-/* The AUREN header is a fixed dark bar; a concept's own colours must not
-   bleed under it, so the section carries its own darkening veil only where
-   text sits over a photograph. */
-.c-stage .c-masthead,
-.c-stage .c-name,
-.c-stage .c-subhead {
-  color: var(--c-ink);
-}
-
-.c-stage .c-name {
-  margin-top: 1.5rem;
-  font-size: clamp(2.25rem, 6.5vw, 5.25rem);
-  letter-spacing: -0.02em;
-}
-
-.c-stage .c-subhead {
-  font-size: clamp(1.35rem, 2.4vw, 2rem);
-}
-
-.c-stage .c-promise {
-  margin-top: 1.75rem;
-  font-size: clamp(1rem, 1.35vw, 1.15rem);
-}
-
-/* The badge. Border and text in the concept's own line colour, at a size
-   that stays legible when the whole stage is seen on a phone. */
-.c-badge {
-  border-color: var(--c-line);
-  color: var(--c-ink);
-}
-
-/* What the visitor could do. A hairline grid rather than four cards: the
-   list is one object, and cards would make it four. */
-.c-can {
-  margin-top: 2.75rem;
-  background: var(--c-line);
-  border: 1px solid var(--c-line);
-}
-
-.c-can__item {
-  display: flex;
-  gap: 0.875rem;
-  align-items: baseline;
-  padding: 1.25rem 1.375rem;
-  background: var(--c-panel);
-  font-size: 0.9375rem;
-}
-
-/* Surfaces inside a concept: the booking panel, the bag, the enquiry card. */
-.c-panel {
-  background: var(--c-panel);
-  border: 1px solid var(--c-line);
-}
-
-.c-field {
-  padding: 1.125rem 1.25rem;
-  background: var(--c-bg);
-}
-
-.c-rows__row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem 1.5rem;
-  padding: 1.05rem 0;
-  border-top: 1px solid var(--c-line);
-}
-.c-rows > .c-rows__row:last-child {
-  border-bottom: 1px solid var(--c-line);
-}
-
-/* The menu. A printed card: name, a dotted leader drawn in the concept's
-   line colour, and the price on the right. The leader is what makes it read
-   as a menu rather than as a list with two columns. */
-.c-menu__row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: baseline;
-  column-gap: 0.75rem;
-  padding: 1.15rem 0;
-  border-bottom: 1px solid var(--c-line);
-}
-
-.c-menu__name {
-  font-family: var(--font-display);
-  font-size: clamp(1.1rem, 1.9vw, 1.4rem);
-  line-height: 1.1;
-  color: var(--c-ink);
-}
-
-.c-menu__tag {
-  padding: 0.2rem 0.5rem;
-  border-radius: 999px;
-  border: 1px solid var(--c-line);
-  color: var(--c-soft);
-}
-
-.c-menu__leader {
-  height: 1px;
-  margin-bottom: 0.3em;
-  background-image: linear-gradient(to right, var(--c-line) 0 2px, transparent 2px 5px);
-  background-size: 5px 1px;
-  background-repeat: repeat-x;
-}
-
-.c-menu__price {
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-  color: var(--c-ink);
-}
-
-/* The bag. A single hairline list, indented, so it reads as a receipt rather
-   than as a second grid of products. */
-.c-bag {
-  background: var(--c-panel);
-  border: 1px solid var(--c-line);
-  max-width: 46rem;
-  margin-inline-start: auto;
-}
-
-.c-bag__row {
-  display: flex;
-  align-items: baseline;
-  gap: 1rem;
-  padding: 0.9rem 0;
-  border-top: 1px solid var(--c-line);
-}
-
-.c-fit__row {
-  display: flex;
-  gap: 0.875rem;
-  padding: 0.8rem 0;
-  border-top: 1px solid var(--c-line);
-}
-
-/* Car hire. Three category cards, one of them picked — the state the
-   interface is actually in when somebody has chosen a car. */
-.c-car {
-  padding: 1.125rem;
-  border: 1px solid var(--c-line);
-  border-radius: 0.875rem;
-  background: var(--c-bg);
-}
-
-.c-car--picked {
-  border-color: var(--c-accent);
-  box-shadow: inset 0 0 0 1px var(--c-accent);
-}
-
-/* Showroom materials. A swatch, a name, a hex, a sentence — the four things
-   you are handed in a showroom when you ask what something is made of. */
-.c-materials__row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: center;
-  gap: 1rem 1.25rem;
-  padding: 1.1rem 0;
-  border-top: 1px solid var(--c-line);
-}
-
-.c-swatch {
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--c-line);
-}
-
-.c-place,
-.c-bake,
-.c-room,
-.c-piece,
-.c-route {
-  color: inherit;
-}
-
-.c-place {
-  background: var(--c-panel);
-  border: 1px solid var(--c-line);
-}
-
-.c-hours__row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.8rem 0;
-  border-top: 1px solid var(--c-line);
-}
-
-/* RTL. The five concepts are laid out with logical properties throughout, so
-   the only thing Arabic needs is the reading direction on the stage itself
-   plus a mirrored dotted leader — which is symmetric and needs nothing. The
-   numbered lists and the price columns flip automatically. */
-
-@media (max-width: 767px) {
-  .c-stage .c-can__item {
-    padding: 1rem 1.125rem;
-    font-size: 0.875rem;
-  }
-  .c-menu__row {
-    column-gap: 0.5rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .c-stage * {
-    animation: none !important;
-    transition: none !important;
-  }
-}
 
 @media (max-width: 767px) {
   .spatial-backdrop__world { width: 120vw; right: -48vw; top: 8%; opacity: 0.22; }
@@ -457,10 +229,7 @@ html.depth-on main {
 }
 
 /* ---------- RTL -------------------------------------------------
-   The document direction is set on <html> in the locale layout,
-   and the five concept stages set it again on their own
-   section so a concept can be right-to-left inside a page
-   that is not.
+   The document direction is set on <html> in the locale layout.
 
    What is left is the handful of places where the shell used a
    physical property. Tailwind's `ms-`/`me-`/`ps-`/`pe-` and
@@ -1201,3 +970,120 @@ html[data-palette="light"] .glass-lens {
     inset 0 -2px 4px color-mix(in srgb, var(--color-mineral) 10%, transparent),
     0 4px 12px color-mix(in srgb, var(--color-mineral) 22%, transparent);
 }
+
+/* ============================================================
+   Scroll cue
+   A hairline that draws itself downward, then a dot that follows
+   and fades. The loop is slow enough to read as breathing rather
+   than as a loading indicator.
+   ============================================================ */
+.au-scroll-cue {
+  display: block;
+  position: relative;
+  width: 1px;
+  height: 52px;
+  overflow: hidden;
+}
+.au-scroll-cue::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--color-grey-deep) 0%, transparent 100%);
+  transform: scaleY(0);
+  transform-origin: top;
+  animation: au-scroll-draw 2.2s var(--ease) infinite;
+}
+.au-scroll-cue::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  margin-left: -1px;
+  border-radius: 9999px;
+  background: var(--color-lume);
+  animation: au-scroll-dot 2.2s var(--ease) infinite;
+}
+@keyframes au-scroll-draw {
+  0%   { transform: scaleY(0); opacity: 1; }
+  55%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+@keyframes au-scroll-dot {
+  0%   { top: 0;   opacity: 0; }
+  10%  { top: 0;   opacity: 1; }
+  70%  { top: calc(100% - 3px); opacity: 1; }
+  100% { top: calc(100% - 3px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .au-scroll-cue::before,
+  .au-scroll-cue::after { animation: none; opacity: 0.4; transform: none; }
+}
+
+/* ============================================================
+   Back-to-top button
+   Appears once the hero has passed. Glass pill, one arrow.
+   ============================================================ */
+.au-back-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--color-mineral) 20%, transparent);
+  background: color-mix(in srgb, var(--color-ink) 75%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-mineral);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 400ms var(--ease), transform 400ms var(--ease), background 200ms var(--ease);
+  pointer-events: none;
+}
+.au-back-top.is-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.au-back-top:hover  { background: color-mix(in srgb, var(--color-mineral) 12%, transparent); }
+.au-back-top:focus-visible { outline: 2px solid var(--color-lume); outline-offset: 2px; }
+@media (max-width: 767px) { .au-back-top { bottom: 20px; right: 20px; } }
+
+/* ============================================================
+   Live-site badge on work cards
+   ============================================================ */
+.au-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-grey);
+  border: 1px solid var(--color-line);
+  border-radius: 9999px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+.au-live-badge::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: #4ade80;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   404 — converge motif
+   ============================================================ */
+.au-404-lines line {
+  stroke: var(--color-lume);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.18;
+}
+
