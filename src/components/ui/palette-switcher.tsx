@@ -26,7 +26,18 @@ import { cn } from "@/lib/cn";
  * `useSyncExternalStore`, so the server renders the default and a stored
  * choice arrives after mount with no hydration mismatch.
  */
-export function PaletteSwitcher() {
+export function PaletteSwitcher({
+  variant = "page",
+  className,
+}: {
+  /**
+   * `page`: the control at the foot of every page, 768px and up.
+   * `inline`: a row inside the mobile menu. On a phone the foot of the page
+   * sits under Safari's bottom toolbar, so there it lives in the menu instead.
+   */
+  variant?: "page" | "inline";
+  className?: string;
+}) {
   const palette = useSyncExternalStore(subscribePalette, getPalette, getServerPalette);
   const isLight = palette === "light";
 
@@ -44,10 +55,12 @@ export function PaletteSwitcher() {
       aria-label={isLight ? "Switch to dark" : "Switch to light"}
       onClick={() => setPalette(isLight ? "obsidian" : "light", true)}
       className={cn(
-        "group fixed bottom-4 start-4 z-50 sm:bottom-6 sm:start-6",
+        variant === "page" && "group fixed bottom-4 start-4 z-50 max-md:hidden sm:bottom-6 sm:start-6",
+        variant === "inline" && "group",
         "glass-track relative flex h-11 w-[86px] items-center rounded-full p-1",
         "outline-none transition-transform duration-200 ease-[var(--ease)]",
         "active:scale-[0.96] focus-visible:ring-2 focus-visible:ring-[var(--color-lume)]",
+        className,
       )}
     >
       {/* Track glyphs, dimmed — the lens is the bright element. */}
@@ -63,7 +76,9 @@ export function PaletteSwitcher() {
           "glass-lens relative z-10 flex h-9 w-9 items-center justify-center rounded-full",
           "transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.5,1)]",
           "group-active:scale-x-[0.86] group-active:scale-y-[0.92]",
-          isLight ? "translate-x-[42px]" : "translate-x-0",
+          // The track is laid out with logical `start`, so in Arabic the lens
+          // begins on the right and has to travel left.
+          isLight ? "translate-x-[42px] rtl:-translate-x-[42px]" : "translate-x-0",
         )}
       >
         <Moon

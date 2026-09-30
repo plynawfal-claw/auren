@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Wordmark } from "@/components/ui/wordmark";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
+import { PaletteSwitcher } from "@/components/ui/palette-switcher";
 import { nav } from "@/config/site";
 import type { Locale } from "@/i18n/config";
 import { cn } from "@/lib/cn";
@@ -205,15 +206,16 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         ref={panelRef}
         inert={!open}
         className={cn(
-          "fixed inset-0 z-30 bg-ink transition-opacity duration-300 ease-[var(--ease)] md:hidden",
+          "fixed inset-0 z-30 overflow-y-auto overscroll-contain bg-ink transition-opacity duration-300 ease-[var(--ease)] md:hidden",
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
         )}
       >
         <nav
-          className={cn("shell flex flex-col justify-center", "h-[100svh] pb-24 pt-20")}
+          // Centred on normal phones; on short ones (iPhone SE) centring would push
+          // the first link up under the header, so it starts below it instead.
+          className={cn("shell flex flex-col justify-center [@media(max-height:700px)]:justify-start", "min-h-[100svh] pb-24 pt-20")}
           aria-label="Primary, mobile"
         >
-          <div className="mobile-menu-mark pointer-events-none absolute inset-x-0 top-[18%] select-none text-center font-display text-[clamp(5rem,27vw,10rem)] leading-none tracking-[-0.12em] text-mineral" aria-hidden="true">A.</div>
           {nav.map((item, i) => {
             const active = isSection(pathname, item.href);
             return (
@@ -252,9 +254,18 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             {tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع"))}
           </Link>
 
+          {/* Theme, as a deliberate row. On a phone the page-foot control sat
+              under Safari's bottom toolbar; here it is always reachable. */}
+          <div className="mt-12 flex items-center justify-between border-t border-line pt-8">
+            <span className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-grey">
+              {tr(locale, c("Theme", "Thème", "الألوان"))}
+            </span>
+            <PaletteSwitcher variant="inline" />
+          </div>
+
           <LocaleSwitcher
             locale={locale}
-            className="mt-12 justify-center border-t border-line pt-8 md:hidden"
+            className="mt-8 justify-center md:hidden"
           />
         </nav>
       </div>

@@ -1144,7 +1144,6 @@ html[data-palette="light"] .glass-lens {
   transform-origin: left;
   opacity: 0.62;
 }
-.mobile-menu-mark { opacity: 0.065; }
 
 /* Phone hero footage. Contained, not cropped, so the tall sculpture keeps
    both ends; the radial mask dissolves the clip's near-black ground into the
