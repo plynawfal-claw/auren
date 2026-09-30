@@ -5,8 +5,7 @@ import { useMediaQuery } from "@/lib/use-media-query";
 import { useReadingLine } from "@/lib/use-reading-line";
 import { cn } from "@/lib/cn";
 import { TextReveal } from "@/components/motion/text-reveal";
-import { CapabilityLoop } from "@/components/sections/capability-loop";
-import { motion } from "motion/react";
+import { ServiceMotion } from "@/components/sections/service-motion";
 import { c, tr, type Copy } from "@/i18n/copy";
 
 /**
@@ -136,7 +135,6 @@ const CAPABILITIES: Capability[] = [
 export function WhatWeBuild({ locale }: { locale: string }) {
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLUListElement>(null);
-  const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", true);
   const narrow = useMediaQuery("(max-width: 1023px)", true);
 
   const stageRef = useRef<HTMLDivElement>(null);
@@ -145,8 +143,6 @@ export function WhatWeBuild({ locale }: { locale: string }) {
   // above the list there, and whichever row is passing just under it takes
   // the stage — under reduced motion too, where only the transition is cut.
   const hold = useReadingLine(narrow, stageRef, listRef, setActive);
-
-  const cells = CAPABILITIES[active].cells;
 
   return (
     <section className="py-24 md:py-32" aria-labelledby="build-heading">
@@ -166,46 +162,11 @@ export function WhatWeBuild({ locale }: { locale: string }) {
               The fading band lets the rows slide under it cleanly. */}
           <div ref={stageRef} className="what-we-build__pin sticky top-16 z-10 order-1 pb-8 pt-3 md:top-20 lg:static lg:z-auto lg:col-span-6 lg:p-0">
             <div className="what-we-build__stage mx-auto lg:sticky lg:top-28">
-              <div className="spatial-object capability-stage relative aspect-[4/3] w-full rounded-2xl border border-line [perspective:850px] [transform-style:preserve-3d]">
-                {cells.map((c, i) => (
-                  <span
-                    key={i}
-                    aria-hidden="true"
-                    className={cn(
-                      "capability-cell absolute border border-mineral/20 bg-mineral/[0.035]",
-                      !reduced &&
-                        "transition-[left,top,width,height,opacity,border-radius,transform] duration-[700ms] ease-[var(--ease)]",
-                      i === 7 && "bg-lume/30",
-                    )}
-                    style={{
-                      left: `${c.x}%`,
-                      top: `${c.y}%`,
-                      width: `${c.w}%`,
-                      height: `${c.h}%`,
-                      opacity: c.o ?? 0.85,
-                      borderRadius: `${c.r ?? 4}px`,
-                      transform: `translateZ(${[32, 68, 88, 24, 52, 72, 18, 110][i]}px)`,
-                      transitionDelay: reduced ? undefined : `${i * 42}ms`,
-                    }}
-                  />
-                ))}
-                <CapabilityLoop key={`loop-${CAPABILITIES[active].id}`} id={CAPABILITIES[active].id} />
-                <motion.svg
-                  key={CAPABILITIES[active].id}
-                  className="capability-glyph pointer-events-none absolute bottom-7 right-7 z-20 h-[29%] w-[29%] text-mineral/85 md:bottom-10 md:right-10"
-                  viewBox="0 0 80 80"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.1"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                  initial={reduced ? false : { opacity: 0, rotate: -8, scale: 0.85 }}
-                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                  transition={{ type: "spring", stiffness: 145, damping: 22 }}
-                >
-                  <motion.path d={CAPABILITIES[active].glyph} initial={reduced ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }} />
-                </motion.svg>
+              {/* The stage is a dark screen in both palettes: the loops are
+                  rendered footage on a dark ground, and a screen reads as a
+                  deliberate object on the light theme rather than a hole. */}
+              <div className="spatial-object capability-stage relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-line">
+                <ServiceMotion id={CAPABILITIES[active].id} />
                 <div className="capability-stage__footer absolute bottom-5 start-5 z-20 font-display text-[clamp(1.1rem,2.2vw,2rem)] italic text-mineral/80 md:bottom-8 md:start-8">
                   {tr(locale, CAPABILITIES[active].title)}
                 </div>

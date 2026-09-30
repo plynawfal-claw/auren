@@ -10,15 +10,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Separate Remotion project with its own package, lint and tsconfig.
+    "remotion/**",
   ]),
-  {
-    files: ["public/auren-debug.js"],
-    rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-unused-expressions": "off",
-      "no-unused-expressions": "off",
-    },
-  },
 ]);
 
 export default eslintConfig;

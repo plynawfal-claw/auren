@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { useMediaQuery } from "@/lib/use-media-query";
-import { dbgFlag, dbgMark } from "@/lib/debug";
 
 /** Lenis handles wheel input; Motion owns the visual scroll choreography. */
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
@@ -12,7 +11,6 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     document.documentElement.classList.add("js");
-    dbgMark("smooth:init", { reduced });
     if (reduced) return;
 
     let cancelled = false;
@@ -23,10 +21,9 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         import("lenis"),
         import("motion"),
       ]);
-      dbgMark("smooth:imports-ok", { cancelled });
       if (cancelled) return;
 
-      const lenis = dbgFlag("nolenis") ? null : new Lenis({
+      const lenis = new Lenis({
         duration: 1.05,
         smoothWheel: true,
         syncTouch: false,
@@ -34,10 +31,8 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         autoRaf: true,
         anchors: true,
       });
-      dbgMark("smooth:lenis", { created: !!lenis });
       if (document.body.style.overflow === "hidden") lenis?.stop();
       const onMenu = (event: Event) => {
-        dbgMark("smooth:menu", { open: (event as CustomEvent<boolean>).detail });
         if ((event as CustomEvent<boolean>).detail) lenis?.stop();
         else lenis?.start();
       };
@@ -45,17 +40,8 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       document.documentElement.classList.add("depth-on");
 
       const cleanups: Array<() => void> = [];
-      const register = (trigger: string) => {
+      const register = () => {
         cleanups.splice(0).forEach((stop) => stop());
-        dbgMark("smooth:register", {
-          trigger,
-          innerWidth: window.innerWidth,
-          innerHeight: window.innerHeight,
-          depth: document.querySelectorAll("[data-depth]").length,
-          reveal3d: document.querySelectorAll("[data-reveal-3d]").length,
-          revealMask: document.querySelectorAll("[data-reveal-mask]").length,
-          heroOut: document.querySelectorAll("[data-hero-out]").length,
-        });
 
         document.querySelectorAll<HTMLElement>("[data-depth]").forEach((el) => {
           const amount = Number.parseFloat(el.dataset.depth ?? "0");
@@ -95,8 +81,8 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         });
       };
 
-      const frame = requestAnimationFrame(() => register("initial"));
-      const onRoute = () => requestAnimationFrame(() => register("route"));
+      const frame = requestAnimationFrame(() => register());
+      const onRoute = () => requestAnimationFrame(() => register());
       let resizeTimer = 0;
       // Only a width change alters anything `register` computes (the depth
       // distance). iOS fires `resize` every time the toolbar collapses or
@@ -104,13 +90,12 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       // that is pure churn. Motion's scroll tracking re-measures on its own.
       let lastWidth = window.innerWidth;
       const onResize = () => {
-        if (dbgFlag("noresize") || window.innerWidth === lastWidth) {
-          dbgMark("smooth:resize-skipped", { innerWidth: window.innerWidth, innerHeight: window.innerHeight });
+        if (window.innerWidth === lastWidth) {
           return;
         }
         lastWidth = window.innerWidth;
         window.clearTimeout(resizeTimer);
-        resizeTimer = window.setTimeout(() => register("resize"), 150);
+        resizeTimer = window.setTimeout(() => register(), 150);
       };
       window.addEventListener("auren:route-motion", onRoute);
       window.addEventListener("resize", onResize, { passive: true });

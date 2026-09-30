@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useEffectEvent, useRef, type RefObject } from "react";
-import { dbgMark } from "@/lib/debug";
 
 /** How far a visitor has to scroll after a tap before scroll takes over again. */
 const TAP_HOLD_PX = 160;
@@ -42,12 +41,8 @@ export function useReadingLine(
   const heldAt = useRef<number | null>(null);
 
   useEffect(() => {
-    const tag = listRef.current?.className.split(" ")[0] || "list";
-    dbgMark("reading-line:enabled", { tag, enabled });
     if (!enabled) return;
     let frame = 0;
-    let scrolls = 0;
-    let last = -1;
 
     const measure = () => {
       frame = 0;
@@ -66,16 +61,10 @@ export function useReadingLine(
       const stageBottom = stage.getBoundingClientRect().bottom;
       const items = Array.from(list.children);
       const next = items.findIndex((item) => item.getBoundingClientRect().top >= stageBottom - 4);
-      const index = next === -1 ? items.length - 1 : next;
-      if (index !== last) {
-        dbgMark("reading-line:index", { tag, index, scrolls, stageBottom: Math.round(stageBottom), firstTop: Math.round(items[0]?.getBoundingClientRect().top ?? 0) });
-        last = index;
-      }
-      emit(index);
+      emit(next === -1 ? items.length - 1 : next);
     };
 
     const schedule = () => {
-      scrolls++;
       if (!frame) frame = requestAnimationFrame(measure);
     };
     const viewport = window.visualViewport;
