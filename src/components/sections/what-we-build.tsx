@@ -5,6 +5,7 @@ import { useMediaQuery } from "@/lib/use-media-query";
 import { useReadingLine } from "@/lib/use-reading-line";
 import { cn } from "@/lib/cn";
 import { TextReveal } from "@/components/motion/text-reveal";
+import { CapabilityLoop } from "@/components/sections/capability-loop";
 import { motion } from "motion/react";
 import { c, tr, type Copy } from "@/i18n/copy";
 
@@ -188,6 +189,7 @@ export function WhatWeBuild({ locale }: { locale: string }) {
                     }}
                   />
                 ))}
+                <CapabilityLoop key={`loop-${CAPABILITIES[active].id}`} id={CAPABILITIES[active].id} />
                 <motion.svg
                   key={CAPABILITIES[active].id}
                   className="capability-glyph pointer-events-none absolute bottom-7 right-7 z-20 h-[29%] w-[29%] text-mineral/85 md:bottom-10 md:right-10"
