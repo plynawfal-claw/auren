@@ -4,6 +4,7 @@ import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef } from "react";
 import { Surface } from "@/components/surface/surface";
 import { SignatureObject } from "@/components/signature/signature-object";
+import { MobileHeroVideo } from "@/components/motion/mobile-hero-video";
 import { HeroDepth } from "@/components/motion/hero-depth";
 import { ButtonLink } from "@/components/ui/button";
 import { useMediaQuery } from "@/lib/use-media-query";
@@ -33,7 +34,9 @@ export function Hero({ locale }: { locale: string }) {
         className="hero-signature pointer-events-none absolute -right-[24%] top-[16%] z-0 aspect-square w-[94vw] max-w-[780px] opacity-60 md:-right-[19%] md:top-[6%] md:w-[min(62vw,780px)] md:opacity-100 xl:-right-[11%]"
         style={reduced ? undefined : { y: sculptureY, rotate: sculptureRotate }}
       >
-        <SignatureObject className="relative h-full w-full" />
+        {/* Desktop: the live shader. Phones: the same object as footage. */}
+        <SignatureObject className="relative h-full w-full max-md:hidden" />
+        <MobileHeroVideo className="absolute inset-0" />
       </motion.div>
 
       <div className="shell relative z-10">

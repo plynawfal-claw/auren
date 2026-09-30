@@ -1145,6 +1145,20 @@ html[data-palette="light"] .glass-lens {
   opacity: 0.62;
 }
 .mobile-menu-mark { opacity: 0.065; }
+
+/* Phone hero footage. Contained, not cropped, so the tall sculpture keeps
+   both ends; the radial mask dissolves the clip's near-black ground into the
+   page so there is no visible rectangle. On the light palette the footage is
+   inverted — dark glass lines on a pale ground — so the same object reads on
+   both themes instead of a dark box sitting on white. */
+.mobile-hero-media {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  -webkit-mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+  mask-image: radial-gradient(closest-side, #000 62%, transparent 100%);
+}
+html[data-palette="light"] .mobile-hero-media { filter: invert(1) brightness(0.96); }
 html[dir="rtl"] .hero-forward__stroke { transform-origin: right; }
 html[dir="rtl"] .hero-signature { right: auto; left: -24%; }
 @media (min-width: 768px) {
