@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { usePathname } from "@/i18n/navigation";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { dbgFlag, dbgMark } from "@/lib/debug";
 
 /** Lenis handles wheel input; Motion owns the visual scroll choreography. */
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
@@ -11,6 +12,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     document.documentElement.classList.add("js");
+    dbgMark("smooth:init", { reduced });
     if (reduced) return;
 
     let cancelled = false;
@@ -21,9 +23,10 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         import("lenis"),
         import("motion"),
       ]);
+      dbgMark("smooth:imports-ok", { cancelled });
       if (cancelled) return;
 
-      const lenis = new Lenis({
+      const lenis = dbgFlag("nolenis") ? null : new Lenis({
         duration: 1.05,
         smoothWheel: true,
         syncTouch: false,
@@ -31,17 +34,28 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         autoRaf: true,
         anchors: true,
       });
-      if (document.body.style.overflow === "hidden") lenis.stop();
+      dbgMark("smooth:lenis", { created: !!lenis });
+      if (document.body.style.overflow === "hidden") lenis?.stop();
       const onMenu = (event: Event) => {
-        if ((event as CustomEvent<boolean>).detail) lenis.stop();
-        else lenis.start();
+        dbgMark("smooth:menu", { open: (event as CustomEvent<boolean>).detail });
+        if ((event as CustomEvent<boolean>).detail) lenis?.stop();
+        else lenis?.start();
       };
       window.addEventListener("auren:menu", onMenu);
       document.documentElement.classList.add("depth-on");
 
       const cleanups: Array<() => void> = [];
-      const register = () => {
+      const register = (trigger: string) => {
         cleanups.splice(0).forEach((stop) => stop());
+        dbgMark("smooth:register", {
+          trigger,
+          innerWidth: window.innerWidth,
+          innerHeight: window.innerHeight,
+          depth: document.querySelectorAll("[data-depth]").length,
+          reveal3d: document.querySelectorAll("[data-reveal-3d]").length,
+          revealMask: document.querySelectorAll("[data-reveal-mask]").length,
+          heroOut: document.querySelectorAll("[data-hero-out]").length,
+        });
 
         document.querySelectorAll<HTMLElement>("[data-depth]").forEach((el) => {
           const amount = Number.parseFloat(el.dataset.depth ?? "0");
@@ -79,12 +93,16 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         });
       };
 
-      const frame = requestAnimationFrame(register);
-      const onRoute = () => requestAnimationFrame(register);
+      const frame = requestAnimationFrame(() => register("initial"));
+      const onRoute = () => requestAnimationFrame(() => register("route"));
       let resizeTimer = 0;
       const onResize = () => {
+        if (dbgFlag("noresize")) {
+          dbgMark("smooth:resize-skipped", { innerWidth: window.innerWidth, innerHeight: window.innerHeight });
+          return;
+        }
         window.clearTimeout(resizeTimer);
-        resizeTimer = window.setTimeout(register, 150);
+        resizeTimer = window.setTimeout(() => register("resize"), 150);
       };
       window.addEventListener("auren:route-motion", onRoute);
       window.addEventListener("resize", onResize, { passive: true });
@@ -95,7 +113,7 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         window.removeEventListener("auren:route-motion", onRoute);
         window.removeEventListener("resize", onResize);
         window.removeEventListener("auren:menu", onMenu);
-        lenis.destroy();
+        lenis?.destroy();
         document.documentElement.classList.remove("depth-on");
       };
     })();

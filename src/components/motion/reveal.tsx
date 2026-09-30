@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/cn";
+import { dbgMark } from "@/lib/debug";
 
 /**
  * Scroll reveal.
@@ -73,7 +74,10 @@ export function useRevealOnView(ref: React.RefObject<Element | null>) {
 
     // Failsafe: if neither the observer nor the sweep has fired by now,
     // something is wrong with the environment — show the content anyway.
-    const failsafe = window.setTimeout(() => show(el), 1600);
+    const failsafe = window.setTimeout(() => {
+      if (pending.has(el)) dbgMark("reveal:failsafe", { top: Math.round(el.getBoundingClientRect().top), cls: el.className.slice(0, 40) });
+      show(el);
+    }, 1600);
 
     return () => {
       window.clearTimeout(failsafe);

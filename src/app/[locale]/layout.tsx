@@ -19,6 +19,7 @@ import { PaletteSwitcher } from "@/components/ui/palette-switcher";
 import { locales, localeHtmlLang, localeDir, type Locale } from "@/i18n/config";
 import { routing } from "@/i18n/navigation";
 import { site, siteUrl } from "@/config/site";
+import { DEBUG_GATE } from "@/lib/debug";
 import "lenis/dist/lenis.css";
 import "../globals.css";
 
@@ -139,6 +140,8 @@ export default async function LocaleLayout({
       suppressHydrationWarning
     >
       <body>
+        {/* TEMPORARY iOS diagnostics — no-op unless ?debug=1. */}
+        <script id="auren-debug-gate" dangerouslySetInnerHTML={{ __html: DEBUG_GATE }} />
         <EntityGraph />
         <Analytics />
         <a
