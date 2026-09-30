@@ -487,6 +487,37 @@
   }
 
   function reportText() { return JSON.stringify(report(), null, 1); }
+
+  /* ---------------- send to the Mac (dev server only) ----------------
+     Posts the full report to /api/debug-report every few seconds and when
+     the page is hidden, so a physical iPhone can be read without a cable.
+     The route answers 404 outside `next dev`, and sending stops at once. */
+  var SESSION = (function () {
+    var fresh = (/iPhone|iPad/.test(navigator.userAgent) ? "ios-" : "dev-") + Date.now().toString(36);
+    try {
+      var s = sessionStorage.getItem("auren-debug-session");
+      if (!s) { s = fresh; sessionStorage.setItem("auren-debug-session", s); }
+      return s;
+    } catch (_) { return fresh; }
+  })();
+  var sinkDead = false, sent = 0;
+  function payload() { var r = report(); r.session = SESSION; r.sent = ++sent; return JSON.stringify(r); }
+  function sendReport() {
+    if (sinkDead) return;
+    try {
+      var x = new XMLHttpRequest();
+      x.open("POST", "/api/debug-report", true);
+      x.setRequestHeader("Content-Type", "application/json");
+      x.onload = function () { if (x.status === 404) sinkDead = true; };
+      x.send(payload());
+    } catch (_) {}
+  }
+  setTimeout(sendReport, 3000);
+  setInterval(sendReport, 5000);
+  addEventListener("pagehide", function () {
+    if (sinkDead || !navigator.sendBeacon) return;
+    try { navigator.sendBeacon("/api/debug-report", new Blob([payload()], { type: "application/json" })); } catch (_) {}
+  });
   function showText(text) {
     tab = "report"; bodyEl.innerHTML = "";
     pre("Clipboard unavailable — select all and copy:", "w");

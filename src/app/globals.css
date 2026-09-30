@@ -174,15 +174,15 @@ main, footer { position: relative; z-index: 1; }
    Global depth camera
    One perspective for the page, applied by the motion provider
    only when it is actually running (never under reduced motion).
-   Under 768px the camera pulls back — depth reads at half strength
-   without anyone animating anything twice.
+   Under 768px the camera pulls back slightly — depth stays clearly
+   present without anyone animating anything twice.
    ============================================================ */
 html.depth-on main {
   perspective: 1200px;
 }
 @media (max-width: 767px) {
   html.depth-on main {
-    perspective: 1600px;
+    perspective: 1400px;
   }
 }
 
@@ -724,6 +724,23 @@ html[lang^="ar"] {
   }
 }
 
+/* Touch has no hover, so the press carries it: the same surface slides up
+   and the label hands over while the finger is down, on top of the 0.97
+   press scale the button already has. Fast in (120ms) so it reads as
+   contact; the release falls back to the editorial curve. Purely visual —
+   nothing here can delay or swallow the click. */
+.btn { -webkit-tap-highlight-color: transparent; }
+@media (hover: none) {
+  .btn:active .btn__fill,
+  .btn:active .btn__content,
+  .btn:active .btn__track {
+    transition-duration: 120ms;
+  }
+  .btn:active .btn__fill { transform: translate3d(0, 0, 0); }
+  .btn:active .btn__content { transform: translateX(2px); }
+  .btn:active .btn__track { transform: translateY(-50%); }
+}
+
 /* ============================================================
    Typography motion
 
@@ -1225,7 +1242,28 @@ html[data-palette="light"] .systems-art__message { background: color-mix(in srgb
 @media (max-width: 767px) {
   .hero-scene { min-height: 100svh; }
   .hero-headline { position: relative; z-index: 2; max-width: 14ch; }
-  .systems-image { max-width: 460px; }
+  /* Capped by viewport height as well as width: the image is pinned above
+     the steps here, and a reading line has to stay visible beneath it. */
+  .systems-image { max-width: min(460px, calc(44svh * 0.8)); }
+  .systems-pin {
+    margin-inline: calc(-1 * var(--page-gutter));
+    padding-inline: var(--page-gutter);
+    background: linear-gradient(to bottom, var(--color-ink) calc(100% - 1.5rem), transparent);
+  }
+}
+
+/* Below the desktop grid the capability stage is pinned above its rows. The
+   band behind it is the page colour fading out, so the rows slide under the
+   stage instead of showing beside it. */
+@media (max-width: 1023px) {
+  /* Full-bleed, so the band's edges sit at the screen edges, not beside the
+     rows as a visible panel. */
+  .what-we-build__pin {
+    margin-inline: calc(-1 * var(--page-gutter));
+    padding-inline: var(--page-gutter);
+    background: linear-gradient(to bottom, var(--color-ink) calc(100% - 1.5rem), transparent);
+  }
+  .what-we-build__stage { max-width: calc(40svh * 4 / 3); }
 }
 
 @media (prefers-reduced-motion: reduce) {

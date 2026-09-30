@@ -20,7 +20,11 @@ const nextConfig: NextConfig = {
   // Development only — Next ignores this in a production build, and it grants
   // nothing beyond dev resources. Private-range addresses only; never put a
   // public host here.
-  allowedDevOrigins: ["192.168.100.188"],
+  //
+  // Whole private ranges rather than one address: the Mac's DHCP lease moves
+  // between networks, and a stale single IP silently drops the HMR socket on
+  // the phone again.
+  allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.*.*.*", "*.local"],
 };
 
 export default withNextIntl(nextConfig);

@@ -43,3 +43,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .verdent/
+
+# local browser-test recordings (never committed)
+/test-results/
+.debug-reports/

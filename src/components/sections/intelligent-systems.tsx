@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useSpring, useTransform } from "motion/react";
 import { EditorialImageSlot } from "@/components/motion/editorial-image-slot";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { useReadingLine } from "@/lib/use-reading-line";
 import { c, tr, type Copy } from "@/i18n/copy";
 import { editorialImages } from "@/content/editorial-images";
 
@@ -50,16 +51,22 @@ const steps: Step[] = [
 
 export function IntelligentSystems({ locale }: { locale: string }) {
   const section = useRef<HTMLElement>(null);
-  const tapped = useRef(false);
   const [active, setActive] = useState(0);
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", true);
   const narrow = useMediaQuery("(max-width: 767px)", true);
   const { scrollYProgress } = useScroll({ target: section, offset: ["start end", "end start"] });
   const progress = useSpring(scrollYProgress, { stiffness: 75, damping: 25 });
   const sweep = useTransform(progress, [0.08, 0.78], [0, 1]);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLOListElement>(null);
+
+  // Phones pin the image above the steps; the step passing just under it is
+  // the one it shows. A tap picks a step and holds it for a short scroll,
+  // then scroll drives again.
+  const hold = useReadingLine(narrow, stageRef, listRef, setActive);
 
   return (
-    <section ref={section} className="systems-section relative overflow-hidden border-y border-line py-24 md:py-36" aria-labelledby="systems-heading">
+    <section ref={section} className="systems-section relative overflow-clip border-y border-line py-24 md:py-36" aria-labelledby="systems-heading">
       <div className="shell">
         <div className="grid items-end gap-7 md:grid-cols-[1.2fr_0.8fr] md:gap-16">
           <h2 id="systems-heading" className="max-w-[12ch] font-display text-[length:var(--text-display)] leading-[0.98]">
@@ -75,7 +82,10 @@ export function IntelligentSystems({ locale }: { locale: string }) {
         </div>
 
         <div className="mt-12 grid items-start gap-10 md:mt-20 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:gap-14">
-          <div className="md:sticky md:top-28">
+          {/* Sticky at every width. `overflow-clip` on the section rather than
+              `overflow-hidden`: hidden makes the section a scroll container,
+              which silently disabled this sticky on desktop too. */}
+          <div ref={stageRef} className="systems-pin sticky top-16 z-10 pb-8 pt-3 md:top-28 md:z-auto md:p-0">
             <EditorialImageSlot
               id="systems"
               src={editorialImages.systems[active].src}
@@ -121,7 +131,7 @@ export function IntelligentSystems({ locale }: { locale: string }) {
             </EditorialImageSlot>
           </div>
 
-          <ol className="systems-steps border-t border-line">
+          <ol ref={listRef} className="systems-steps border-t border-line">
             {steps.map((step, index) => (
               <motion.li
                 key={step.id}
@@ -130,14 +140,13 @@ export function IntelligentSystems({ locale }: { locale: string }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.22 }}
                 transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-                onViewportEnter={() => { if (narrow && !reduced && !tapped.current) setActive(index); }}
               >
                 <button
                   type="button"
                   className="systems-step group flex w-full items-start gap-5 py-6 text-start md:py-8"
                   data-active={active === index}
                   aria-pressed={active === index}
-                  onClick={() => { if (narrow) tapped.current = true; setActive(index); }}
+                  onClick={() => { setActive(index); hold(); }}
                   onFocus={() => setActive(index)}
                   onMouseEnter={() => { if (!narrow) setActive(index); }}
                 >

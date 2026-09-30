@@ -17,10 +17,14 @@ export function HeroDepth({ children }: { children: React.ReactNode }) {
   const touchTilt = useTransform(scrollYProgress, [0, 1], [0, 3]);
   const touchY = useTransform(scrollYProgress, [0, 1], [0, 20]);
 
+  // `preserve-3d` only on fine pointers. On touch nothing inside lifts off the
+  // plane (the magnetic translateZ is hover-only), so it adds no depth — but
+  // WebKit then hit-tests the scroll-tilted children against this wrapper and
+  // about a quarter of taps on the hero CTAs land on the div, not the link.
   return (
     <motion.div
       ref={ref}
-      className="relative [transform-style:preserve-3d]"
+      className={fine ? "relative [transform-style:preserve-3d]" : "relative"}
       style={reduced ? undefined : {
         rotateX: fine ? rx : touchTilt,
         rotateY: fine ? ry : 0,

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { useReadingLine } from "@/lib/use-reading-line";
 import { cn } from "@/lib/cn";
 import { TextReveal } from "@/components/motion/text-reveal";
 import { motion } from "motion/react";
@@ -137,27 +138,12 @@ export function WhatWeBuild({ locale }: { locale: string }) {
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", true);
   const narrow = useMediaQuery("(max-width: 1023px)", true);
 
-  // On narrow screens there is no hover to respond to, so whichever row is
-  // nearest the middle of the viewport takes the stage.
-  useEffect(() => {
-    if (!narrow || reduced) return;
-    const list = listRef.current;
-    if (!list) return;
+  const stageRef = useRef<HTMLDivElement>(null);
 
-    const items = Array.from(list.children) as HTMLElement[];
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (!e.isIntersecting) return;
-          const i = items.indexOf(e.target as HTMLElement);
-          if (i >= 0) setActive(i);
-        });
-      },
-      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
-    );
-    items.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [narrow, reduced]);
+  // On narrow screens there is no hover to respond to. The stage is pinned
+  // above the list there, and whichever row is passing just under it takes
+  // the stage — under reduced motion too, where only the transition is cut.
+  const hold = useReadingLine(narrow, stageRef, listRef, setActive);
 
   const cells = CAPABILITIES[active].cells;
 
@@ -174,9 +160,11 @@ export function WhatWeBuild({ locale }: { locale: string }) {
 
         <div className="mt-16 grid gap-14 lg:grid-cols-12 lg:gap-16">
           {/* The stage. Sticky on desktop so it stays beside whichever row is
-              being read. */}
-          <div className="order-2 lg:order-1 lg:col-span-6">
-            <div className="lg:sticky lg:top-28">
+              being read; pinned above the list on narrower screens for the
+              same reason — below the list it only ever changed off-screen.
+              The fading band lets the rows slide under it cleanly. */}
+          <div ref={stageRef} className="what-we-build__pin sticky top-16 z-10 order-1 pb-8 pt-3 md:top-20 lg:static lg:z-auto lg:col-span-6 lg:p-0">
+            <div className="what-we-build__stage mx-auto lg:sticky lg:top-28">
               <div className="spatial-object capability-stage relative aspect-[4/3] w-full rounded-2xl border border-line [perspective:850px] [transform-style:preserve-3d]">
                 {cells.map((c, i) => (
                   <span
@@ -223,7 +211,7 @@ export function WhatWeBuild({ locale }: { locale: string }) {
             </div>
           </div>
 
-          <ul ref={listRef} className="order-1 lg:order-2 lg:col-span-6">
+          <ul ref={listRef} className="order-2 lg:col-span-6">
             {CAPABILITIES.map((c, i) => {
               const on = i === active;
               return (
@@ -232,7 +220,7 @@ export function WhatWeBuild({ locale }: { locale: string }) {
                     type="button"
                     onMouseEnter={() => !narrow && setActive(i)}
                     onFocus={() => setActive(i)}
-                    onClick={() => setActive(i)}
+                    onClick={() => { setActive(i); hold(); }}
                     aria-pressed={on}
                     className="block w-full py-8 text-start md:py-10"
                   >

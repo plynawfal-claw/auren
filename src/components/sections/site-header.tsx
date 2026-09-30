@@ -185,11 +185,14 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </div>
 
         {/* Fading edge instead of a hard divider, and only once content is
-            actually passing underneath. */}
+            actually passing underneath. Absolutely positioned so it hangs
+            below the bar rather than extending the header's box — in flow it
+            made a 24px invisible strip that swallowed taps on whatever was
+            scrolling beneath it. */}
         <div
           aria-hidden="true"
           className={cn(
-            "pointer-events-none h-6 bg-gradient-to-b from-ink/50 to-transparent transition-opacity duration-[var(--dur)]",
+            "pointer-events-none absolute inset-x-0 top-full h-6 bg-gradient-to-b from-ink/50 to-transparent transition-opacity duration-[var(--dur)]",
             scrolled && !open ? "opacity-100" : "opacity-0",
           )}
         />

@@ -28,7 +28,14 @@ export function HeroParallax({ products, children }: { products: readonly Parall
   const reverseX = useTransform(progress, [0, 1], [22, -22]);
   const y = useTransform(progress, [0, 1], [16, -16]);
   const rotateX = useTransform(progress, [0, 0.6, 1], [3, 0, -1]);
+  // Phones get the same drift, vertical only and at a bit over half strength:
+  // the sideways opposing tracks need the two-column grid to read, and a
+  // single column only has room to move along the scroll. Alternate cards
+  // travel against each other so the stack still reads as layered.
+  const mobileY = useTransform(progress, [0, 1], [9, -9]);
+  const mobileReverseY = useTransform(progress, [0, 1], [-9, 9]);
   const active = !reduced && desktop;
+  const mobile = !reduced && !desktop;
 
   return (
     <section ref={ref} className="au-parallax relative py-16 md:py-24" aria-labelledby="parallax-heading">
@@ -38,7 +45,12 @@ export function HeroParallax({ products, children }: { products: readonly Parall
           <motion.article
             key={product.link}
             className="au-parallax-card"
-            style={{ maxWidth: product.width / 2, x: active ? (index % 2 ? reverseX : x) : 0, y: active ? y : 0, rotateX: active ? rotateX : 0 }}
+            style={{
+              maxWidth: product.width / 2,
+              x: active ? (index % 2 ? reverseX : x) : 0,
+              y: active ? y : mobile ? (index % 2 ? mobileReverseY : mobileY) : 0,
+              rotateX: active ? rotateX : 0,
+            }}
           >
             <Link href={product.link} className="au-project-link block">
               <Image src={product.thumbnail} alt={product.alt} width={product.width} height={product.height}

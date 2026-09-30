@@ -60,7 +60,9 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
         document.querySelectorAll<HTMLElement>("[data-depth]").forEach((el) => {
           const amount = Number.parseFloat(el.dataset.depth ?? "0");
           if (!amount) return;
-          const distance = amount * (window.innerWidth < 768 ? 0.45 : 1);
+          // Phones keep most of the depth: at 0.45 the drift was too small
+          // to register on a 390px screen, which read as a static page.
+          const distance = amount * (window.innerWidth < 768 ? 0.7 : 1);
           cleanups.push(scroll((progress) => {
             el.style.translate = `0 ${((0.5 - progress) * distance).toFixed(2)}%`;
           }, { target: el.parentElement ?? el, offset: ["start end", "end start"] }));
@@ -96,11 +98,17 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
       const frame = requestAnimationFrame(() => register("initial"));
       const onRoute = () => requestAnimationFrame(() => register("route"));
       let resizeTimer = 0;
+      // Only a width change alters anything `register` computes (the depth
+      // distance). iOS fires `resize` every time the toolbar collapses or
+      // expands — height only — and tearing down every binding mid-scroll for
+      // that is pure churn. Motion's scroll tracking re-measures on its own.
+      let lastWidth = window.innerWidth;
       const onResize = () => {
-        if (dbgFlag("noresize")) {
+        if (dbgFlag("noresize") || window.innerWidth === lastWidth) {
           dbgMark("smooth:resize-skipped", { innerWidth: window.innerWidth, innerHeight: window.innerHeight });
           return;
         }
+        lastWidth = window.innerWidth;
         window.clearTimeout(resizeTimer);
         resizeTimer = window.setTimeout(() => register("resize"), 150);
       };

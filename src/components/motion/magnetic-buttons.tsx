@@ -10,9 +10,9 @@ import { useEffect } from "react";
  * matter how many buttons a route renders, and buttons that appear later are
  * covered without re-binding.
  *
- * Fine pointers only. On touch the button simply does not move — there is no
- * hover state to express, and a control that drifts under a thumb is worse
- * than one that sits still.
+ * Fine pointers only. On touch the button does not drift — a control that
+ * moves under a thumb is worse than one that sits still — and the press state
+ * in globals.css stands in for the hover instead.
  */
 const STRENGTH = 0.26;
 const MAX_OFFSET = 11;
@@ -21,7 +21,15 @@ export function MagneticButtons() {
   useEffect(() => {
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!fine || reduced) return;
+    if (!fine) {
+      // iOS Safari only applies `:active` while some touch listener exists.
+      // This one does nothing and is passive, so it can never delay a tap —
+      // it just lets the touch press state in globals.css show.
+      const noop = () => {};
+      document.addEventListener("touchstart", noop, { passive: true });
+      return () => document.removeEventListener("touchstart", noop);
+    }
+    if (reduced) return;
 
     let active: HTMLElement | null = null;
     let frame = 0;

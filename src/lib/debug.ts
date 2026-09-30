@@ -48,5 +48,5 @@ document.addEventListener("securitypolicyviolation",function(e){D.push({type:"cs
 D.native={scrollTimeline:typeof ScrollTimeline!="undefined",viewTimeline:typeof ViewTimeline!="undefined"};
 if(flags.nonative){["ScrollTimeline","ViewTimeline"].forEach(function(n){try{delete window[n]}catch(x){}if(typeof window[n]!="undefined"){try{Object.defineProperty(window,n,{value:undefined,configurable:true,writable:true})}catch(x){}}});D.nativeAfterFlag={scrollTimeline:typeof ScrollTimeline!="undefined",viewTimeline:typeof ViewTimeline!="undefined"}}
 if(flags.no3d)document.documentElement.classList.add("dbg-no3d");
-var s=document.createElement("script");s.src="/auren-debug.js?v=1";s.async=true;(document.head||document.documentElement).appendChild(s);
+var s=document.createElement("script");s.src="/auren-debug.js?v=2";s.async=true;(document.head||document.documentElement).appendChild(s);
 }catch(e){}})();`;
