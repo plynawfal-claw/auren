@@ -9,6 +9,7 @@ import { SpatialStage } from "@/components/motion/spatial-stage";
 import { Atmosphere } from "@/components/motion/atmosphere";
 import { MagneticButtons } from "@/components/motion/magnetic-buttons";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
+import { BackToTop } from "@/components/motion/back-to-top";
 import { SiteHeader } from "@/components/sections/site-header";
 import { SiteFooter } from "@/components/sections/site-footer";
 import { EntityGraph } from "@/components/seo/entity-graph";
@@ -18,6 +19,7 @@ import { PaletteSwitcher } from "@/components/ui/palette-switcher";
 import { locales, localeHtmlLang, localeDir, type Locale } from "@/i18n/config";
 import { routing } from "@/i18n/navigation";
 import { site, siteUrl } from "@/config/site";
+import "lenis/dist/lenis.css";
 import "../globals.css";
 
 /**
@@ -126,6 +128,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={localeHtmlLang[typed]}
+      data-scroll-behavior="smooth"
       // Arabic reads right-to-left. This was hardcoded to "ltr" while `ar` was
       // already a declared locale, so the Darija pages were marked as an
       // Arabic document and then laid out as an English one — which breaks
@@ -159,8 +162,9 @@ export default async function LocaleLayout({
             <MagneticButtons />
             <SiteHeader locale={typed} />
             <main id="main">{children}</main>
-            <SiteFooter />
+            <SiteFooter locale={typed} />
             <PaletteSwitcher />
+            <BackToTop />
           </SmoothScrollProvider>
         </NextIntlClientProvider>
       </body>

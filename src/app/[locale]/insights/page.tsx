@@ -79,7 +79,7 @@ export default async function InsightsIndex({
         </ul>
       </section>
 
-      <ContactCta />
+      <ContactCta locale={locale} />
     </>
   );
 }

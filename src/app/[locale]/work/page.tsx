@@ -99,7 +99,7 @@ export default async function WorkIndex({
         </ul>
       </section>
 
-      <ContactCta />
+      <ContactCta locale={locale} />
     </>
   );
 }

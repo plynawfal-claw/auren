@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { addTicker, createSpring } from "@/lib/spring";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { cn } from "@/lib/cn";
+import { c, tr, type Copy } from "@/i18n/copy";
 
 /**
  * Why AUREN — the scattered pieces connect.
@@ -22,7 +23,7 @@ import { cn } from "@/lib/cn";
  */
 
 type Piece = {
-  label: string;
+  label: Copy;
   /** Loose state: x%, y%, rotation in degrees. */
   from: [number, number, number];
   /** Settled state on a wide stage. */
@@ -32,16 +33,16 @@ type Piece = {
 };
 
 const PIECES: Piece[] = [
-  { label: "Website",   from: [13, 20, -9], to: [10, 50], toNarrow: [50, 9] },
-  { label: "Ads",       from: [70, 11,  7], to: [30, 50], toNarrow: [50, 29] },
-  { label: "Content",   from: [80, 63, -6], to: [50, 50], toNarrow: [50, 49] },
-  { label: "Google",    from: [9,  70, 10], to: [70, 50], toNarrow: [50, 69] },
-  { label: "Customers", from: [44, 86, -4], to: [90, 50], toNarrow: [50, 89] },
+  { label: c("Website", "Site web", "موقع"), from: [13, 20, -9], to: [10, 50], toNarrow: [50, 9] },
+  { label: c("Ads", "Publicités", "إعلانات"), from: [70, 11, 7], to: [30, 50], toNarrow: [50, 29] },
+  { label: c("Content", "Contenu", "محتوى"), from: [80, 63, -6], to: [50, 50], toNarrow: [50, 49] },
+  { label: c("Google", "Google", "گوگل"), from: [9, 70, 10], to: [70, 50], toNarrow: [50, 69] },
+  { label: c("Customers", "Clients", "زبناء"), from: [44, 86, -4], to: [90, 50], toNarrow: [50, 89] },
 ];
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-export function WhyAuren() {
+export function WhyAuren({ locale }: { locale: string }) {
   const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const pieceRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -146,9 +147,9 @@ export function WhyAuren() {
   }, [reduced, paint]);
 
   const HEADLINES = [
-    "Your website, your adverts, your content and your customers should not feel like four different businesses.",
-    "Run apart, they pull against each other.",
-    "One direction. One system. One partner.",
+    tr(locale, c("Your website, your adverts, your content and your customers should not feel like four different businesses.", "Votre site, vos publicités, votre contenu et vos clients ne devraient pas ressembler à quatre entreprises différentes.", "الموقع، الإعلانات، المحتوى والزبناء ديالك ما خاصّهمش يبانوا بحال أربع شركات مختلفة.")),
+    tr(locale, c("Run apart, they pull against each other.", "Séparés, ils se freinent les uns les autres.", "إلا خدمو مفروقين، كل واحد كيشدّ اللخر اللور.")),
+    tr(locale, c("One direction. One system. One partner.", "Une direction. Un système. Un partenaire.", "اتجاه واحد. نظام واحد. شريك واحد.")),
   ];
 
   return (
@@ -164,12 +165,12 @@ export function WhyAuren() {
         )}
       >
         <div className="shell">
-          <p className="eyebrow">Why AUREN</p>
+          <p className="eyebrow">{tr(locale, c("Why AUREN", "Pourquoi AUREN", "علاش AUREN"))}</p>
           <h2
             id="why-heading"
             className="sr-only"
           >
-            Why AUREN
+            {tr(locale, c("Why AUREN", "Pourquoi AUREN", "علاش AUREN"))}
           </h2>
 
           {/* All three lines are in the HTML; only their opacity changes. */}
@@ -218,7 +219,7 @@ export function WhyAuren() {
 
             {PIECES.map((p, i) => (
               <div
-                key={p.label}
+                key={p.label.en}
                 ref={(el) => {
                   pieceRefs.current[i] = el;
                 }}
@@ -226,7 +227,7 @@ export function WhyAuren() {
                 style={{ left: `${p.from[0]}%`, top: `${p.from[1]}%` }}
               >
                 <span className="block whitespace-nowrap rounded-md border border-line-strong bg-graphite px-3.5 py-2 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-silver shadow-[0_24px_50px_-15px_rgba(0,0,0,0.9)]">
-                  {p.label}
+                  {tr(locale, p.label)}
                 </span>
               </div>
             ))}
@@ -252,9 +253,11 @@ export function WhyAuren() {
 
         <div className="shell mt-7 md:mt-12">
           <p className="max-w-[46ch] text-[0.95rem] leading-relaxed text-silver md:text-base">
-            We design them to work together from the beginning — so the advert,
-            the page it opens and the message that follows all sound like the
-            same business.
+            {tr(locale, c(
+              "We design them to work together from the beginning — so the advert, the page it opens and the message that follows all sound like the same business.",
+              "Nous les concevons ensemble dès le départ — pour que la publicité, la page qu’elle ouvre et le message qui suit parlent d’une seule voix.",
+              "كنصمّموهم يخدمو مع بعض من اللول — باش الإعلان، الصفحة اللي كيفتح، والرسالة اللي كتجي من بعد يهدرو بنفس الصوت.",
+            ))}
           </p>
         </div>
       </div>

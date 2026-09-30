@@ -2,9 +2,17 @@ import { Link } from "@/i18n/navigation";
 import { Wordmark } from "@/components/ui/wordmark";
 import { practices } from "@/content/practices";
 import { contact, founder, hasEmail, hasWhatsApp, site } from "@/config/site";
+import { c, tr } from "@/i18n/copy";
+import type { Locale } from "@/i18n/config";
 
-export function SiteFooter() {
+export function SiteFooter({ locale }: { locale: Locale }) {
   const year = new Date().getFullYear();
+  const practiceLabels = {
+    experiences: c("Digital experiences", "Expériences digitales", "تجارب رقمية"),
+    creative: c("Creative systems", "Systèmes créatifs", "أنظمة إبداعية"),
+    growth: c("Growth", "Croissance", "النمو"),
+    systems: c("Intelligent systems", "Systèmes intelligents", "أنظمة ذكية"),
+  };
 
   return (
     <footer className="border-t border-line">
@@ -15,23 +23,32 @@ export function SiteFooter() {
               <Wordmark />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-grey">
-              {site.description}
+              {tr(locale, c(site.description, "Un studio créatif qui relie design, technologie et croissance.", "ستوديو إبداعي كيجمع التصميم، التكنولوجيا والنمو."))}
             </p>
             <p className="mt-5 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-grey">
-              Based in {site.region} · Working beyond borders
+              {tr(locale, c(`Based in ${site.region} · Working beyond borders`, `Basé à ${site.region} · Ouvert sur le monde`, `من ${site.region} · كنخدمو بلا حدود`))}
             </p>
           </div>
 
-          <nav className="md:col-span-4" aria-label="Capabilities">
-            <h2 className="eyebrow">Capabilities</h2>
+          <nav className="md:col-span-4" aria-label={tr(locale, c("Capabilities", "Expertises", "الخدمات"))}>
+            <h2 className="eyebrow">{tr(locale, c("Capabilities", "Expertises", "الخدمات"))}</h2>
             <ul className="mt-5 space-y-2.5">
               {practices.map((d) => (
                 <li key={d.id}>
+                  {/* Each practice links to its own first service page, not the
+                      index — so the footer carries real navigation weight rather
+                      than five identical links to the same page. */}
                   <Link
-                    href="/services"
+                    href={`/services/${d.serviceSlugs[0]}`}
                     className="group flex items-baseline gap-3 text-sm text-silver transition-colors hover:text-mineral"
                   >
-                    {d.label}
+                    {tr(locale, practiceLabels[d.id])}
+                    <span
+                      aria-hidden="true"
+                      className="translate-x-0 opacity-0 transition-all duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1 group-hover:opacity-100"
+                    >
+                      →
+                    </span>
                   </Link>
                 </li>
               ))}
@@ -39,14 +56,14 @@ export function SiteFooter() {
           </nav>
 
           <div className="md:col-span-3">
-            <h2 className="eyebrow">Contact</h2>
+            <h2 className="eyebrow">{tr(locale, c("Contact", "Contact", "تواصل"))}</h2>
             <ul className="mt-5 space-y-2.5 text-sm">
               <li>
                 <Link
                   href="/contact"
                   className="text-silver transition-colors hover:text-mineral"
                 >
-                  Start a project
+                  {tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع"))}
                 </Link>
               </li>
               {/* Rendered only when a real channel is configured. The site
@@ -81,7 +98,7 @@ export function SiteFooter() {
           <p>
             © {year} {site.name} · {founder.name}
           </p>
-          <p>Digital experiences · Creative · Growth · Intelligent systems</p>
+          <p>{tr(locale, c("Digital experiences · Creative · Growth · Intelligent systems", "Expériences digitales · Création · Croissance · Systèmes intelligents", "تجارب رقمية · إبداع · نمو · أنظمة ذكية"))}</p>
         </div>
       </div>
     </footer>

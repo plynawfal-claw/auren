@@ -233,7 +233,7 @@ export default async function ServicePage({
         </section>
       )}
 
-      <ContactCta />
+      <ContactCta locale={locale} />
     </article>
   );
 }

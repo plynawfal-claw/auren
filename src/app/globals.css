@@ -1028,7 +1028,7 @@ html[data-palette="light"] .glass-lens {
   position: fixed;
   bottom: 32px;
   right: 32px;
-  z-index: 30;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1087,3 +1087,147 @@ html[data-palette="light"] .glass-lens {
   opacity: 0.18;
 }
 
+
+/* Portfolio media keeps its original composition. Width caps reserve 2x detail. */
+.au-parallax { overflow: clip; perspective: 1200px; }
+.au-parallax-grid { display: grid; gap: 3rem; align-items: start; }
+.au-parallax-card { min-width: 0; width: 100%; }
+.au-project-link { outline-offset: 8px; }
+.au-project-link:focus-visible { outline: 2px solid var(--color-lume); }
+.au-focus-grid { columns: 1; column-gap: clamp(2rem, 5vw, 5rem); }
+.au-focus-card { break-inside: avoid; margin: 0 auto 3.5rem; width: 100%; }
+.au-focus-media { transition: filter var(--dur) var(--ease); }
+.au-focus-media[data-softened="true"] { filter: blur(0.7px); }
+@media (min-width: 640px) {
+  .au-focus-grid { columns: 2; }
+}
+@media (min-width: 768px) {
+  .au-parallax-grid { grid-template-columns: 1.1fr 0.9fr; gap: 4rem; padding-inline: max(var(--page-gutter), 40px); }
+  .au-parallax-card:nth-child(2) { margin-top: 8rem; }
+  .au-parallax-card:nth-child(3) { grid-column: 1 / -1; width: 65%; margin-inline: auto; margin-top: -1rem; }
+}
+@media (min-width: 1024px) {
+  .au-focus-grid { columns: 3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .au-focus-media { transition: none; filter: none; }
+}
+
+/* The opening has a drawn accent and a mobile version of the same signature
+   object. It sits behind the headline, leaving every word readable. */
+.hero-scene { isolation: isolate; }
+.hero-headline__line { position: relative; }
+.hero-forward__stroke {
+  position: absolute;
+  bottom: 0.04em;
+  inset-inline: 0;
+  height: 0.035em;
+  min-height: 1px;
+  background: var(--color-lume);
+  transform-origin: left;
+  opacity: 0.62;
+}
+.mobile-menu-mark { opacity: 0.065; }
+html[dir="rtl"] .hero-forward__stroke { transform-origin: right; }
+html[dir="rtl"] .hero-signature { right: auto; left: -24%; }
+@media (min-width: 768px) {
+  html[dir="rtl"] .hero-signature { left: -19%; }
+}
+@media (min-width: 1280px) {
+  html[dir="rtl"] .hero-signature { left: -11%; }
+}
+
+/* Capability forms are translucent layers around a single drawn symbol. */
+.capability-stage {
+  overflow: hidden;
+  background:
+    radial-gradient(80% 90% at 55% 45%, color-mix(in srgb, var(--color-lume) 12%, transparent), transparent 74%),
+    linear-gradient(145deg, var(--color-graphite), var(--color-ink));
+}
+.capability-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0 31px, color-mix(in srgb, var(--color-lume) 5%, transparent) 32px);
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, transparent);
+}
+.capability-cell {
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-lume) 14%, transparent), 0 16px 40px -24px rgb(0 0 0 / 75%);
+  backdrop-filter: blur(7px);
+}
+.capability-glyph { filter: drop-shadow(0 0 18px color-mix(in srgb, var(--color-lume) 28%, transparent)); }
+.capability-stage__footer { max-width: 47%; line-height: 1.05; }
+
+/* An editorial view of one customer signal becoming an outcome. */
+.systems-section {
+  background:
+    radial-gradient(70% 46% at 35% 50%, color-mix(in srgb, var(--color-lume) 6%, transparent), transparent 85%),
+    var(--color-ink);
+}
+.editorial-image-slot {
+  background: var(--color-graphite);
+  box-shadow: 0 40px 90px -48px rgb(0 0 0 / 70%);
+}
+.process-art {
+  background:
+    radial-gradient(60% 90% at 78% 26%, color-mix(in srgb, var(--color-lume) 13%, transparent), transparent 75%),
+    linear-gradient(150deg, var(--color-graphite), var(--color-ink));
+}
+.process-image-caption { background: linear-gradient(to top, color-mix(in srgb, var(--color-ink) 94%, transparent), transparent); }
+.systems-art {
+  background:
+    radial-gradient(55% 48% at 50% 42%, color-mix(in srgb, var(--color-lume) 15%, transparent), transparent 90%),
+    linear-gradient(155deg, var(--color-graphite), var(--color-ink) 75%);
+}
+.systems-art::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--color-lume) 4%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--color-lume) 4%, transparent) 1px, transparent 1px);
+  background-size: 11% 11%;
+  mask-image: radial-gradient(circle at 50% 44%, #000, transparent 72%);
+}
+.systems-art__orb {
+  color: var(--color-lume);
+  border: 1px solid color-mix(in srgb, var(--color-lume) 35%, transparent);
+  background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--color-lume) 18%, var(--color-graphite)), var(--color-ink) 74%);
+  box-shadow: 0 0 0 16px color-mix(in srgb, var(--color-lume) 3%, transparent), 0 0 95px color-mix(in srgb, var(--color-lume) 16%, transparent);
+}
+.systems-art__message {
+  border: 1px solid var(--color-line-strong);
+  background: color-mix(in srgb, var(--color-graphite) 88%, transparent);
+  box-shadow: 0 28px 60px -35px rgb(0 0 0 / 70%);
+  backdrop-filter: blur(14px);
+}
+.systems-art__spark { box-shadow: 0 0 18px var(--color-lume); animation: systems-pulse 3s ease-in-out infinite; }
+.systems-art__spark--late { animation-delay: 1.25s; }
+@keyframes systems-pulse { 50% { opacity: .32; transform: scale(.7); } }
+.systems-step { transition: background-color 350ms var(--ease); }
+.systems-step__pulse { transition: background-color 350ms var(--ease), box-shadow 350ms var(--ease); }
+.systems-step[data-active="true"] .systems-step__pulse {
+  background: var(--color-lume);
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-lume) 10%, transparent), 0 0 18px color-mix(in srgb, var(--color-lume) 45%, transparent);
+}
+.systems-step[data-active="true"] .systems-step__signal { border-color: color-mix(in srgb, var(--color-lume) 50%, var(--color-line)); }
+.systems-step:hover { background: color-mix(in srgb, var(--color-lume) 3%, transparent); }
+html[data-palette="light"] .systems-art__message { background: color-mix(in srgb, var(--color-graphite) 92%, transparent); }
+@media (prefers-reduced-motion: reduce) {
+  .systems-art__spark { animation: none; }
+}
+
+.au-focus-media { overflow: hidden; }
+.au-focus-media img { display: block; }
+
+@media (max-width: 767px) {
+  .hero-scene { min-height: 100svh; }
+  .hero-headline { position: relative; z-index: 2; max-width: 14ch; }
+  .systems-image { max-width: 460px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-forward__stroke { transform: scaleX(1) !important; }
+}

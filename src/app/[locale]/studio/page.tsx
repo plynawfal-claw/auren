@@ -146,7 +146,7 @@ export default async function StudioPage({
         </ul>
       </section>
 
-      <ContactCta />
+      <ContactCta locale={locale} />
     </>
   );
 }

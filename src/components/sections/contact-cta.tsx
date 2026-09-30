@@ -1,6 +1,7 @@
 import { ButtonLink } from "@/components/ui/button";
 import { TextReveal } from "@/components/motion/text-reveal";
 import { contact, hasEmail, hasWhatsApp } from "@/config/site";
+import { c, tr } from "@/i18n/copy";
 
 /**
  * The close.
@@ -14,7 +15,7 @@ import { contact, hasEmail, hasWhatsApp } from "@/config/site";
  * `vector-effect: non-scaling-stroke`, so they stay exactly one pixel at every
  * viewport width instead of thickening as the section stretches.
  */
-export function ContactCta() {
+export function ContactCta({ locale }: { locale: string }) {
   return (
     <section
       className="relative overflow-hidden border-t border-line pt-24 pb-28 md:pt-32 md:pb-36"
@@ -55,22 +56,25 @@ export function ContactCta() {
       />
 
       <div className="shell relative z-10">
-        <p className="eyebrow">Next step</p>
+        <p className="eyebrow">{tr(locale, c("Next step", "La suite", "الخطوة الجاية"))}</p>
 
         <TextReveal
           id="cta-heading"
           as="h2"
-          text="Have something worth building?"
+          text={tr(locale, c("Have something worth building?", "Un projet qui mérite de voir le jour ?", "عندك فكرة كتستاهل تبنيها؟"))}
           className="mt-8 max-w-[15ch] text-[length:var(--text-statement)] leading-[0.94] tracking-[-0.025em]"
         />
 
         <p className="lead mt-9 max-w-[46ch]">
-          Tell us what you are building or trying to fix. You will get a
-          considered reply, not a calendar link.
+          {tr(locale, c(
+            "Tell us what you are building or trying to fix. You will get a considered reply, not a calendar link.",
+            "Parlez-nous de ce que vous créez ou cherchez à améliorer. Vous recevrez une réponse réfléchie, pas un lien vers un calendrier.",
+            "قول لينا شنو باغي تبني أو تصلّح. غادي نجاوبوك بجواب مدروس، ماشي غير برابط ديال المواعيد.",
+          ))}
         </p>
 
         <div className="mt-12 flex flex-wrap gap-3">
-          <ButtonLink href="/contact">Start a project</ButtonLink>
+          <ButtonLink href="/contact">{tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع"))}</ButtonLink>
           {hasEmail && (
             <ButtonLink href={`mailto:${contact.email}`} variant="ghost">
               {contact.email}

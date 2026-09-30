@@ -56,7 +56,9 @@ export default function proxy(request: NextRequest) {
   // their public URLs unprefixed. The internal `/en` route must pass through: a
   // rewrite can invoke the proxy again before the page renders.
   if (pathname === `/${defaultLocale}` || pathname.startsWith(`/${defaultLocale}/`)) {
-    return NextResponse.next();
+    // An explicit English selection must replace an earlier FR/AR choice;
+    // otherwise the next unprefixed project link redirects back to it.
+    return rememberLocale(NextResponse.next(), defaultLocale);
   }
 
   // Anything without a known locale prefix is English, served unprefixed.

@@ -32,9 +32,9 @@ export function Wordmark({
   showMark?: boolean;
 }) {
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
+    <span dir="ltr" lang="en" className={cn("inline-flex items-center gap-2.5", className)}>
       {showMark && <Mark />}
-      <span className="font-display text-[1.45rem] leading-none tracking-[0.16em]">
+      <span className="font-display text-[1.45rem] leading-none" style={{ fontFamily: 'var(--font-bodoni), "Times New Roman", serif', letterSpacing: "0.16em" }}>
         AUREN
       </span>
       <span className="sr-only">AUREN — digital studio</span>

@@ -95,7 +95,7 @@ export default async function ServicesIndex({
         })}
       </div>
 
-      <ContactCta />
+      <ContactCta locale={locale} />
     </>
   );
 }

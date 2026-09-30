@@ -46,7 +46,7 @@ function Arrow() {
   return (
     <svg
       viewBox="0 0 16 16"
-      className="h-3 w-3 shrink-0 transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1"
+      className="h-3 w-3 shrink-0 transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1"
       aria-hidden="true"
     >
       <path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.4" />

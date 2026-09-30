@@ -1,3 +1,4 @@
+import { createElement, type ComponentProps } from "react";
 import { createNavigation } from "next-intl/navigation";
 import { defineRouting } from "next-intl/routing";
 import { defaultLocale, locales } from "./config";
@@ -14,5 +15,14 @@ export const routing = defineRouting({
   localeDetection: false,
 });
 
-export const { Link, redirect, usePathname, useRouter, getPathname } =
-  createNavigation(routing);
+const navigation = createNavigation(routing);
+
+// Next 16's segment prefetch can request an unprefixed English RSC segment
+// after switching from a prefixed locale. The page itself navigates correctly,
+// but that speculative request returns a 404 and wastes a network round trip.
+// Keep navigation client-side while fetching only the route the visitor chooses.
+export function Link(props: ComponentProps<typeof navigation.Link>) {
+  return createElement(navigation.Link, { prefetch: false, ...props });
+}
+
+export const { redirect, usePathname, useRouter, getPathname } = navigation;

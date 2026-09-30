@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { cn } from "@/lib/cn";
 import { TextReveal } from "@/components/motion/text-reveal";
+import { motion } from "motion/react";
+import { c, tr, type Copy } from "@/i18n/copy";
 
 /**
  * What we build.
@@ -23,8 +25,9 @@ type Cell = { x: number; y: number; w: number; h: number; o?: number; r?: number
 
 type Capability = {
   id: string;
-  title: string;
-  body: string;
+  title: Copy;
+  body: Copy;
+  glyph: string;
   /** Eight cells. Index is stable across states — that is what makes it morph. */
   cells: Cell[];
 };
@@ -32,8 +35,9 @@ type Capability = {
 const CAPABILITIES: Capability[] = [
   {
     id: "websites",
-    title: "Websites that sell",
-    body: "Shops, landing pages and company websites that people actually buy from.",
+    title: c("Websites that sell", "Des sites qui vendent", "مواقع كاتبيع"),
+    body: c("Shops, landing pages and company websites that people actually buy from.", "Boutiques, pages et sites d’entreprise qui transforment les visites en clients.", "متاجر وصفحات ومواقع ديال الشركات اللي كتحوّل الزوّار لزبناء."),
+    glyph: "M12 22h56v44H12z M12 32h56 M19 27h2 M26 27h2 M33 27h2 M18 40h26v19H18z M50 40h12v7H50z M50 52h12v7H50z",
     cells: [
       { x: 3, y: 5, w: 94, h: 7, r: 3 },
       { x: 3, y: 17, w: 55, h: 34, r: 4 },
@@ -47,8 +51,9 @@ const CAPABILITIES: Capability[] = [
   },
   {
     id: "brand",
-    title: "Brands people remember",
-    body: "A name, a look and the campaigns that carry them.",
+    title: c("Brands people remember", "Des marques qu’on retient", "ماركات كتبقى فالبال"),
+    body: c("A name, a look and the campaigns that carry them.", "Un nom, une identité et des campagnes qui leur donnent vie.", "سمية، شكل وحملات اللي كتعطيهم الحياة."),
+    glyph: "M40 8l8 23 24 1-19 14 7 23-20-14-20 14 7-23-19-14 24-1z",
     cells: [
       { x: 3, y: 5, w: 45, h: 57, r: 4 },
       { x: 52, y: 5, w: 21, h: 21, r: 20 },
@@ -62,8 +67,9 @@ const CAPABILITIES: Capability[] = [
   },
   {
     id: "growth",
-    title: "Growth that brings people in",
-    body: "Google, social and search — then steady improvement on what works.",
+    title: c("Growth that brings people in", "Une croissance qui attire", "نمو كيجيب الزبناء"),
+    body: c("Google, social and search — then steady improvement on what works.", "Google, réseaux et recherche — puis une amélioration continue de ce qui marche.", "گوگل، السوشيال والبحث — ومن بعد كنحسّنو اللي خدام."),
+    glyph: "M10 62l18-18 12 9 24-27 M53 26h11v11 M10 69h56 M16 56v13 M29 49v20 M42 42v27 M55 33v36",
     cells: [
       { x: 34, y: 38, w: 32, h: 24, r: 6 },
       { x: 3, y: 8, w: 21, h: 13, r: 20 },
@@ -77,8 +83,9 @@ const CAPABILITIES: Capability[] = [
   },
   {
     id: "systems",
-    title: "Systems that save time",
-    body: "Follow-up, customer records and the repetitive work handled for you.",
+    title: c("Systems that save time", "Des systèmes qui libèrent du temps", "أنظمة كتوفّر الوقت"),
+    body: c("Follow-up, customer records and the repetitive work handled for you.", "Le suivi, les dossiers clients et les tâches répétitives pris en charge.", "المتابعة، معلومات الزبناء والخدمة اللي كتعاود كتخدم بوحدها."),
+    glyph: "M13 15h54v50H13z M13 28h54 M23 39h20 M23 48h32 M23 57h15 M55 40l6 6-6 6",
     cells: [
       { x: 5, y: 5, w: 90, h: 13, r: 4 },
       { x: 5, y: 22, w: 90, h: 11, r: 3 },
@@ -92,8 +99,9 @@ const CAPABILITIES: Capability[] = [
   },
   {
     id: "ecommerce",
-    title: "Shops that take orders",
-    body: "Product pages, baskets and a checkout that works on a phone.",
+    title: c("Shops that take orders", "Des boutiques qui reçoivent des commandes", "متاجر كتاخد الطلبيات"),
+    body: c("Product pages, baskets and a checkout that works on a phone.", "Fiches produits, paniers et paiement qui fonctionnent sur téléphone.", "صفحات المنتجات، السلّة والخلاص خدامين مزيان فالتلفون."),
+    glyph: "M24 31h37l-4 28H28z M31 31v-7a9 9 0 0 1 18 0v7 M32 48h18 M36 66h1 M52 66h1",
     cells: [
       { x: 3, y: 5, w: 94, h: 8, r: 3 },
       { x: 3, y: 17, w: 46, h: 46, r: 5 },
@@ -107,8 +115,9 @@ const CAPABILITIES: Capability[] = [
   },
   {
     id: "ai",
-    title: "Systems that think",
-    body: "Automation, assistants and follow-up that handles itself.",
+    title: c("Systems that think", "Des systèmes qui réfléchissent", "أنظمة كتفكّر"),
+    body: c("Automation, assistants and follow-up that handles itself.", "Automatisations, assistants et suivi qui se font tout seuls.", "أتمتة، مساعدين ومتابعة كيدبّرو راسهم."),
+    glyph: "M40 40l-22-19 M40 40l22-19 M40 40l-22 19 M40 40l22 19 M40 40V11 M40 40v29 M31 40h18 M14 21h8 M58 21h8 M14 59h8 M58 59h8",
     cells: [
       { x: 33, y: 34, w: 34, h: 26, r: 9 },
       { x: 4, y: 8, w: 20, h: 12, r: 20 },
@@ -122,7 +131,7 @@ const CAPABILITIES: Capability[] = [
   },
 ];
 
-export function WhatWeBuild() {
+export function WhatWeBuild({ locale }: { locale: string }) {
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLUListElement>(null);
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", true);
@@ -155,11 +164,11 @@ export function WhatWeBuild() {
   return (
     <section className="py-24 md:py-32" aria-labelledby="build-heading">
       <div className="shell">
-        <p className="eyebrow">Capabilities</p>
+        <p className="eyebrow">{tr(locale, c("Capabilities", "Expertises", "شنو كنصاوبو"))}</p>
         <TextReveal
           id="build-heading"
           as="h2"
-          text="What we build"
+          text={tr(locale, c("What we build", "Ce que nous créons", "شنو كنصاوبو"))}
           className="mt-6 max-w-[12ch] text-[length:var(--text-display)] leading-[0.92]"
         />
 
@@ -174,7 +183,7 @@ export function WhatWeBuild() {
                     key={i}
                     aria-hidden="true"
                     className={cn(
-                      "absolute border border-mineral/15 bg-mineral/[0.09] shadow-[0_18px_35px_-20px_rgba(0,0,0,0.85)]",
+                      "capability-cell absolute border border-mineral/20 bg-mineral/[0.035]",
                       !reduced &&
                         "transition-[left,top,width,height,opacity,border-radius,transform] duration-[700ms] ease-[var(--ease)]",
                       i === 7 && "bg-lume/30",
@@ -191,11 +200,26 @@ export function WhatWeBuild() {
                     }}
                   />
                 ))}
+                <motion.svg
+                  key={CAPABILITIES[active].id}
+                  className="capability-glyph pointer-events-none absolute bottom-7 right-7 z-20 h-[29%] w-[29%] text-mineral/85 md:bottom-10 md:right-10"
+                  viewBox="0 0 80 80"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.1"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  initial={reduced ? false : { opacity: 0, rotate: -8, scale: 0.85 }}
+                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                  transition={{ type: "spring", stiffness: 145, damping: 22 }}
+                >
+                  <motion.path d={CAPABILITIES[active].glyph} initial={reduced ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }} />
+                </motion.svg>
+                <div className="capability-stage__footer absolute bottom-5 start-5 z-20 font-display text-[clamp(1.1rem,2.2vw,2rem)] italic text-mineral/80 md:bottom-8 md:start-8">
+                  {tr(locale, CAPABILITIES[active].title)}
+                </div>
               </div>
-              <p className="mt-4 font-mono text-[0.64rem] uppercase tracking-[0.16em] text-grey-deep">
-                {String(active + 1).padStart(2, "0")} / {String(CAPABILITIES.length).padStart(2, "0")} ·{" "}
-                {CAPABILITIES[active].title}
-              </p>
             </div>
           </div>
 
@@ -210,23 +234,23 @@ export function WhatWeBuild() {
                     onFocus={() => setActive(i)}
                     onClick={() => setActive(i)}
                     aria-pressed={on}
-                    className="block w-full py-8 text-left md:py-10"
+                    className="block w-full py-8 text-start md:py-10"
                   >
                     <h3
                       className={cn(
                         "font-display text-[clamp(1.6rem,3.4vw,2.7rem)] leading-[1.02] transition-all duration-[var(--dur)] ease-[var(--ease)]",
-                        on ? "translate-x-2 text-mineral" : "text-silver",
+                        on ? "ltr:translate-x-2 rtl:-translate-x-2 text-mineral" : "text-silver",
                       )}
                     >
-                      {c.title}
+                      {tr(locale, c.title)}
                     </h3>
                     <p
                       className={cn(
                         "mt-3 max-w-[42ch] transition-all duration-[var(--dur)] ease-[var(--ease)]",
-                        on ? "translate-x-2 text-grey" : "text-grey-deep",
+                        on ? "ltr:translate-x-2 rtl:-translate-x-2 text-grey" : "text-grey-deep",
                       )}
                     >
-                      {c.body}
+                      {tr(locale, c.body)}
                     </p>
                   </button>
                 </li>

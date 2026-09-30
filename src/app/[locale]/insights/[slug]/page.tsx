@@ -171,7 +171,7 @@ export default async function ArticlePage({
         </p>
       </div>
 
-      <ContactCta />
+      <ContactCta locale={locale} />
     </article>
   );
 }

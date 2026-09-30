@@ -1,16 +1,18 @@
 import { setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/sections/hero";
 import { WhyAuren } from "@/components/sections/why-auren";
-import { WorkShowcase } from "@/components/sections/work-showcase";
+import { AurenHeroParallax } from "@/components/work/auren-hero-parallax";
+import { AurenFocusProjects } from "@/components/work/auren-focus-projects";
 import { WhatWeBuild } from "@/components/sections/what-we-build";
-import { Range } from "@/components/sections/range";
+import { IntelligentSystems } from "@/components/sections/intelligent-systems";
+import { SectionBridge } from "@/components/motion/section-bridge";
 import { Process } from "@/components/sections/process";
 import { ContactCta } from "@/components/sections/contact-cta";
 
 /**
  * Homepage architecture.
  *
- *   hero → why → shipped work → capabilities → range →
+ *   hero → selected work → why → capabilities → focus concepts →
  *   how we work → contact
  *
  * The shipped work comes first because a visitor should see what this studio
@@ -30,13 +32,15 @@ export default async function HomePage({
 
   return (
     <>
-      <Hero />
-      <WhyAuren />
-      <WorkShowcase />
-      <WhatWeBuild />
-      <Range />
-      <Process />
-      <ContactCta />
+      <Hero locale={locale} />
+      <AurenHeroParallax locale={locale} />
+      <WhyAuren locale={locale} />
+      <WhatWeBuild locale={locale} />
+      <IntelligentSystems locale={locale} />
+      <SectionBridge locale={locale} />
+      <AurenFocusProjects locale={locale} />
+      <Process locale={locale} />
+      <ContactCta locale={locale} />
     </>
   );
 }
