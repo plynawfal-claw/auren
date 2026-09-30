@@ -1,8 +1,9 @@
 "use client";
 
 import { usePathname } from "@/i18n/navigation";
-import { locales, defaultLocale, type Locale } from "@/i18n/config";
+import { defaultLocale, localeHtmlLang, type Locale } from "@/i18n/config";
 import { siteUrl } from "@/config/site";
+import { isTranslated, localesFor } from "@/i18n/translated";
 
 /**
  * Per-locale `canonical` and `hreflang` for the current route.
@@ -43,22 +44,31 @@ export function LocaleAlternates({ locale }: { locale: Locale }) {
   const hrefFor = (option: Locale) =>
     `${siteUrl}${option === defaultLocale ? "" : `/${option}`}${suffix}`;
 
+  // A French or Darija URL that still renders the English copy is a duplicate
+  // of the English page, so its canonical says so; only routes with real
+  // copy in a language are announced in that language (see i18n/translated).
+  const canonical = hrefFor(isTranslated(pathname, locale) ? locale : defaultLocale);
+  const available = localesFor(pathname);
+
   return (
     <>
-      <link rel="canonical" href={hrefFor(locale)} />
-      {locales.map((option) => (
-        <link key={option} rel="alternate" hrefLang={option} href={hrefFor(option)} />
-      ))}
+      <link rel="canonical" href={canonical} />
+      {available.length > 1 &&
+        available.map((option) => (
+          <link key={option} rel="alternate" hrefLang={localeHtmlLang[option]} href={hrefFor(option)} />
+        ))}
       {/* English is the only locale with written copy, so it is the correct
           fallback for a visitor whose language matches nothing here. */}
-      <link rel="alternate" hrefLang="x-default" href={hrefFor(defaultLocale)} />
+      {available.length > 1 && (
+        <link rel="alternate" hrefLang="x-default" href={hrefFor(defaultLocale)} />
+      )}
 
       {/* `og:url` and `twitter:url` follow the canonical for the same reason:
           a hardcoded value in `metadata` resolves to the English origin on
           every locale, so a French share card would have claimed to be a link
           to the English page. Emitted here so it cannot drift from canonical. */}
-      <meta property="og:url" content={hrefFor(locale)} />
-      <meta name="twitter:url" content={hrefFor(locale)} />
+      <meta property="og:url" content={canonical} />
+      <meta name="twitter:url" content={canonical} />
     </>
   );
 }

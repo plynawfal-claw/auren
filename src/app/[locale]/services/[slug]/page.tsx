@@ -9,6 +9,20 @@ import { serviceBySlug, services } from "@/content/services";
 import { projectBySlug } from "@/content/projects";
 import { routing } from "@/i18n/navigation";
 import { siteUrl } from "@/config/site";
+import { localizePractice, localizeService } from "@/content/services.i18n";
+import { asLocale, c, tr } from "@/i18n/copy";
+import { localeUrl } from "@/i18n/translated";
+
+const LABELS = {
+  back: c("← Capabilities", "← Expertises", "→ الخدمات"),
+  home: c("Home", "Accueil", "الرئيسية"),
+  capabilities: c("Capabilities", "Expertises", "الخدمات"),
+  keyPoints: c("Key points", "L’essentiel", "الأهم"),
+  deliverables: c("What you get", "Ce que vous recevez", "شنو كتاخد"),
+  questions: c("Questions", "Questions fréquentes", "أسئلة"),
+  evidence: c("Evidence", "Réalisations", "خدمات منجزة"),
+  catalog: c("deliverables", "livrables", "الخدمات"),
+};
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -19,11 +33,12 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
-  const service = serviceBySlug[slug];
-  if (!service) return {};
+  const { locale, slug } = await params;
+  const base = serviceBySlug[slug];
+  if (!base) return {};
+  const service = localizeService(base, locale);
 
   return {
     title: service.metaTitle,
@@ -44,10 +59,12 @@ export default async function ServicePage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const service = serviceBySlug[slug];
-  if (!service) notFound();
-
-  const practice = practiceById[service.discipline];
+  const base = serviceBySlug[slug];
+  if (!base) notFound();
+  const service = localizeService(base, locale);
+  const lang = asLocale(locale);
+  const url = (path: string) => localeUrl(siteUrl, lang, path);
+  const practice = localizePractice(practiceById[service.discipline], locale);
   const related = service.projects
     .map((s) => projectBySlug[s])
     .filter(Boolean);
@@ -57,7 +74,9 @@ export default async function ServicePage({
     "@graph": [
       {
         "@type": "Service",
-        "@id": `${siteUrl}/services/${service.slug}#service`,
+        "@id": `${url(`/services/${service.slug}`)}#service`,
+        url: url(`/services/${service.slug}`),
+        inLanguage: lang,
         name: service.title,
         description: service.definition,
         serviceType: service.title,
@@ -68,7 +87,7 @@ export default async function ServicePage({
         ],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
-          name: `${service.title} deliverables`,
+          name: `${service.title} — ${tr(locale, LABELS.catalog)}`,
           itemListElement: service.deliverables.map((d) => ({
             "@type": "Offer",
             itemOffered: { "@type": "Service", name: d },
@@ -77,7 +96,7 @@ export default async function ServicePage({
       },
       {
         "@type": "FAQPage",
-        "@id": `${siteUrl}/services/${service.slug}#faq`,
+        "@id": `${url(`/services/${service.slug}`)}#faq`,
         mainEntity: service.faq.map((f) => ({
           "@type": "Question",
           name: f.q,
@@ -87,18 +106,18 @@ export default async function ServicePage({
       {
         "@type": "BreadcrumbList",
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+          { "@type": "ListItem", position: 1, name: tr(locale, LABELS.home), item: url("/") },
           {
             "@type": "ListItem",
             position: 2,
-            name: "Capabilities",
-            item: `${siteUrl}/services`,
+            name: tr(locale, LABELS.capabilities),
+            item: url("/services"),
           },
           {
             "@type": "ListItem",
             position: 3,
             name: service.title,
-            item: `${siteUrl}/services/${service.slug}`,
+            item: url(`/services/${service.slug}`),
           },
         ],
       },
@@ -118,7 +137,7 @@ export default async function ServicePage({
             href="/services"
             className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-grey hover:text-mineral"
           >
-            ← Capabilities
+            {tr(locale, LABELS.back)}
           </Link>
 
           <div className="mt-8 flex items-center gap-4">
@@ -141,7 +160,7 @@ export default async function ServicePage({
       {/* Extractable summary — short, specific, liftable. */}
       <section className="shell mt-16" aria-labelledby="takeaways">
         <h2 id="takeaways" className="eyebrow">
-          Key points
+          {tr(locale, LABELS.keyPoints)}
         </h2>
         <ul className="mt-6 grid gap-px border border-line bg-line md:grid-cols-3">
           {service.takeaways.map((t, i) => (
@@ -177,7 +196,7 @@ export default async function ServicePage({
       <section className="shell border-t border-line py-16">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
-            <h2 className="eyebrow">What you get</h2>
+            <h2 className="eyebrow">{tr(locale, LABELS.deliverables)}</h2>
           </div>
           <ul className="grid gap-x-8 md:col-span-8 sm:grid-cols-2">
             {service.deliverables.map((d) => (
@@ -196,7 +215,7 @@ export default async function ServicePage({
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
             <h2 id="faq" className="eyebrow">
-              Questions
+              {tr(locale, LABELS.questions)}
             </h2>
           </div>
           <dl className="md:col-span-8">
@@ -214,7 +233,7 @@ export default async function ServicePage({
 
       {related.length > 0 && (
         <section className="shell border-t border-line py-16">
-          <h2 className="eyebrow">Evidence</h2>
+          <h2 className="eyebrow">{tr(locale, LABELS.evidence)}</h2>
           <ul className="mt-8 flex flex-wrap gap-3">
             {related.map((p) => (
               <li key={p.slug}>
@@ -223,7 +242,7 @@ export default async function ServicePage({
                   className="group flex items-center gap-4 border border-line px-6 py-5 transition-colors hover:border-line-strong"
                 >
                   <span className="font-display text-xl">{p.title}</span>
-                                    <span className="text-grey transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1">
+                                    <span className="text-grey transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1">
                     →
                   </span>
                 </Link>

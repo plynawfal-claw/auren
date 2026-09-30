@@ -6,20 +6,43 @@ import { ContactCta } from "@/components/sections/contact-cta";
 import { practices } from "@/content/practices";
 import { services } from "@/content/services";
 import { routing } from "@/i18n/navigation";
+import { localizePractice, localizeService } from "@/content/services.i18n";
+import { c, tr } from "@/i18n/copy";
+
+const COPY = {
+  eyebrow: c("Capabilities", "Expertises", "الخدمات"),
+  title: c("Four disciplines, one engagement.", "Quatre expertises, un seul partenaire.", "أربع خبرات، شريك واحد."),
+  lead: c(
+    "Sold separately, these contradict each other — the brand promises one thing, the ads promise another, and the system behind them cannot keep either. Run together, each one makes the next cheaper.",
+    "Vendues séparément, elles se contredisent — la marque promet une chose, les publicités une autre, et le système derrière ne peut tenir ni l’une ni l’autre. Menées ensemble, chacune rend la suivante moins coûteuse.",
+    "إلا تباعو مفروقين، كيتناقضو — الماركة كتوعد بحاجة، الإعلانات بحاجة خرا، والسيستم اللي موراهم ما يقدر يوفي حتى وحدة. إلا خدمو مع بعض، كل وحدة كترخّص اللي من بعدها.",
+  ),
+  metaDescription: c(
+    "Digital products, creative and brand, growth, and AI systems — the four disciplines AUREN runs as one connected engagement.",
+    "Sites et applications, création et marque, croissance et systèmes IA — les quatre expertises qu’AUREN mène comme un seul accompagnement, au Maroc.",
+    "المواقع والتطبيقات، الإبداع والماركة، النمو والأنظمة الذكية — أربع خبرات كتخدمهم AUREN كخدمة وحدة مترابطة، فالمغرب.",
+  ),
+};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export const metadata: Metadata = {
-  // No `alternates.canonical` here on purpose. A relative canonical resolves
-  // against the locale-free `metadataBase`, so it emitted the English URL on
-  // every locale. `LocaleAlternates` derives canonical + hreflang per route
-  // and per locale instead.
-  title: "Capabilities",
-  description:
-    "Digital products, creative and brand, growth, and AI systems — the four disciplines AUREN runs as one connected engagement.",
-};
+// No `alternates.canonical` here on purpose. A relative canonical resolves
+// against the locale-free `metadataBase`, so it emitted the English URL on
+// every locale. `LocaleAlternates` derives canonical + hreflang per route
+// and per locale instead.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: tr(locale, COPY.eyebrow),
+    description: tr(locale, COPY.metaDescription),
+  };
+}
 
 export default async function ServicesIndex({
   params,
@@ -33,21 +56,22 @@ export default async function ServicesIndex({
     <>
       <section className="pt-36 pb-16">
         <div className="shell">
-          <p className="eyebrow">Capabilities</p>
+          <p className="eyebrow">{tr(locale, COPY.eyebrow)}</p>
           <h1 className="mt-6 max-w-[16ch] text-[length:var(--text-display)]">
-            Four disciplines, one engagement.
+            {tr(locale, COPY.title)}
           </h1>
           <p className="lead mt-7 max-w-[58ch]">
-            Sold separately, these contradict each other — the brand promises
-            one thing, the ads promise another, and the system behind them
-            cannot keep either. Run together, each one makes the next cheaper.
+            {tr(locale, COPY.lead)}
           </p>
         </div>
       </section>
 
       <div className="shell pb-24">
-        {practices.map((d) => {
-          const group = services.filter((s) => d.serviceSlugs.includes(s.slug));
+        {practices.map((p) => {
+          const d = localizePractice(p, locale);
+          const group = services
+            .filter((s) => d.serviceSlugs.includes(s.slug))
+            .map((s) => localizeService(s, locale));
           return (
             <section
               key={d.id}
@@ -82,7 +106,7 @@ export default async function ServicesIndex({
                             {s.definition}
                           </p>
                         </div>
-                        <span className="mt-2 shrink-0 text-grey transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1">
+                        <span className="mt-2 shrink-0 text-grey transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1">
                           →
                         </span>
                       </Link>

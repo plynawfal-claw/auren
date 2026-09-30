@@ -9,10 +9,17 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export const metadata: Metadata = {
-  title: "Start a project",
-  description: "Tell AUREN what you are building or trying to improve in four short steps.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return {
+    title: tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع")),
+    description: tr(locale, c(
+      "Tell AUREN what you are building or trying to improve in four short steps.",
+      "Décrivez à AUREN ce que vous voulez créer ou améliorer, en quatre étapes courtes.",
+      "قول لـ AUREN شنو باغي تبني ولا تحسّن، فأربع خطوات قصيرة.",
+    )),
+  };
+}
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -36,7 +43,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
           <dl className="mt-12 space-y-7 border-t border-line pt-8">
             <div>
               <dt className="eyebrow">{tr(locale, c("Where we are", "Où nous trouver", "فين حنا"))}</dt>
-              <dd className="mt-2 text-sm text-silver">{site.region} · {tr(locale, c("working beyond borders", "et partout ailleurs", "وكنخدمو حتى برا"))}</dd>
+              <dd className="mt-2 text-sm text-silver">{tr(locale, c(`${site.region} · working beyond borders`, "Maroc · et partout ailleurs", "المغرب · وكنخدمو حتى برا"))}</dd>
             </div>
             {hasEmail && (
               <div>

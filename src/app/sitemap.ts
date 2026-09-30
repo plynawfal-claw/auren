@@ -3,52 +3,65 @@ import { articles } from "@/content/insights";
 import { projects } from "@/content/projects";
 import { services } from "@/content/services";
 import { siteUrl } from "@/config/site";
+import { localeHtmlLang } from "@/i18n/config";
+import { localesFor, localeUrl } from "@/i18n/translated";
+
+type Entry = MetadataRoute.Sitemap[number];
 
 /**
- * Only URLs that exist and are meant to be indexed.
+ * Only URLs that exist, are canonical, and are meant to be indexed.
  *
- * Locale-prefixed routes are deliberately absent. The three locales are wired
- * and routable, and `hreflang` connects them, but English is the only one with
- * written copy — `messages/en.json` is a placeholder and the rest of the site
- * reads from components. Listing `/fr/work` and `/ar/work` today would point
- * crawlers at three copies of the same English text and earn a thin-content
- * assessment across the whole domain.
+ * Every route is routable in all three locales, but a locale URL is listed
+ * only where that route has real copy in that language (`i18n/translated`).
+ * The rest render the English text under a prefix and canonicalise to the
+ * English page, so listing them would point crawlers at duplicates.
  *
- * They are added the day the translations land. The switcher and the proxy
- * already resolve them, so nothing else has to change at that point — only
- * this list.
+ * Each listed URL carries its language alternates, mirroring the hreflang
+ * that `LocaleAlternates` puts in the page head — the two read the same
+ * registry, so they cannot disagree.
  */
+function entries(
+  path: string,
+  rest: Omit<Entry, "url" | "alternates">,
+): Entry[] {
+  const available = localesFor(path);
+  const languages =
+    available.length > 1
+      ? {
+          ...Object.fromEntries(available.map((l) => [localeHtmlLang[l], localeUrl(siteUrl, l, path)])),
+          "x-default": localeUrl(siteUrl, "en", path),
+        }
+      : undefined;
+  return available.map((locale) => ({
+    url: localeUrl(siteUrl, locale, path),
+    ...rest,
+    ...(languages ? { alternates: { languages } } : {}),
+  }));
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  const stat = ["", "/work", "/services", "/insights", "/studio", "/contact"].map(
-    (path) => ({
-      url: `${siteUrl}${path}`,
-      lastModified: now,
-      changeFrequency: path === "" ? ("weekly" as const) : ("monthly" as const),
-      priority: path === "" ? 1 : 0.8,
-    }),
-  );
-
   return [
-    ...stat,
-    ...projects.map((p) => ({
-      url: `${siteUrl}/work/${p.slug}`,
-      lastModified: now,
-      changeFrequency: "yearly" as const,
-      priority: 0.7,
-    })),
-    ...services.map((s) => ({
-      url: `${siteUrl}/services/${s.slug}`,
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.9,
-    })),
-    ...articles.map((a) => ({
-      url: `${siteUrl}/insights/${a.slug}`,
-      lastModified: new Date(a.updated ?? a.published),
-      changeFrequency: "yearly" as const,
-      priority: 0.6,
-    })),
+    ...["/", "/work", "/services", "/insights", "/studio", "/contact"].flatMap((path) =>
+      entries(path, {
+        lastModified: now,
+        changeFrequency: path === "/" ? "weekly" : "monthly",
+        priority: path === "/" ? 1 : 0.8,
+      }),
+    ),
+    ...projects.flatMap((p) =>
+      entries(`/work/${p.slug}`, { lastModified: now, changeFrequency: "yearly", priority: 0.7 }),
+    ),
+    ...services.flatMap((s) =>
+      entries(`/services/${s.slug}`, { lastModified: now, changeFrequency: "monthly", priority: 0.9 }),
+    ),
+    ...articles.flatMap((a) =>
+      entries(`/insights/${a.slug}`, {
+        lastModified: new Date(a.updated ?? a.published),
+        changeFrequency: "yearly",
+        priority: 0.6,
+      }),
+    ),
   ];
 }

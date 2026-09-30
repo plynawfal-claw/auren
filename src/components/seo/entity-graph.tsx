@@ -75,8 +75,8 @@ export function EntityGraph() {
         url: siteUrl,
         name: site.name,
         description: site.description,
+        inLanguage: ["en", "fr-MA", "ar-MA"],
         publisher: { "@id": org },
-        inLanguage: "en",
       },
     ],
   };

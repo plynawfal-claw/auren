@@ -20,6 +20,7 @@ import { locales, localeHtmlLang, localeDir, type Locale } from "@/i18n/config";
 import { routing } from "@/i18n/navigation";
 import { site, siteUrl } from "@/config/site";
 import { DEBUG_GATE } from "@/lib/debug";
+import { asLocale, c, tr } from "@/i18n/copy";
 import "lenis/dist/lenis.css";
 import "../globals.css";
 
@@ -76,32 +77,46 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: `${site.name} — ${site.tagline}`,
-    template: `%s · ${site.name}`,
-  },
-  description: site.description,
-  applicationName: site.name,
-  openGraph: {
-    type: "website",
-    siteName: site.name,
-    title: `${site.name} — ${site.tagline}`,
-    description: site.description,
-    locale: "en",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${site.name} — ${site.tagline}`,
-    description: site.description,
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
-  },
-};
+/**
+ * The site-wide defaults, per locale. The homepage takes these as its own
+ * title and description, so French and Darija visitors — and the search
+ * results that show them — read the site in their language. `og:url` and the
+ * canonical come from `LocaleAlternates`, not from here.
+ */
+const TAGLINE = c(
+  site.tagline,
+  "Sites web, création, croissance et systèmes intelligents",
+  "مواقع، إبداع، نمو وأنظمة ذكية",
+);
+const DESCRIPTION = c(
+  site.description,
+  "AUREN est un studio digital au Maroc qui crée le site, la marque, l’acquisition et l’automatisation comme un seul travail cohérent.",
+  "AUREN ستوديو رقمي فالمغرب كيصاوب الموقع، الماركة، جلب الكليان والأتمتة كخدمة وحدة مترابطة.",
+);
+const OG_LOCALE: Record<Locale, string> = { en: "en_US", fr: "fr_MA", ar: "ar_MA" };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const locale = asLocale((await params).locale);
+  const title = `${site.name} — ${tr(locale, TAGLINE)}`;
+  const description = tr(locale, DESCRIPTION);
+  return {
+    metadataBase: new URL(siteUrl),
+    title: { default: title, template: `%s · ${site.name}` },
+    description,
+    applicationName: site.name,
+    openGraph: { type: "website", siteName: site.name, title, description, locale: OG_LOCALE[locale] },
+    twitter: { card: "summary_large_image", title, description },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    },
+  };
+}
 
 export const viewport = {
   // Both palettes are dark-first; the browser chrome and the media query stay
