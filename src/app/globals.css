@@ -940,52 +940,124 @@ html[lang^="ar"] {
 }
 
 /* ============================================================
-   Liquid-glass theme toggle
-   The track and the travelling lens. Theme-aware: the lens is a
-   brighter, more refractive element in dark, a frosted solid in
-   light. Both use the same geometry so the motion reads identically.
+   Theme toggle — theme-toggle.tsx
+   Two states only. Colours are the toggle's own, not palette
+   tokens: the control shows the state it represents, charcoal or
+   warm white, whichever page it sits on.
    ============================================================ */
-.glass-track {
-  background: color-mix(in srgb, var(--color-mineral) 6%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-mineral) 14%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--color-mineral) 8%, transparent),
-    0 8px 24px color-mix(in srgb, var(--color-ink) 40%, transparent);
-  backdrop-filter: blur(14px) saturate(140%);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-  color: var(--color-mineral);
+.theme-toggle {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  width: 60px;
+  height: 32px;
+  flex: none;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  background: #16181c;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.55), inset 0 0 12px rgb(120 150 255 / 0.08);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 380ms var(--ease), border-color 380ms var(--ease), box-shadow 380ms var(--ease), scale 160ms var(--ease);
+}
+/* A 44px tap target around a 32px control, without changing the layout. */
+.theme-toggle::after { content: ""; position: absolute; inset: -7px -2px; }
+.theme-toggle:active { scale: 0.96; }
+.theme-toggle:focus-visible { outline: 2px solid var(--color-lume); outline-offset: 3px; }
+.theme-toggle[data-state="light"] {
+  background: #f6f1e7;
+  border-color: rgb(120 90 40 / 0.18);
+  box-shadow: inset 0 1px 2px rgb(120 90 40 / 0.14), inset 0 0 14px rgb(255 190 110 / 0.18);
 }
 
-.glass-lens {
-  background:
-    radial-gradient(120% 120% at 30% 25%, color-mix(in srgb, var(--color-mineral) 26%, transparent), transparent 55%),
-    color-mix(in srgb, var(--color-mineral) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-mineral) 30%, transparent);
-  box-shadow:
-    inset 0 1px 1px color-mix(in srgb, var(--color-mineral) 40%, transparent),
-    inset 0 -2px 4px color-mix(in srgb, var(--color-ink) 22%, transparent),
-    0 4px 14px color-mix(in srgb, var(--color-ink) 45%, transparent);
-  backdrop-filter: blur(8px) saturate(160%) brightness(1.08);
-  -webkit-backdrop-filter: blur(8px) saturate(160%) brightness(1.08);
+/* Ambient: an orbiting highlight in the dark, a drifting sun-glow in the light. */
+.theme-toggle__ambient {
+  position: absolute;
+  inset: -60%;
+  z-index: -1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0 62%, rgb(150 175 255 / 0.32) 74%, transparent 86%);
+  animation: theme-orbit 7s linear infinite;
+  transition: opacity 380ms var(--ease);
+}
+.theme-toggle[data-state="light"] .theme-toggle__ambient {
+  background: radial-gradient(circle at 68% 50%, rgb(255 196 120 / 0.55), transparent 42%);
+  animation: theme-drift 5.5s ease-in-out infinite alternate;
+}
+@keyframes theme-orbit { to { rotate: 360deg; } }
+@keyframes theme-drift { from { translate: -6% 0; } to { translate: 6% 0; } }
+
+/* The thumb: raised, and it glides on a soft spring. */
+.theme-toggle__thumb {
+  position: absolute;
+  left: 3px;
+  top: 2px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #3a3f48, #23262c 70%);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.14), 0 0 10px rgb(140 165 255 / 0.18);
+  transition: translate 440ms cubic-bezier(0.34, 1.5, 0.5, 1), background 380ms var(--ease), box-shadow 380ms var(--ease);
+}
+.theme-toggle[data-state="light"] .theme-toggle__thumb {
+  translate: 28px 0;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #fbf4e6 70%);
+  box-shadow: 0 2px 6px rgb(150 100 30 / 0.28), inset 0 1px 0 #fff, 0 0 12px rgb(255 190 100 / 0.45);
+}
+/* No RTL variant on purpose. The toggle lives in the header bar, which is
+   laid out LTR on every locale (dir="ltr" on the bar), so its geometry is
+   physical: left, then +28px. An RTL rule keyed on the page direction pushed
+   the thumb out of the track on /ar, and the build rewrites :dir() into
+   exactly that ancestor match. */
+
+/* Icons: one turns away as the other turns in. */
+.theme-toggle__icon {
+  grid-area: 1 / 1;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 300ms var(--ease), rotate 440ms var(--ease), scale 440ms var(--ease);
+}
+.theme-toggle__moon { stroke: #d6dcea; fill: rgb(214 220 234 / 0.12); }
+.theme-toggle__sun { stroke: #d98a1c; opacity: 0; rotate: -90deg; scale: 0.5; }
+.theme-toggle[data-state="light"] .theme-toggle__moon { opacity: 0; rotate: 90deg; scale: 0.5; }
+.theme-toggle[data-state="light"] .theme-toggle__sun { opacity: 1; rotate: 0deg; scale: 1; }
+
+/* One light sweep across the track at the moment of switching. */
+.theme-toggle__sweep {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.55) 50%, transparent 70%);
+  translate: -110% 0;
+  animation: theme-sweep 460ms var(--ease) forwards;
+}
+@keyframes theme-sweep { to { translate: 110% 0; } }
+
+/* The page itself crossfades its colours for the length of one switch, so
+   nothing cuts from black to white. Transform transitions are untouched
+   (only colour properties are listed), and the toggle keeps its own. */
+html.theme-switching body,
+html.theme-switching body *:not(.theme-toggle, .theme-toggle *),
+html.theme-switching body *::before,
+html.theme-switching body *::after {
+  transition-property: background-color, color, border-color, fill, stroke, box-shadow !important;
+  transition-duration: 350ms !important;
+  transition-timing-function: var(--ease) !important;
 }
 
-html[data-palette="light"] .glass-track {
-  background: color-mix(in srgb, var(--color-mineral) 4%, transparent);
-  border-color: color-mix(in srgb, var(--color-mineral) 16%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, #ffffff 70%, transparent),
-    0 6px 18px color-mix(in srgb, var(--color-mineral) 14%, transparent);
-}
-
-html[data-palette="light"] .glass-lens {
-  background:
-    radial-gradient(120% 120% at 30% 25%, rgba(255, 255, 255, 0.85), transparent 55%),
-    color-mix(in srgb, #ffffff 60%, transparent);
-  border-color: color-mix(in srgb, var(--color-mineral) 12%, transparent);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.9),
-    inset 0 -2px 4px color-mix(in srgb, var(--color-mineral) 10%, transparent),
-    0 4px 12px color-mix(in srgb, var(--color-mineral) 22%, transparent);
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle__ambient { animation: none; }
+  .theme-toggle__sweep { display: none; }
 }
 
 /* ============================================================
@@ -1199,6 +1271,26 @@ html[dir="rtl"] .hero-signature { right: auto; left: -24%; }
     radial-gradient(60% 90% at 78% 26%, color-mix(in srgb, var(--color-lume) 13%, transparent), transparent 75%),
     linear-gradient(150deg, var(--color-graphite), var(--color-ink));
 }
+/* How-we-work loops (process-motion.tsx). The clips are white-on-black and
+   sit on their own small screen: a black tile on the dark palette, and on the
+   light palette the same clip inverted with its hue kept — a white tile with
+   dark strokes. Blend modes are not an option here: the cards are 3D
+   (preserve-3d) and blending does not composite inside a 3D context. */
+.process-motion {
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+  border: 1px solid color-mix(in srgb, var(--color-lume) 16%, var(--color-line));
+  box-shadow: 0 14px 30px -18px rgb(0 0 0 / 0.7);
+}
+.process-motion__media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.process-motion__video { opacity: 0; transition: opacity 300ms var(--ease); }
+.process-motion__video[data-playing="true"] { opacity: 1; }
+html[data-palette="light"] .process-motion { background: #fff; box-shadow: 0 14px 30px -20px rgb(20 30 60 / 0.25); }
+html[data-palette="light"] .process-motion__media { filter: invert(1) hue-rotate(180deg); }
+/* The phase being read lifts a little; the others sit back. */
+.process-stage { transition: transform 350ms var(--ease), box-shadow 350ms var(--ease), border-color 350ms var(--ease); }
+.process-stage[data-current="true"] { border-color: color-mix(in srgb, var(--color-lume) 34%, var(--color-line)); }
 .process-image-caption { background: linear-gradient(to top, color-mix(in srgb, var(--color-ink) 94%, transparent), transparent); }
 .systems-art {
   background:

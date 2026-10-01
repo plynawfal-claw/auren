@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { TextReveal } from "@/components/motion/text-reveal";
 import { EditorialImageSlot } from "@/components/motion/editorial-image-slot";
+import { ProcessMotion } from "@/components/sections/process-motion";
 import { cn } from "@/lib/cn";
 import { c, tr } from "@/i18n/copy";
 import { editorialImages } from "@/content/editorial-images";
@@ -44,35 +45,60 @@ const STAGES = [
   },
 ] as const;
 
+/** Rendered loops, in phase order — see remotion/src/process.tsx. */
+const CLIPS = ["01-understand", "02-shape", "03-build", "04-grow"];
+
 export function Process({ locale }: { locale: string }) {
   const listRef = useRef<HTMLOListElement>(null);
-  const [scrolled, setScrolled] = useState(0);
+  // `current`: the phase nearest the middle of the screen. `furthest`: the
+  // deepest phase reached — the line and dots only ever move forward.
+  const [current, setCurrent] = useState(0);
+  const [furthest, setFurthest] = useState(0);
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", true);
 
   // Under reduced motion every stage is lit from the start — derived, not set
-  // in an effect, so there is no frame where the journey renders unlit.
-  const reached = reduced ? STAGES.length - 1 : scrolled;
+  // in an effect, so there is no frame where the journey renders unlit. The
+  // current phase is still tracked: which card is being read is content.
+  const reached = reduced ? STAGES.length - 1 : furthest;
 
+  // Follows the scroll, never drives it: no snapping, no locking. Geometry is
+  // read fresh each frame it runs, and the visual viewport is watched too, so
+  // an iOS toolbar resize cannot leave a stale measurement behind.
   useEffect(() => {
-    if (reduced) return;
     const list = listRef.current;
     if (!list) return;
-    const items = Array.from(list.children) as HTMLElement[];
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (!e.isIntersecting) return;
-          const i = items.indexOf(e.target as HTMLElement);
-          // Only ever moves forward — a stage you have passed stays lit.
-          if (i >= 0) setScrolled((r) => (i > r ? i : r));
-        });
-      },
-      { rootMargin: "-35% 0px -40% 0px", threshold: 0 },
-    );
-    items.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, [reduced]);
+    let frame = 0;
+    const measure = () => {
+      frame = 0;
+      const mid = window.innerHeight / 2;
+      let best = -1;
+      let bestDistance = Infinity;
+      Array.from(list.children).forEach((item, i) => {
+        const r = item.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > window.innerHeight) return;
+        const d = Math.abs(r.top + r.height / 2 - mid);
+        if (d < bestDistance) { best = i; bestDistance = d; }
+      });
+      if (best < 0) return;
+      setCurrent(best);
+      // A phase counts as reached once its card has come up past the lower
+      // third, matching the old observer band.
+      const r = list.children[best].getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.65) setFurthest((f) => (best > f ? best : f));
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(measure); };
+    const viewport = window.visualViewport;
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    viewport?.addEventListener("resize", schedule, { passive: true });
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      viewport?.removeEventListener("resize", schedule);
+    };
+  }, []);
 
   const pct = ((reached + 1) / STAGES.length) * 100;
 
@@ -130,6 +156,7 @@ export function Process({ locale }: { locale: string }) {
           <ol ref={listRef} className="space-y-20 md:space-y-28">
             {STAGES.map((s, i) => {
               const on = i <= reached;
+              const isCurrent = i === current;
               return (
                 <li
                   key={s.n}
@@ -151,13 +178,34 @@ export function Process({ locale }: { locale: string }) {
                     className={cn(
                       "transition-all duration-700 ease-[var(--ease)]",
                       i % 2 === 1 ? "md:ps-16" : "md:pe-16 md:text-end",
-                      on ? "translate-y-0 opacity-100" : "translate-y-3 opacity-45",
+                      // The phase being read is fully present; ones already
+                      // passed stay readable but calmer; ones ahead wait.
+                      !on ? "translate-y-3 opacity-45" : isCurrent ? "translate-y-0 opacity-100" : "translate-y-0 opacity-[0.86]",
                     )}
                   >
-                    <div className="spatial-object process-stage p-6 md:p-8">
-                      <span className="font-mono text-[0.68rem] tracking-[0.18em] text-grey">
-                        {s.n}
-                      </span>
+                    <div
+                      className={cn(
+                        "spatial-object process-stage relative p-6 md:p-8",
+                        // Text keeps to the timeline side; the visual takes the outer side.
+                        i % 2 === 1 ? "md:pe-[42%]" : "md:ps-[42%]",
+                      )}
+                      data-current={isCurrent}
+                    >
+                      {/* Phone: the visual shares the top row with the number.
+                          Wider: it takes the right of the card, text stays left. */}
+                      <div className="flex items-start justify-between gap-4">
+                        <span className="font-mono text-[0.68rem] tracking-[0.18em] text-grey">
+                          {s.n}
+                        </span>
+                        <ProcessMotion
+                          clip={CLIPS[i]}
+                          active={isCurrent && on}
+                          className={cn(
+                            "relative h-[72px] w-24 shrink-0 md:absolute md:top-1/2 md:h-auto md:w-[36%] md:-translate-y-1/2 md:aspect-[4/3]",
+                            i % 2 === 1 ? "md:end-6" : "md:start-6",
+                          )}
+                        />
+                      </div>
                       <h3 className="mt-4 font-display text-[clamp(1.9rem,4vw,3rem)] leading-none">
                         {tr(locale, s.title)}
                       </h3>

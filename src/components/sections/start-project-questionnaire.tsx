@@ -39,8 +39,8 @@ const questions = [
 
 const panel = "rounded-[1.5rem] border border-line bg-graphite p-6 sm:p-8 md:p-10";
 const field = "w-full rounded-xl border border-line-strong bg-ink px-4 py-3.5 text-base text-mineral outline-none transition-colors focus:border-lume";
-const action = "inline-flex min-h-12 items-center justify-center rounded-full bg-mineral px-7 py-3 font-mono text-xs uppercase tracking-[0.12em] text-ink transition-transform hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40";
-const backAction = "min-h-12 rounded-full border border-line-strong px-6 py-3 font-mono text-xs uppercase tracking-[0.12em] text-mineral transition-colors hover:border-lume";
+const action = "inline-flex min-h-12 items-center justify-center rounded-full bg-mineral px-7 py-3 font-mono text-xs uppercase tracking-[0.12em] text-ink transition-[transform,opacity] duration-200 hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40";
+const backAction = "min-h-12 rounded-full border border-line-strong px-6 py-3 font-mono text-xs uppercase tracking-[0.12em] text-mineral transition-[border-color,transform] duration-200 hover:border-lume active:scale-[0.98]";
 
 function localizedMessage(locale: string, stage: Copy, selected: Copy[], description: string, name: string, business: string, method: Copy) {
   const lines = {
@@ -119,7 +119,11 @@ export function StartProjectQuestionnaire({ locale }: { locale: string }) {
       </div>
       <ol className="mt-8 grid grid-cols-4 gap-2" aria-label={tr(locale, c("Questionnaire progress", "Avancement du questionnaire", "تقدم الأسئلة"))}>
         {questions.map((question, index) => (
-          <li key={question.en} aria-current={step === index ? "step" : undefined} className={`h-1 rounded-full transition-colors ${index <= step ? "bg-lume" : "bg-line-strong"}`} aria-label={tr(locale, c(`Step ${index + 1}`, `Étape ${index + 1}`, `المرحلة ${index + 1}`))} />
+          <li key={question.en} aria-current={step === index ? "step" : undefined} className="relative h-1 overflow-hidden rounded-full bg-line-strong" aria-label={tr(locale, c(`Step ${index + 1}`, `Étape ${index + 1}`, `المرحلة ${index + 1}`))}>
+            {/* The segment fills along the reading direction instead of
+                snapping colour, so moving forward reads as progress. */}
+            <span aria-hidden="true" className={`absolute inset-0 origin-left bg-lume transition-transform duration-[350ms] ease-[var(--ease)] rtl:origin-right ${index <= step ? "scale-x-100" : "scale-x-0"}`} />
+          </li>
         ))}
       </ol>
       <p className="mt-5 font-mono text-[0.7rem] uppercase tracking-[0.15em] text-grey">
@@ -142,7 +146,7 @@ export function StartProjectQuestionnaire({ locale }: { locale: string }) {
             <fieldset className="mt-8 space-y-3">
               <legend className="sr-only">{tr(locale, questions[0])}</legend>
               {stages.map((item, index) => (
-                <label key={item.en} className={`flex min-h-16 cursor-pointer items-center gap-4 rounded-2xl border p-4 text-start transition-colors ${stage === index ? "border-lume bg-lume/10" : "border-line-strong hover:border-silver"}`}>
+                <label key={item.en} className={`flex min-h-16 cursor-pointer items-center gap-4 rounded-2xl border p-4 text-start transition-[border-color,background-color,scale] duration-200 [-webkit-tap-highlight-color:transparent] active:scale-[0.99] ${stage === index ? "border-lume bg-lume/10" : "border-line-strong hover:border-silver"}`}>
                   <input type="radio" name="stage" value={index} checked={stage === index} onChange={() => setStage(index)} className="h-5 w-5 shrink-0 accent-[#c69b63]" />
                   <span className="leading-snug text-mineral">{tr(locale, item)}</span>
                 </label>
@@ -154,7 +158,7 @@ export function StartProjectQuestionnaire({ locale }: { locale: string }) {
               <legend className="mb-5 text-sm text-silver">{tr(locale, c("Choose any that fit.", "Choisissez tout ce qui correspond.", "اختار كلشي اللي كيناسبك."))}</legend>
               <div className="grid gap-3 sm:grid-cols-2">
                 {services.map((item, index) => (
-                  <label key={item.en} className={`flex min-h-14 cursor-pointer items-center gap-3 rounded-2xl border p-4 text-start transition-colors ${selected.includes(index) ? "border-lume bg-lume/10" : "border-line-strong hover:border-silver"}`}>
+                  <label key={item.en} className={`flex min-h-14 cursor-pointer items-center gap-3 rounded-2xl border p-4 text-start transition-[border-color,background-color,scale] duration-200 [-webkit-tap-highlight-color:transparent] active:scale-[0.99] ${selected.includes(index) ? "border-lume bg-lume/10" : "border-line-strong hover:border-silver"}`}>
                     <input type="checkbox" checked={selected.includes(index)} onChange={() => toggleService(index)} className="h-5 w-5 shrink-0 accent-[#c69b63]" />
                     <span className="text-sm leading-snug text-mineral">{tr(locale, item)}</span>
                   </label>

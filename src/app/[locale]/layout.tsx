@@ -15,7 +15,6 @@ import { SiteFooter } from "@/components/sections/site-footer";
 import { EntityGraph } from "@/components/seo/entity-graph";
 import { Analytics } from "@/components/seo/analytics";
 import { LocaleAlternates } from "@/components/seo/locale-alternates";
-import { PaletteSwitcher } from "@/components/ui/palette-switcher";
 import { locales, localeHtmlLang, localeDir, type Locale } from "@/i18n/config";
 import { routing } from "@/i18n/navigation";
 import { site, siteUrl } from "@/config/site";
@@ -178,7 +177,6 @@ export default async function LocaleLayout({
             <SiteHeader locale={typed} />
             <main id="main">{children}</main>
             <SiteFooter locale={typed} />
-            <PaletteSwitcher />
             <BackToTop />
           </SmoothScrollProvider>
         </NextIntlClientProvider>

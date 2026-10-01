@@ -37,6 +37,8 @@ export function ServiceMotion({ id }: { id: string }) {
   // the bare ground — so before play starts, off-screen, or when Low Power
   // Mode refuses autoplay, the poster underneath is what shows.
   const [playing, setPlaying] = useState<string | null>(null);
+  // A clip that fails to decode gives way to its poster rather than a blank.
+  const [failed, setFailed] = useState<string | null>(null);
   const clip = CLIP[id] ?? CLIP.websites;
   const poster = `/motion/posters/${clip}.webp`;
 
@@ -62,13 +64,14 @@ export function ServiceMotion({ id }: { id: string }) {
     <div ref={ref} aria-hidden="true" className="service-motion pointer-events-none absolute inset-0">
       {/* eslint-disable-next-line @next/next/no-img-element -- 6–9 KB poster; next/image would add a request for nothing */}
       <img key={`p-${clip}`} src={poster} alt="" className="service-motion__media" decoding="async" loading="lazy" />
-      {near && !reduced && (
+      {near && !reduced && failed !== clip && (
         <video
           key={clip}
           ref={videoRef}
           className="service-motion__media service-motion__video"
           data-playing={playing === clip}
           onPlaying={() => setPlaying(clip)}
+          onError={() => setFailed(clip)}
           poster={poster}
           autoPlay
           muted
@@ -78,8 +81,9 @@ export function ServiceMotion({ id }: { id: string }) {
           disablePictureInPicture
           tabIndex={-1}
         >
-          <source src={`/motion/${clip}.webm`} type="video/webm" />
+          {/* H.264 first: hardware-decoded nearly everywhere; VP9 is the fallback. */}
           <source src={`/motion/${clip}.mp4`} type="video/mp4" />
+          <source src={`/motion/${clip}.webm`} type="video/webm" />
         </video>
       )}
     </div>

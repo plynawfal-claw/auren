@@ -8,6 +8,7 @@ import {
   SystemsThatSaveTime,
   WebsitesThatSell,
 } from "./scenes";
+import { PH, PROCESS, PW } from "./process";
 
 /** Composition ids are the output filenames in auren/public/motion/. */
 export const RemotionRoot: React.FC = () => (
@@ -28,6 +29,9 @@ export const RemotionRoot: React.FC = () => (
         width={W}
         height={H}
       />
+    ))}
+    {PROCESS.map(([id, Component]) => (
+      <Composition key={id} id={id} component={Component} durationInFrames={DURATION} fps={FPS} width={PW} height={PH} />
     ))}
   </>
 );

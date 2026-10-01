@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Wordmark } from "@/components/ui/wordmark";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
-import { PaletteSwitcher } from "@/components/ui/palette-switcher";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { nav } from "@/config/site";
 import type { Locale } from "@/i18n/config";
 import { cn } from "@/lib/cn";
@@ -116,7 +116,10 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             />
           </Link>
 
-          <nav className="hidden items-center gap-8 md:flex" aria-label="Primary">
+          {/* Full navigation from 880px. Below that the four links, the CTA, the
+              theme control and three language codes need ~620px and do not fit
+              without crushing the wordmark, so tablets get the compact bar. */}
+          <nav className="hidden items-center gap-4 min-[880px]:flex lg:gap-8" aria-label="Primary">
             {nav.map((item) => {
               const active = isSection(pathname, item.href);
               return (
@@ -125,7 +128,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "group relative font-mono text-[0.7rem] uppercase tracking-[0.14em] transition-colors",
+                    "group relative whitespace-nowrap font-mono text-[0.7rem] uppercase tracking-[0.08em] transition-colors lg:tracking-[0.14em]",
                     active ? "text-mineral" : "text-silver hover:text-mineral",
                   )}
                 >
@@ -147,7 +150,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             <Link
               href="/contact"
               className={cn(
-                "magnetic-btn rounded-full px-5 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.14em] transition-transform duration-[var(--dur)] ease-[var(--ease)] active:scale-[0.97] active:duration-[120ms]",
+                "magnetic-btn whitespace-nowrap rounded-full px-3 py-2.5 lg:px-5 font-mono text-[0.7rem] uppercase tracking-[0.08em] lg:tracking-[0.14em] transition-transform duration-[var(--dur)] ease-[var(--ease)] active:scale-[0.97] active:duration-[120ms]",
                 isSection(pathname, "/contact")
                   ? "bg-lume text-ink hover:bg-lume/90"
                   : "bg-mineral text-ink hover:bg-mineral-hi",
@@ -155,34 +158,41 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             >
               {tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع"))}
             </Link>
+            {/* Between the CTA and the language: part of the controls, never
+                competing with "Start a project". */}
+            <ThemeToggle />
             <LocaleSwitcher locale={locale} />
           </nav>
 
-          {/* Mobile: the only other thing in the header. */}
-          <button
-            ref={toggleRef}
-            type="button"
-            className="-mr-2 flex h-11 w-11 items-center justify-center md:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span className="sr-only">{open ? tr(locale, c("Close menu", "Fermer le menu", "سدّ المينيو")) : tr(locale, c("Open menu", "Ouvrir le menu", "حلّ المينيو"))}</span>
-            <span className="relative block h-2.5 w-6" aria-hidden="true">
-              <span
-                className={cn(
-                  "absolute left-0 h-px w-full bg-mineral transition-all duration-[var(--dur)] ease-[var(--ease)]",
-                  open ? "top-1 rotate-45" : "top-0",
-                )}
-              />
-              <span
-                className={cn(
-                  "absolute left-0 h-px w-full bg-mineral transition-all duration-[var(--dur)] ease-[var(--ease)]",
-                  open ? "top-1 -rotate-45" : "top-2.5",
-                )}
-              />
-            </span>
-          </button>
+          {/* Mobile: the theme control and the menu, nothing else. The theme
+              lives up here, clear of Safari's bottom toolbar. */}
+          <div className="flex items-center gap-2 min-[880px]:hidden">
+            <ThemeToggle />
+            <button
+              ref={toggleRef}
+              type="button"
+              className="-mr-2 flex h-11 w-11 items-center justify-center"
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span className="sr-only">{open ? tr(locale, c("Close menu", "Fermer le menu", "سدّ المينيو")) : tr(locale, c("Open menu", "Ouvrir le menu", "حلّ المينيو"))}</span>
+              <span className="relative block h-2.5 w-6" aria-hidden="true">
+                <span
+                  className={cn(
+                    "absolute left-0 h-px w-full bg-mineral transition-all duration-[var(--dur)] ease-[var(--ease)]",
+                    open ? "top-1 rotate-45" : "top-0",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "absolute left-0 h-px w-full bg-mineral transition-all duration-[var(--dur)] ease-[var(--ease)]",
+                    open ? "top-1 -rotate-45" : "top-2.5",
+                  )}
+                />
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Fading edge instead of a hard divider, and only once content is
@@ -206,7 +216,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         ref={panelRef}
         inert={!open}
         className={cn(
-          "fixed inset-0 z-30 overflow-y-auto overscroll-contain bg-ink transition-opacity duration-300 ease-[var(--ease)] md:hidden",
+          "fixed inset-0 z-30 overflow-y-auto overscroll-contain bg-ink transition-opacity duration-300 ease-[var(--ease)] min-[880px]:hidden",
           open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
         )}
       >
@@ -254,18 +264,9 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             {tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع"))}
           </Link>
 
-          {/* Theme, as a deliberate row. On a phone the page-foot control sat
-              under Safari's bottom toolbar; here it is always reachable. */}
-          <div className="mt-12 flex items-center justify-between border-t border-line pt-8">
-            <span className="font-mono text-[0.68rem] uppercase tracking-[0.16em] text-grey">
-              {tr(locale, c("Theme", "Thème", "الألوان"))}
-            </span>
-            <PaletteSwitcher variant="inline" />
-          </div>
-
           <LocaleSwitcher
             locale={locale}
-            className="mt-8 justify-center md:hidden"
+            className="mt-12 justify-center border-t border-line pt-8"
           />
         </nav>
       </div>
