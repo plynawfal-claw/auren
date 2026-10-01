@@ -10,6 +10,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Cloudflare/OpenNext build output: a 12 MB bundled worker, never source.
+    ".open-next/**",
+    ".wrangler/**",
     // Separate Remotion project with its own package, lint and tsconfig.
     "remotion/**",
   ]),

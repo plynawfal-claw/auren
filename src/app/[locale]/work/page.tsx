@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { share } from "@/lib/share";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { BrowserFrame } from "@/components/work/browser-frame";
@@ -12,14 +13,17 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+const DESCRIPTION =
+  "Three businesses built end to end — storefronts, applications, brand systems and the automation behind them. Case studies from AUREN.";
+
+// No `alternates.canonical` here on purpose. A relative canonical resolves
+// against the locale-free `metadataBase`, so it emitted the English URL on
+// every locale. `LocaleAlternates` derives canonical + hreflang per route
+// and per locale instead.
 export const metadata: Metadata = {
-  // No `alternates.canonical` here on purpose. A relative canonical resolves
-  // against the locale-free `metadataBase`, so it emitted the English URL on
-  // every locale. `LocaleAlternates` derives canonical + hreflang per route
-  // and per locale instead.
   title: "Work",
-  description:
-    "Four businesses built end to end — storefronts, applications, brand systems and the automation behind them. Case studies from AUREN.",
+  description: DESCRIPTION,
+  ...share("/og/work.png", "Work", DESCRIPTION),
 };
 
 export default async function WorkIndex({

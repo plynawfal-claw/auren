@@ -1,0 +1,18 @@
+{
+  // AUREN on Cloudflare Workers (free plan), built by @opennextjs/cloudflare.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "auren",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": { "enabled": true },
+  "vars": {
+    // Canonical origin: every canonical, sitemap URL and JSON-LD @id derives
+    // from this. Must be set at build time too (see package.json scripts).
+    "NEXT_PUBLIC_SITE_URL": "https://aurren.app"
+  }
+}

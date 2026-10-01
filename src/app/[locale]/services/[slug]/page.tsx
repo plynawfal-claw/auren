@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { share } from "@/lib/share";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -43,11 +44,7 @@ export async function generateMetadata({
   return {
     title: service.metaTitle,
     description: service.definition,
-    openGraph: {
-      type: "article",
-      title: `${service.metaTitle} · AUREN`,
-      description: service.definition,
-    },
+    ...share(`/og/services/${service.slug}.png`, service.metaTitle, service.definition, { type: "article" }),
   };
 }
 

@@ -47,3 +47,8 @@ next-env.d.ts
 # local browser-test recordings (never committed)
 /test-results/
 .debug-reports/
+
+# Cloudflare / OpenNext build output
+/.open-next/
+/.wrangler/
+.dev.vars

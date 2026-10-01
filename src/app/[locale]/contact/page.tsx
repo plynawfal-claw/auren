@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { share } from "@/lib/share";
 import { setRequestLocale } from "next-intl/server";
 import { StartProjectQuestionnaire } from "@/components/sections/start-project-questionnaire";
 import { contact, hasEmail, site } from "@/config/site";
@@ -11,14 +12,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع")),
-    description: tr(locale, c(
+  const title = tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع"));
+  const description = tr(locale, c(
       "Tell AUREN what you are building or trying to improve in four short steps.",
       "Décrivez à AUREN ce que vous voulez créer ou améliorer, en quatre étapes courtes.",
       "قول لـ AUREN شنو باغي تبني ولا تحسّن، فأربع خطوات قصيرة.",
-    )),
-  };
+    ));
+  return { title, description, ...share("/og/contact.png", title, description) };
 }
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {

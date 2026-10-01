@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { share } from "@/lib/share";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -25,14 +26,12 @@ export async function generateMetadata({
   return {
     title: a.metaTitle,
     description: a.description,
-    openGraph: {
+    ...share(`/og/insights/${a.slug}.png`, a.title, a.description, {
       type: "article",
-      title: a.title,
-      description: a.description,
       publishedTime: a.published,
       ...(a.updated ? { modifiedTime: a.updated } : {}),
       authors: [founder.name],
-    },
+    }),
   };
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { share } from "@/lib/share";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Reveal } from "@/components/motion/reveal";
@@ -38,10 +39,9 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  return {
-    title: tr(locale, COPY.eyebrow),
-    description: tr(locale, COPY.metaDescription),
-  };
+  const title = tr(locale, COPY.eyebrow);
+  const description = tr(locale, COPY.metaDescription);
+  return { title, description, ...share("/og/services.png", title, description) };
 }
 
 export default async function ServicesIndex({

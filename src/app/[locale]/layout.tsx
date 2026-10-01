@@ -19,6 +19,7 @@ import { locales, localeHtmlLang, localeDir, type Locale } from "@/i18n/config";
 import { routing } from "@/i18n/navigation";
 import { site, siteUrl } from "@/config/site";
 import { asLocale, c, tr } from "@/i18n/copy";
+import { share } from "@/lib/share";
 import "lenis/dist/lenis.css";
 import "../globals.css";
 
@@ -106,8 +107,7 @@ export async function generateMetadata({
     title: { default: title, template: `%s · ${site.name}` },
     description,
     applicationName: site.name,
-    openGraph: { type: "website", siteName: site.name, title, description, locale: OG_LOCALE[locale] },
-    twitter: { card: "summary_large_image", title, description },
+    ...share("/og/home.png", title, description, { type: "website", locale: OG_LOCALE[locale] }),
     robots: {
       index: true,
       follow: true,
