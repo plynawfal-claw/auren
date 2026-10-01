@@ -9,6 +9,14 @@
     "directory": ".open-next/assets",
     "binding": "ASSETS"
   },
+  // No workers.dev address: the account has none registered and the site does
+  // not need one. It is reached only through its own domain.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [
+    // Temporary: preview before the apex is attached. Removed after go-live.
+    { "pattern": "preview.aurren.app", "custom_domain": true }
+  ],
   "observability": { "enabled": true },
   "vars": {
     // Canonical origin: every canonical, sitemap URL and JSON-LD @id derives
