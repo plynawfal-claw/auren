@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="PROMOSTORE ALU">
-  <!-- corner bracket: two frame members meeting -->
-  <path fill="currentColor" d="M8 8h48v12H20v36H8V8Z"/>
-  <!-- the 45° mitre seam, contained inside the bracket -->
-  <path stroke="#c9a96e" stroke-width="2.6" d="M9.6 9.6 20 20"/>
-</svg>

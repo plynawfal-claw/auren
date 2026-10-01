@@ -10,10 +10,10 @@
 export const siteConfig = {
   name: "AUREN",
   /** Canonical production domain (no scheme, no trailing slash). */
-  domain: "auren.studio",
-  url: "https://auren.studio",
+  domain: "aurren.app",
+  url: "https://aurren.app",
   /** Primary contact channel. */
-  email: "hello@auren.studio",
+  email: "hello@aurren.app",
   /** WhatsApp: digits only, international format, no `+` or spaces. */
   whatsapp: "212699643511",
   /** Human-readable form used in copy, never in links. */

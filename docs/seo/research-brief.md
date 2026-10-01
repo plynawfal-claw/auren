@@ -12,9 +12,8 @@ tuned only once real volume/difficulty/SERP data exists.
 2. The OpenSEO skills are installed in `.claude/skills/` (keyword-research,
    keyword-clustering, competitor-analysis, competitive-landscape, local-seo,
    seo-audit, seo-project-setup, …) — reviewed: Markdown only, no scripts.
-3. **The production domain is not bought yet.** `https://auren.studio` is a
-   provisional canonical. Skip site audit, rank tracking and AI-visibility
-   until the domain is live; keyword + SERP research does not need it.
+3. The production domain is `https://aurren.app` (Cloudflare). Site audit,
+   rank tracking and AI-visibility checks can run once it is live.
 
 ## Market
 Morocco. Languages in this order of commercial weight: French, Darija/Arabic,

@@ -11,7 +11,7 @@ import { isTranslated, localesFor } from "@/i18n/translated";
  * Why this component exists rather than `alternates` in each page's `metadata`:
  * a relative canonical is resolved against `metadataBase`, which is locale-free.
  * So the nine static `metadata` objects each declared `canonical: "/work"` and
- * Next emitted `https://auren.studio/work` on the French and Arabic pages too —
+ * Next emitted `https://aurren.app/work` on the French and Arabic pages too —
  * every locale claiming the English URL as canonical, which tells a crawler the
  * other two are duplicates of the first and should be dropped from the index.
  * That was latent while only English was routable, and became a live bug the

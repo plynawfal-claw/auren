@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="PROMOSTORE ALU">
-  <!-- P drawn as an extruded profile: solid shell, hollow chamber -->
-  <path fill="currentColor" fill-rule="evenodd" d="M10 6h28a15 15 0 0 1 0 30H22v22H10V6Zm12 10h14a5 5 0 0 1 0 10H22V16Z"/>
-  <!-- the thermal break: the gold polyamide strip that splits every real profile -->
-  <rect x="10" y="41" width="12" height="6" fill="#c9a96e"/>
-</svg>
