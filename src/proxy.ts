@@ -2,6 +2,7 @@ import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { routing } from "@/i18n/navigation";
 import { defaultLocale, locales } from "@/i18n/config";
+import { siteConfig } from "@/config/siteConfig";
 
 // Next 16 renamed `middleware` to `proxy`. Same mechanism, same file position
 // (beside `app/`), different filename — see node_modules/next/dist/docs.
@@ -51,6 +52,20 @@ function rememberLocale(response: NextResponse, locale: string) {
 export default function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // One hostname. `www.` is attached only so it can be sent to the apex, with
+  // a permanent redirect that keeps the path and query — otherwise the site
+  // exists twice and the two copies compete.
+  const host = request.headers.get("host") ?? "";
+  if (host === `www.${siteConfig.domain}`) {
+    return NextResponse.redirect(`https://${siteConfig.domain}${pathname}${request.nextUrl.search}`, 308);
+  }
+
+  // API routes and files (sitemap.xml, robots.txt, llms.txt, images) are not
+  // localised: they are served exactly where crawlers expect them.
+  if (pathname.startsWith("/api") || /\.[^/]+$/.test(pathname)) {
+    return NextResponse.next();
+  }
+
   // The default-locale rewrite from next-intl currently loops back to the
   // same URL in Next 16. Resolve default-locale paths directly while keeping
   // their public URLs unprefixed. The internal `/en` route must pass through: a
@@ -87,8 +102,10 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip API routes, Next internals, and anything with a file extension.
-  // Crucially this keeps sitemap.xml / robots.txt / llms.txt off the locale
-  // rewrite path, so they are served exactly where crawlers expect them.
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  // Everything except Next internals reaches the proxy, so the www redirect
+  // also covers sitemap.xml, robots.txt and the API. (A host-conditional
+  // `has` matcher would be tidier, but the Cloudflare adapter does not honour
+  // it and ran the locale rewrite on sitemap.xml.) The function itself lets
+  // API routes and anything with a file extension straight through.
+  matcher: ["/((?!_next|_vercel).*)"],
 };

@@ -14,8 +14,9 @@
   "workers_dev": false,
   "preview_urls": false,
   "routes": [
-    // Temporary: preview before the apex is attached. Removed after go-live.
-    { "pattern": "preview.aurren.app", "custom_domain": true }
+    { "pattern": "aurren.app", "custom_domain": true },
+    // Attached only to be redirected to the apex (see src/proxy.ts).
+    { "pattern": "www.aurren.app", "custom_domain": true }
   ],
   "observability": { "enabled": true },
   "vars": {
