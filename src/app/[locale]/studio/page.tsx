@@ -3,7 +3,7 @@ import { share } from "@/lib/share";
 import { setRequestLocale } from "next-intl/server";
 import { ContactCta } from "@/components/sections/contact-cta";
 import { practices } from "@/content/practices";
-import { founder, site, siteUrl } from "@/config/site";
+import { site, siteUrl } from "@/config/site";
 import { routing } from "@/i18n/navigation";
 
 export function generateStaticParams() {
@@ -11,7 +11,7 @@ export function generateStaticParams() {
 }
 
 const DESCRIPTION =
-  "AUREN is a digital studio in Morocco building products, creative, acquisition and automation as one connected system. Founded by Naoufal El Absi.";
+  "AUREN is a digital studio in Morocco building products, creative, acquisition and automation as one connected system.";
 
 // No `alternates.canonical` here on purpose. A relative canonical resolves
 // against the locale-free `metadataBase`, so it emitted the English URL on
@@ -86,7 +86,7 @@ export default async function StudioPage({
           </div>
           <div className="md:col-span-8 space-y-6">
             <p className="text-[length:var(--text-lead)] leading-[1.45] text-mineral">
-              {site.name} is led by {founder.name}, working from {site.region}{" "}
+              {site.name} works from {site.region}{" "}
               with clients beyond it.
             </p>
             <p className="max-w-[62ch] leading-relaxed text-silver">

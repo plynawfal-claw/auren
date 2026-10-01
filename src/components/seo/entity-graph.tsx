@@ -1,24 +1,16 @@
 import { practices } from "@/content/practices";
-import { founder, site, siteUrl } from "@/config/site";
+import { site, siteUrl } from "@/config/site";
 
 /**
  * The entity graph.
  *
- * One `@graph` carrying Organization, Person and ProfessionalService, with
+ * One `@graph` carrying Organization, WebSite and ProfessionalService, with
  * stable `@id` anchors so every other page on the site can reference these
- * nodes instead of redeclaring them.
- *
- * The Person↔Organization link is the part that matters and the part most
- * agency sites skip. A studio is a string until a named person is attached to
- * it with resolvable profiles; after that it is an entity that a generative
- * retriever can cite rather than paraphrase.
- *
- * `sameAs` is emitted only when real profile URLs exist. An empty array is
- * better than an invented one.
+ * nodes instead of redeclaring them. No person is named: the studio is
+ * presented as an organisation only.
  */
 export function EntityGraph() {
   const org = `${siteUrl}/#organization`;
-  const person = `${siteUrl}/#founder`;
 
   const graph = {
     "@context": "https://schema.org",
@@ -31,21 +23,11 @@ export function EntityGraph() {
         url: siteUrl,
         description: site.description,
         slogan: site.tagline,
-        founder: { "@id": person },
         knowsAbout: practices.flatMap((d) => d.disciplines),
         areaServed: [
           { "@type": "Country", name: "Morocco" },
           { "@type": "Place", name: "Worldwide" },
         ],
-        ...(founder.sameAs.length ? { sameAs: founder.sameAs } : {}),
-      },
-      {
-        "@type": "Person",
-        "@id": person,
-        name: founder.name,
-        jobTitle: founder.role,
-        worksFor: { "@id": org },
-        ...(founder.sameAs.length ? { sameAs: founder.sameAs } : {}),
       },
       {
         "@type": "ProfessionalService",

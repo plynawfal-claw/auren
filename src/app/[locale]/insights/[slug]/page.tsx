@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { ContactCta } from "@/components/sections/contact-cta";
 import { articleBySlug, articles } from "@/content/insights";
 import { routing } from "@/i18n/navigation";
-import { founder, siteUrl } from "@/config/site";
+import { siteUrl } from "@/config/site";
 
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
@@ -30,7 +30,6 @@ export async function generateMetadata({
       type: "article",
       publishedTime: a.published,
       ...(a.updated ? { modifiedTime: a.updated } : {}),
-      authors: [founder.name],
     }),
   };
 }
@@ -56,7 +55,7 @@ export default async function ArticlePage({
         description: article.description,
         datePublished: article.published,
         dateModified: article.updated ?? article.published,
-        author: { "@id": `${siteUrl}/#founder` },
+        author: { "@id": `${siteUrl}/#organization` },
         publisher: { "@id": `${siteUrl}/#organization` },
         mainEntityOfPage: `${siteUrl}/insights/${article.slug}`,
         articleSection: article.topic,
@@ -164,10 +163,6 @@ export default async function ArticlePage({
             </p>
           );
         })}
-
-        <p className="border-t border-line pt-7 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-grey">
-          Written by {founder.name}
-        </p>
       </div>
 
       <ContactCta locale={locale} />

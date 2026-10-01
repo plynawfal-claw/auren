@@ -72,8 +72,6 @@ headless Chrome, exactly like the client projects.
 
 - [ ] **Contact email and WhatsApp number** — `NEXT_PUBLIC_CONTACT_EMAIL`, `NEXT_PUBLIC_WHATSAPP_NUMBER`
 - [ ] **Real domain** — `NEXT_PUBLIC_SITE_URL`
-- [ ] **Founder profile URLs** for `founder.sameAs` in `src/config/site.ts` — still the highest-value SEO item open
-- [ ] **Founder photograph** for `/studio`
 - [ ] **Webhook destination** — `BRIEF_WEBHOOK_URL`
       Until this is set, the contact page shows an opening-soon state and
       `/api/brief` returns 503. Server logs are not a durable lead inbox.

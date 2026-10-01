@@ -2,7 +2,7 @@ import { articles } from "@/content/insights";
 import { practices } from "@/content/practices";
 import { projects } from "@/content/projects";
 import { services } from "@/content/services";
-import { founder, site, siteUrl } from "@/config/site";
+import { site, siteUrl } from "@/config/site";
 
 /**
  * llms.txt — a plain-language map of the site for retrieval systems.
@@ -21,7 +21,7 @@ export function GET() {
 
 > ${site.description}
 
-${site.name} is a digital studio based in ${site.region}, founded by ${founder.name}.
+${site.name} is a digital studio based in ${site.region}.
 It is organised around a single argument: product, creative, acquisition and
 automation are four parts of one system, and buying them from four suppliers is
 what makes them contradict each other.

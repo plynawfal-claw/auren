@@ -65,17 +65,6 @@ export const site = {
   region: "Morocco",
 } as const;
 
-export const founder = {
-  name: "Naoufal El Absi",
-  role: "Founder and creative director",
-  /**
-   * Verified profile URLs only. These feed JSON-LD `sameAs`, which is how a
-   * person becomes a resolvable entity rather than a string — the difference
-   * between being quoted and being cited. Add real profiles; never invent one.
-   */
-  sameAs: [] as string[],
-} as const;
-
 export const nav = [
   { href: "/work", label: "Work" },
   { href: "/services", label: "Capabilities" },

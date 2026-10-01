@@ -2,7 +2,7 @@ import { Link } from "@/i18n/navigation";
 import { Wordmark } from "@/components/ui/wordmark";
 import { services } from "@/content/services";
 import { localizeService } from "@/content/services.i18n";
-import { contact, founder, hasEmail, hasWhatsApp, site } from "@/config/site";
+import { contact, hasEmail, hasWhatsApp, site } from "@/config/site";
 import { c, tr } from "@/i18n/copy";
 import type { Locale } from "@/i18n/config";
 
@@ -91,7 +91,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
 
         <div className="mt-16 flex flex-col gap-3 border-t border-line pt-6 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-grey sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {year} {site.name} · {founder.name}
+            © {year} {site.name}
           </p>
           <p>{tr(locale, c("Digital experiences · Creative · Growth · Intelligent systems", "Expériences digitales · Création · Croissance · Systèmes intelligents", "تجارب رقمية · إبداع · نمو · أنظمة ذكية"))}</p>
         </div>
