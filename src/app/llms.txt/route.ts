@@ -4,6 +4,7 @@ import { projects } from "@/content/projects";
 import { services } from "@/content/services";
 import { contact, site, siteUrl } from "@/config/site";
 import { landings, northCities } from "@/content/landings";
+import { guides } from "@/content/guides";
 
 /**
  * llms.txt — a plain-language map of the site for retrieval systems.
@@ -48,6 +49,15 @@ ${services
 
 ${landings
   .map((l) => `- [${l.h1}](${siteUrl}/${l.locales[0]}/${l.slug}): ${l.answer}`)
+  .join("\n")}
+
+## Guides in French
+
+Answer-first guides; every figure in them is linked to its source on the page.
+Price ranges quoted in them are other agencies' published ranges, not ${site.name}'s.
+
+${guides
+  .map((g) => `- [${g.title}](${siteUrl}/fr/guides/${g.slug}): ${g.answer}`)
   .join("\n")}
 
 ## Client work

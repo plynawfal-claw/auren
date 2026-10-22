@@ -13,6 +13,7 @@ import { siteUrl } from "@/config/site";
 import { localizePractice, localizeService } from "@/content/services.i18n";
 import { asLocale, c, tr } from "@/i18n/copy";
 import { localeUrl } from "@/i18n/translated";
+import { guidesForService } from "@/content/guides";
 
 const LABELS = {
   back: c("← Capabilities", "← Expertises", "→ الخدمات"),
@@ -242,6 +243,23 @@ export default async function ServicePage({
                                     <span className="text-grey transition-transform duration-[var(--dur)] ease-[var(--ease)] group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1">
                     →
                   </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* French guides that lead into this capability (French pages only —
+          the guides exist in French alone). */}
+      {lang === "fr" && guidesForService(service.slug).length > 0 && (
+        <section className="shell border-t border-line py-16" aria-labelledby="guides">
+          <h2 id="guides" className="eyebrow">Guides</h2>
+          <ul className="mt-6 grid gap-x-8 sm:grid-cols-2">
+            {guidesForService(service.slug).map((g) => (
+              <li key={g.slug} className="border-t border-line">
+                <Link href={`/guides/${g.slug}`} className="block py-4 text-silver transition-colors hover:text-mineral">
+                  {g.title}
                 </Link>
               </li>
             ))}

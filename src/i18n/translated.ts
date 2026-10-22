@@ -1,5 +1,13 @@
 import { defaultLocale, locales, type Locale } from "./config";
-import { exclusiveRoutes } from "@/content/landings";
+import { exclusiveRoutes as landingRoutes } from "@/content/landings";
+import { guides } from "@/content/guides";
+
+/** French-only routes: the search pages and the guides (index + each guide). */
+const exclusiveRoutes: Record<string, readonly Locale[]> = {
+  ...landingRoutes,
+  "/guides": ["fr"],
+  ...Object.fromEntries(guides.map((g) => [`/guides/${g.slug}`, ["fr"] as const])),
+};
 
 /**
  * Which routes have real copy in which language.

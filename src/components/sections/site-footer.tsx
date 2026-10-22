@@ -63,6 +63,11 @@ export function SiteFooter({ locale }: { locale: Locale }) {
                       </Link>
                     </li>
                   ))}
+                  <li>
+                    <Link href="/guides" className="text-sm text-silver transition-colors hover:text-mineral">
+                      Guides pratiques
+                    </Link>
+                  </li>
                 </ul>
               </>
             )}

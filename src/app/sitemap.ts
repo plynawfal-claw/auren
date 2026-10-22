@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { articles } from "@/content/insights";
 import { landings } from "@/content/landings";
+import { guides } from "@/content/guides";
 import { projects } from "@/content/projects";
 import { services } from "@/content/services";
 import { siteUrl } from "@/config/site";
@@ -61,6 +62,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // so each is one URL with no alternates.
     ...landings.flatMap((l) =>
       entries(`/${l.slug}`, { lastModified: new Date(l.updated), changeFrequency: "monthly", priority: 0.9 }),
+    ),
+    ...entries("/guides", { lastModified: now, changeFrequency: "weekly", priority: 0.7 }),
+    ...guides.flatMap((g) =>
+      entries(`/guides/${g.slug}`, { lastModified: new Date(g.updated), changeFrequency: "monthly", priority: 0.7 }),
     ),
     ...articles.flatMap((a) =>
       entries(`/insights/${a.slug}`, {

@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { Reveal } from "@/components/motion/reveal";
 import { ContactCta } from "@/components/sections/contact-cta";
 import { landingBySlug, landings } from "@/content/landings";
+import { guidesForLanding } from "@/content/guides";
 import { serviceBySlug } from "@/content/services";
 import { localizeService } from "@/content/services.i18n";
 import { projectBySlug } from "@/content/projects";
@@ -64,6 +65,7 @@ export default async function LandingPage({ params }: { params: Params }) {
   const services = page.services.map((s) => serviceBySlug[s]).filter(Boolean).map((s) => localizeService(s, locale));
   const projects = page.projects.map((s) => projectBySlug[s]).filter(Boolean);
   const related = page.related.map((s) => landingBySlug[s]).filter(Boolean);
+  const readMore = guidesForLanding(page.slug);
 
   const subject =
     page.kind === "service"
@@ -245,6 +247,13 @@ export default async function LandingPage({ params }: { params: Params }) {
               <li key={r.slug} className="border-t border-line">
                 <Link href={`/${r.slug}`} className="block py-4 text-silver transition-colors hover:text-mineral">
                   {r.h1}
+                </Link>
+              </li>
+            ))}
+            {readMore.map((g) => (
+              <li key={g.slug} className="border-t border-line">
+                <Link href={`/guides/${g.slug}`} className="block py-4 text-silver transition-colors hover:text-mineral">
+                  {g.title}
                 </Link>
               </li>
             ))}
