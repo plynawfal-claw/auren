@@ -1,25 +1,83 @@
+"use client";
+
+import { useId } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * The AUREN mark: an incident beam and its four resolved bands.
+ * The AUREN identity: a folded diamond and a constructed wordmark.
  *
- * One tall stroke enters; four shorter strokes leave at descending weight.
- * Monochrome, always — the chroma rule applies to the identity too, and a
- * four-colour logo would spend the site's entire colour budget in the header.
+ * The mark is one unbroken line that turns four times inside and four times
+ * outside — two nested squares, rotated 45°, joined into a single path with
+ * both ends left open. Drawn unrotated on a 10-unit grid (inner square ±20,
+ * outer ±30) and turned as a group, so every gap is exactly the same width and
+ * the geometry survives any size; the source artwork's hand-drawn wobble and
+ * its stray shading sliver are deliberately not reproduced.
+ *
+ * The letters are built, not typeset: a crossbar-less Λ, a U, an R with a
+ * detached leg, an E reduced to its three bars, and an N. Each carries one
+ * steel facet, as in the artwork. Strokes are 18 on a 100-unit cap height.
+ *
+ * Colours come from `--mark-*` tokens (globals.css) so both palettes get a
+ * version tuned to their ground. The gradient id is per instance (`useId`):
+ * a shared id resolves to the first definition in the document, and if that
+ * copy sits in a hidden menu Chrome paints every other instance with nothing.
  */
-export function Mark({ className }: { className?: string }) {
+const MARK_PATH = "M8 20H-20V-20H20V30H-30V-30H30V30";
+
+export function Mark({ className, weight = 2.4 }: { className?: string; weight?: number }) {
+  const id = useId().replace(/:/g, "");
   return (
-    <svg
-      viewBox="0 0 28 20"
-      className={cn("h-5 w-7", className)}
-      aria-hidden="true"
-      focusable="false"
-    >
-      <rect x="0" y="1" width="1.6" height="18" fill="currentColor" />
-      <rect x="11" y="3.5" width="1.1" height="13" fill="currentColor" opacity="0.92" />
-      <rect x="16" y="5" width="1.1" height="10" fill="currentColor" opacity="0.7" />
-      <rect x="21" y="6.5" width="1.1" height="7" fill="currentColor" opacity="0.48" />
-      <rect x="26" y="8" width="1.1" height="4" fill="currentColor" opacity="0.3" />
+    <svg viewBox="-46 -46 92 92" className={cn("h-6 w-6", className)} aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id={`mk${id}`} x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0" style={{ stopColor: "var(--mark-a)" }} />
+          <stop offset="1" style={{ stopColor: "var(--mark-b)" }} />
+        </linearGradient>
+      </defs>
+      <path
+        d={MARK_PATH}
+        transform="rotate(45)"
+        fill="none"
+        stroke={`url(#mk${id})`}
+        strokeWidth={weight}
+        strokeLinejoin="miter"
+        strokeLinecap="butt"
+      />
+    </svg>
+  );
+}
+
+/** The five letters, white parts first; facets are drawn on top in steel. */
+const LETTERS = [
+  // Λ
+  "M0 100L40 0H58L98 100H78L49 27.5L20 100Z",
+  // U
+  "M120 0H138V58A24 24 0 0 0 186 58V0H204V58A42 42 0 0 1 120 58Z",
+  // R (bowl and stem; counter cut by even-odd)
+  "M226 100V0H264A31 31 0 0 1 264 62H244V100ZM244 18V44H264A13 13 0 0 0 264 18Z",
+  // E — top and bottom bars, and the light half of the middle bar
+  "M322 0H400V18H322ZM322 82H400V100H322ZM322 41H362L346 59H322Z",
+  // N
+  "M422 100V0H441L487 68V0H506V100H487L441 32V100Z",
+];
+const FACETS = [
+  // the inner face of Λ's right leg
+  "M49 27.5L53.5 16L86 100H78Z",
+  // R's leg
+  "M250 62H272L302 100H280Z",
+  // the steel half of E's middle bar
+  "M362 41H400V59H346Z",
+];
+
+export function Letters({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 506 100" className={cn("h-3.5 w-auto", className)} aria-hidden="true" focusable="false">
+      <g fill="currentColor" fillRule="evenodd">
+        {LETTERS.map((d) => <path key={d} d={d} />)}
+      </g>
+      <g style={{ fill: "var(--mark-steel)" }}>
+        {FACETS.map((d) => <path key={d} d={d} />)}
+      </g>
     </svg>
   );
 }
@@ -32,11 +90,9 @@ export function Wordmark({
   showMark?: boolean;
 }) {
   return (
-    <span dir="ltr" lang="en" className={cn("inline-flex items-center gap-2.5", className)}>
+    <span dir="ltr" lang="en" className={cn("inline-flex items-center gap-2.5 text-mineral", className)}>
       {showMark && <Mark />}
-      <span className="font-display text-[1.45rem] leading-none" style={{ fontFamily: 'var(--font-bodoni), "Times New Roman", serif', letterSpacing: "0.16em" }}>
-        AUREN
-      </span>
+      <Letters />
       <span className="sr-only">AUREN — digital studio</span>
     </span>
   );

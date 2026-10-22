@@ -50,6 +50,9 @@ const jetbrains = JetBrains_Mono({
   weight: ["400", "500"],
   variable: "--font-jetbrains",
   display: "swap",
+  // Small labels only; never above the fold's largest text, so it is not worth
+  // a preload slot competing with the headline face on a phone connection.
+  preload: false,
 });
 
 /**
@@ -70,6 +73,9 @@ const plexArabic = IBM_Plex_Sans_Arabic({
   weight: ["300", "400", "500", "600"],
   variable: "--font-arabic",
   display: "swap",
+  // Preloading would push an Arabic font file onto every English and French
+  // page. Only `/ar` uses it, and there the stylesheet requests it at once.
+  preload: false,
 });
 
 export function generateStaticParams() {
@@ -84,13 +90,13 @@ export function generateStaticParams() {
  */
 const TAGLINE = c(
   site.tagline,
-  "Sites web, création, croissance et systèmes intelligents",
+  "Agence digitale à Tanger : sites web, marque et publicité",
   "مواقع، إبداع، نمو وأنظمة ذكية",
 );
 const DESCRIPTION = c(
   site.description,
-  "AUREN est un studio digital au Maroc qui crée le site, la marque, l’acquisition et l’automatisation comme un seul travail cohérent.",
-  "AUREN ستوديو رقمي فالمغرب كيصاوب الموقع، الماركة، جلب الكليان والأتمتة كخدمة وحدة مترابطة.",
+  "Agence digitale basée à Tanger : création de sites internet et de boutiques en ligne, identité de marque, publicité Google et Meta et automatisation, pour les entreprises du Nord et de tout le Maroc.",
+  "AUREN ستوديو رقمي فطنجة، المغرب، كيصاوب الموقع، الماركة، جلب الكليان والأتمتة كخدمة وحدة مترابطة.",
 );
 const OG_LOCALE: Record<Locale, string> = { en: "en_US", fr: "fr_MA", ar: "ar_MA" };
 

@@ -10,8 +10,6 @@ import { ButtonLink } from "@/components/ui/button";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { c, tr } from "@/i18n/copy";
 
-const arrival = { duration: 0.9, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] };
-
 export function Hero({ locale }: { locale: string }) {
   const section = useRef<HTMLElement>(null);
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", false);
@@ -20,11 +18,13 @@ export function Hero({ locale }: { locale: string }) {
   const sculptureY = useTransform(progress, [0, 1], [0, -90]);
   const sculptureRotate = useTransform(progress, [0, 1], [0, 12]);
   const lines = [
-    tr(locale, c("We build digital", "Nous créons des", "كنصاوبو تجارب")),
-    tr(locale, c("experiences designed", "expériences digitales", "رقمية مصممة")),
-    tr(locale, c("to move businesses", "qui font avancer", "باش تقدّم")),
+    tr(locale, c("We build digital", "Agence digitale", "كنصاوبو تجارب")),
+    tr(locale, c("experiences designed", "à Tanger, pour", "رقمية مصممة")),
+    tr(locale, c("to move businesses", "les entreprises", "باش تقدّم")),
   ];
-  const finalLine = tr(locale, c("forward.", "les entreprises.", "البيزنس ديالك."));
+  // French leads with the search phrase people in Morocco type ("agence
+  // digitale Tanger"); the studio's line moves to the lead paragraph below.
+  const finalLine = tr(locale, c("forward.", "du Maroc.", "البيزنس ديالك."));
 
   return (
     <section ref={section} data-hero className="hero-scene relative flex min-h-[100svh] flex-col justify-center overflow-hidden pb-24 pt-28 md:pb-20 md:pt-28">
@@ -42,34 +42,39 @@ export function Hero({ locale }: { locale: string }) {
       <div className="shell relative z-10">
         <HeroDepth>
           <div data-hero-out>
-            <motion.span aria-hidden="true" className="mb-8 block h-px w-12 origin-left bg-lume/70 rtl:origin-right" initial={reduced ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ ...arrival, delay: 0.12 }} />
+            {/* The arrival is CSS (`.hero-arrive*` in globals.css), not motion
+                props: a motion `initial` ships the headline at opacity 0 in the
+                HTML and holds it there until the bundle hydrates, which made the
+                phone LCP wait on JavaScript. Keyframes start on first paint and
+                still yield to reduced motion. */}
+            <span aria-hidden="true" className="hero-arrive-rule mb-8 block h-px w-12 origin-left bg-lume/70 rtl:origin-right" style={{ "--d": "0.12s" } as React.CSSProperties} />
             <h1 className="hero-headline max-w-[18ch] font-display text-[length:var(--text-statement)] leading-[0.92] tracking-[-0.03em]">
               {lines.map((line, i) => (
                 <span key={i} className="hero-headline__line block overflow-hidden py-[0.08em] -my-[0.08em]">
-                  <motion.span className="block" initial={reduced ? false : { y: "112%", opacity: 0 }} animate={{ y: "0%", opacity: 1 }} transition={{ ...arrival, delay: 0.2 + i * 0.15 }}>
+                  <span className="hero-arrive-line block" style={{ "--d": `${0.2 + i * 0.15}s` } as React.CSSProperties}>
                     {line}
-                  </motion.span>
+                  </span>
                 </span>
               ))}
               <span className="hero-headline__line block overflow-hidden py-[0.08em] -my-[0.08em]">
-                <motion.em className="hero-forward relative inline-block italic" initial={reduced ? false : { y: "112%", opacity: 0 }} animate={{ y: "0%", opacity: 1 }} transition={{ ...arrival, delay: 0.68 }}>
+                <em className="hero-forward hero-arrive-line relative inline-block italic" style={{ "--d": "0.68s" } as React.CSSProperties}>
                   {finalLine}
-                  <motion.span aria-hidden="true" className="hero-forward__stroke" initial={reduced ? false : { scaleX: 0 }} animate={{ scaleX: 1 }} transition={reduced ? { duration: 0 } : { ...arrival, delay: 1.24 }} />
-                </motion.em>
+                  <span aria-hidden="true" className="hero-forward__stroke hero-arrive-rule" style={{ "--d": "1.24s" } as React.CSSProperties} />
+                </em>
               </span>
             </h1>
 
-            <motion.p className="lead mt-9 max-w-[54ch]" initial={reduced ? false : { opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ ...arrival, delay: 0.95 }}>
+            <p className="hero-arrive-fade lead mt-9 max-w-[54ch]" style={{ "--d": "0.95s", "--rise": "18px" } as React.CSSProperties}>
               {tr(locale, c(
                 "Web experiences, products, creative, growth and intelligent systems — designed as one connected practice.",
-                "Sites, produits, création, croissance et systèmes intelligents — pensés comme une seule pratique.",
+                "Nous créons des expériences digitales qui font avancer les entreprises : sites internet, boutiques en ligne, identité de marque, publicité Google et Meta, et automatisation — pensés comme un seul travail.",
                 "مواقع، منتجات، إبداع، نمو وأنظمة ذكية — كاملين خدامين فنفس الاتجاه.",
               ))}
-            </motion.p>
-            <motion.div className="mt-11 flex flex-wrap gap-3" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ ...arrival, delay: 1.12 }}>
+            </p>
+            <div className="hero-arrive-fade mt-11 flex flex-wrap gap-3" style={{ "--d": "1.12s", "--rise": "20px" } as React.CSSProperties}>
               <ButtonLink href="/work">{tr(locale, c("View work", "Voir les projets", "شوف المشاريع"))}</ButtonLink>
               <ButtonLink href="/contact" variant="ghost">{tr(locale, c("Start a project", "Lancer un projet", "بدا مشروع"))}</ButtonLink>
-            </motion.div>
+            </div>
           </div>
         </HeroDepth>
       </div>

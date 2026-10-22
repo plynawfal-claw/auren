@@ -84,6 +84,13 @@
   --z-menu: 60;
   --z-cursor: 90;
 
+  /* The identity's steel (components/ui/wordmark.tsx). The one place the
+     monochrome rule bends: the mark keeps the cool blue of the artwork, as a
+     gradient from lit edge to shaded edge. */
+  --mark-a: #dbe6f2;
+  --mark-b: #6c8aa5;
+  --mark-steel: #9ab6cf;
+
   color-scheme: dark;
 }
 
@@ -104,6 +111,9 @@ html[data-palette="light"] {
   --color-grey: #646973;
   --color-grey-deep: #9aa0a9;
   --color-lume: #35507a;
+  --mark-a: #6f8ea9;
+  --mark-b: #2b465d;
+  --mark-steel: #56789a;
 
   color-scheme: light;
 }
@@ -1215,6 +1225,20 @@ html.theme-switching body *::after {
   background: var(--color-lume);
   transform-origin: left;
   opacity: 0.62;
+}
+
+/* The hero's arrival, in CSS so it starts on first paint rather than after
+   hydration (a JS-driven `initial` kept the headline invisible, and so out of
+   the LCP race, until the bundle ran). Same curve, durations and delays as the
+   motion version it replaced; `--d` is the per-element delay. */
+@keyframes hero-arrive-line { from { transform: translateY(112%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes hero-arrive-fade { from { transform: translateY(var(--rise, 18px)); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes hero-arrive-rule { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.hero-arrive-line { animation: hero-arrive-line 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }
+.hero-arrive-fade { animation: hero-arrive-fade 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }
+.hero-arrive-rule { animation: hero-arrive-rule 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--d, 0s) both; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-arrive-line, .hero-arrive-fade, .hero-arrive-rule { animation: none; }
 }
 
 /* Phone hero footage. Contained, not cropped, so the tall sculpture keeps
