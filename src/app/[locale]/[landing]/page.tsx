@@ -19,9 +19,13 @@ import { share } from "@/lib/share";
  * Same visual grammar as a capability page — definitional opening, three
  * takeaways, question-led sections, FAQ — so they read as part of the site,
  * not as bolted-on SEO pages. Each one is generated only for the locales it is
- * written in; any other locale, and any unknown slug, is a 404.
+ * written in; any other locale, and any unknown slug, is a 404 (`find`).
+ *
+ * Not `dynamicParams = false`: on Cloudflare (OpenNext, no incremental cache)
+ * pages are rendered by the Worker on request, and with fallback disabled the
+ * router throws NoFallbackError for paths it did prerender. `notFound()` from
+ * `find` gives the same 404 for anything that is not a real page.
  */
-export const dynamicParams = false;
 
 export function generateStaticParams() {
   return landings.flatMap((l) => l.locales.map((locale) => ({ locale, landing: l.slug })));
