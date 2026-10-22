@@ -18,4 +18,11 @@ export const siteConfig = {
   whatsapp: "212699643511",
   /** Human-readable form used in copy, never in links. */
   whatsappDisplay: "+212 699 643511",
+  /**
+   * Official profiles, for `sameAs` in the entity graph. Add each one the day
+   * it exists — Google Business Profile, LinkedIn, Instagram, Sortlist — with
+   * the identical name "AUREN" and a link back to aurren.app. Empty until then:
+   * a sameAs to a profile that does not exist is worse than none.
+   */
+  sameAs: [] as readonly string[],
 } as const;

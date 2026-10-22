@@ -30,8 +30,8 @@ type Translations = Record<Exclude<Locale, "en">, Record<string, ServiceText>>;
 export const serviceTranslations: Translations = {
   fr: {
     "web-design-development": {
-      title: "Création de sites web",
-      metaTitle: "Création de sites web et développement",
+      title: "Création de site internet au Maroc",
+      metaTitle: "Création de site internet au Maroc — vitrine et sur mesure",
       definition:
         "La création d’un site web réunit le message, le design et le site lui-même, pour que vos visiteurs comprennent votre activité et passent à l’étape suivante.",
       takeaways: [
@@ -81,8 +81,8 @@ export const serviceTranslations: Translations = {
       ],
     },
     "apps-digital-products": {
-      title: "Applications et produits digitaux",
-      metaTitle: "Développement d’applications et de produits digitaux",
+      title: "Développement d’application mobile et web",
+      metaTitle: "Développement d’application mobile au Maroc",
       definition:
         "Le développement d’applications transforme une idée utile en un outil que les gens comprennent, sur lequel ils comptent et qu’ils réutilisent.",
       takeaways: [
@@ -126,8 +126,8 @@ export const serviceTranslations: Translations = {
       ],
     },
     "creative-branding": {
-      title: "Création et identité de marque",
-      metaTitle: "Identité de marque et création publicitaire",
+      title: "Branding et identité visuelle",
+      metaTitle: "Agence branding au Maroc — logo et identité visuelle",
       definition:
         "La création et l’identité de marque donnent à une entreprise une image et une voix reconnaissables, puis les portent sur son site, ses photos, ses vidéos et ses campagnes.",
       takeaways: [
@@ -171,8 +171,8 @@ export const serviceTranslations: Translations = {
       ],
     },
     seo: {
-      title: "Référencement naturel et recherche IA",
-      metaTitle: "Référencement SEO et visibilité dans les réponses IA",
+      title: "Référencement SEO au Maroc",
+      metaTitle: "Référencement SEO au Maroc — Google et recherche IA",
       definition:
         "Le référencement aide les bonnes personnes à trouver une entreprise dans les résultats de recherche et dans les réponses qu’elles lisent en ligne.",
       takeaways: [
@@ -220,8 +220,8 @@ export const serviceTranslations: Translations = {
       ],
     },
     "google-ads": {
-      title: "Google Ads",
-      metaTitle: "Gestion de campagnes Google Ads",
+      title: "Publicité Google Ads",
+      metaTitle: "Publicité Google Ads au Maroc — gestion de campagnes",
       definition:
         "Google Ads place une entreprise devant les personnes qui cherchent déjà ce qu’elle propose.",
       takeaways: [
@@ -263,8 +263,8 @@ export const serviceTranslations: Translations = {
       ],
     },
     "meta-ads": {
-      title: "Meta Ads",
-      metaTitle: "Publicité Meta Ads — Facebook et Instagram",
+      title: "Publicité Facebook et Instagram",
+      metaTitle: "Publicité Facebook et Instagram au Maroc (Meta Ads)",
       definition:
         "Meta Ads amène une entreprise vers les gens sur Facebook et Instagram, avec des images, des vidéos et des messages qui donnent envie de s’arrêter.",
       takeaways: [
@@ -307,8 +307,8 @@ export const serviceTranslations: Translations = {
       ],
     },
     "ai-automation-crm": {
-      title: "Suivi client et automatisation",
-      metaTitle: "Automatisation IA, CRM et suivi des demandes",
+      title: "Automatisation IA et CRM",
+      metaTitle: "Automatisation IA et CRM pour PME au Maroc",
       definition:
         "Le suivi client et l’automatisation aident une entreprise à répondre aux demandes, à suivre les conversations et à gérer les tâches répétitives sans perdre le contact humain.",
       takeaways: [

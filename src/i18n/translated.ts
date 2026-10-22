@@ -1,4 +1,5 @@
 import { defaultLocale, locales, type Locale } from "./config";
+import { exclusiveRoutes } from "@/content/landings";
 
 /**
  * Which routes have real copy in which language.
@@ -17,8 +18,17 @@ const TRANSLATED: Record<Exclude<Locale, "en">, readonly string[]> = {
   ar: ["/", "/contact", "/services", "/services/*"],
 };
 
-/** `pathname` is locale-free, as next-intl's `usePathname` returns it. */
+/**
+ * `pathname` is locale-free, as next-intl's `usePathname` returns it.
+ *
+ * Routes in `exclusiveRoutes` (the French search pages in `content/landings`)
+ * exist *only* in the locales they list — there is no English page behind
+ * them to fall back to, so they are checked first and English gets no
+ * special pass.
+ */
 export function isTranslated(pathname: string, locale: Locale): boolean {
+  const only = exclusiveRoutes[pathname];
+  if (only) return only.includes(locale);
   if (locale === defaultLocale || locale === "en") return true;
   return TRANSLATED[locale].some((pattern: string) =>
     pattern.endsWith("/*")
@@ -30,6 +40,13 @@ export function isTranslated(pathname: string, locale: Locale): boolean {
 /** The locales a route is genuinely available in, English first. */
 export function localesFor(pathname: string): Locale[] {
   return locales.filter((locale) => isTranslated(pathname, locale));
+}
+
+/** Where a route canonicalises in `locale`: itself, English, or its only locale. */
+export function canonicalLocale(pathname: string, locale: Locale): Locale {
+  if (isTranslated(pathname, locale)) return locale;
+  const only = exclusiveRoutes[pathname];
+  return only ? only[0] : defaultLocale;
 }
 
 /**

@@ -3,6 +3,7 @@
 import { Link, usePathname } from "@/i18n/navigation";
 import { locales, localeLabel, localeShortLabel, type Locale } from "@/i18n/config";
 import { cn } from "@/lib/cn";
+import { localesFor } from "@/i18n/translated";
 
 /**
  * Language switcher.
@@ -42,6 +43,9 @@ export function LocaleSwitcher({
   className?: string;
 }) {
   const pathname = usePathname();
+  // A French-only search page has no English or Darija twin; switching from
+  // it leads to that language's homepage instead of a 404.
+  const available = localesFor(pathname);
 
   return (
     <nav
@@ -57,7 +61,7 @@ export function LocaleSwitcher({
             </span>
           )}
           <Link
-            href={pathname}
+            href={available.includes(option) ? pathname : "/"}
             locale={option}
             hrefLang={option}
             // The active locale is marked semantically, not by colour alone.

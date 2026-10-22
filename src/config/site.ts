@@ -59,10 +59,16 @@ export const site = {
    * engines and generative retrievers to converge on.
    */
   description:
-    "AUREN is a digital studio that builds the experience, the creative, the acquisition and the automation as one connected practice.",
+    "AUREN is a digital studio based in Tangier, Morocco, that builds the experience, the creative, the acquisition and the automation as one connected practice.",
   locale: "en",
   country: "MA",
   region: "Morocco",
+  /** Where the studio is based. A service-area business: no public street
+   *  address is published, so nothing anywhere states one. */
+  city: "Tangier",
+  cityFr: "Tanger",
+  /** Administrative region, as Google and schema.org expect it. */
+  adminRegion: "Tanger-Tétouan-Al Hoceïma",
 } as const;
 
 export const nav = [

@@ -1,6 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { Wordmark } from "@/components/ui/wordmark";
 import { services } from "@/content/services";
+import { landings } from "@/content/landings";
 import { localizeService } from "@/content/services.i18n";
 import { contact, hasEmail, hasWhatsApp, site } from "@/config/site";
 import { c, tr } from "@/i18n/copy";
@@ -21,7 +22,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
               {tr(locale, c(site.description, "Un studio créatif qui relie design, technologie et croissance.", "ستوديو إبداعي كيجمع التصميم، التكنولوجيا والنمو."))}
             </p>
             <p className="mt-5 font-mono text-[0.7rem] uppercase tracking-[0.16em] text-grey">
-              {tr(locale, c(`Based in ${site.region} · Working beyond borders`, "Basé au Maroc · Ouvert sur le monde", "من المغرب · كنخدمو بلا حدود"))}
+              {tr(locale, c(`Based in ${site.city}, ${site.region} · Serving the North in person`, "Basé à Tanger · Le Nord en personne, tout le Maroc à distance", "من طنجة · كنخدمو الشمال وكامل المغرب"))}
             </p>
           </div>
 
@@ -48,6 +49,23 @@ export function SiteFooter({ locale }: { locale: Locale }) {
                 </li>
               ))}
             </ul>
+            {/* The French search pages exist in French only, so they are
+                linked from the French footer only — every one of them is then
+                a single crawlable click from every French page. */}
+            {locale === "fr" && (
+              <>
+                <h2 className="eyebrow mt-10">Tanger et le Maroc</h2>
+                <ul className="mt-5 space-y-2.5">
+                  {landings.filter((l) => l.locales.includes("fr")).map((l) => (
+                    <li key={l.slug}>
+                      <Link href={`/${l.slug}`} className="text-sm text-silver transition-colors hover:text-mineral">
+                        {l.h1}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </nav>
 
           <div className="md:col-span-3">
@@ -81,7 +99,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
                     rel="noopener noreferrer"
                     className="text-silver transition-colors hover:text-mineral"
                   >
-                    WhatsApp
+                    WhatsApp <span dir="ltr">{contact.whatsappDisplay}</span>
                   </a>
                 </li>
               )}

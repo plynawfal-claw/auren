@@ -3,7 +3,7 @@
 import { usePathname } from "@/i18n/navigation";
 import { defaultLocale, localeHtmlLang, type Locale } from "@/i18n/config";
 import { siteUrl } from "@/config/site";
-import { isTranslated, localesFor } from "@/i18n/translated";
+import { canonicalLocale, localesFor } from "@/i18n/translated";
 
 /**
  * Per-locale `canonical` and `hreflang` for the current route.
@@ -47,7 +47,7 @@ export function LocaleAlternates({ locale }: { locale: Locale }) {
   // A French or Darija URL that still renders the English copy is a duplicate
   // of the English page, so its canonical says so; only routes with real
   // copy in a language are announced in that language (see i18n/translated).
-  const canonical = hrefFor(isTranslated(pathname, locale) ? locale : defaultLocale);
+  const canonical = hrefFor(canonicalLocale(pathname, locale));
   const available = localesFor(pathname);
 
   return (

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { articles } from "@/content/insights";
+import { landings } from "@/content/landings";
 import { projects } from "@/content/projects";
 import { services } from "@/content/services";
 import { siteUrl } from "@/config/site";
@@ -55,6 +56,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ),
     ...services.flatMap((s) =>
       entries(`/services/${s.slug}`, { lastModified: now, changeFrequency: "monthly", priority: 0.9 }),
+    ),
+    // French-only search pages: `localesFor` returns just ["fr"] for these,
+    // so each is one URL with no alternates.
+    ...landings.flatMap((l) =>
+      entries(`/${l.slug}`, { lastModified: new Date(l.updated), changeFrequency: "monthly", priority: 0.9 }),
     ),
     ...articles.flatMap((a) =>
       entries(`/insights/${a.slug}`, {
